@@ -1,16 +1,15 @@
 package com.kitchenapp.kitchenappapi;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories
-public class KitchenappApiApplication {
+public class KitchenAppApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KitchenappApiApplication.class, args);
+        SpringApplication.run(KitchenAppApplication.class, args);
     }
 
 

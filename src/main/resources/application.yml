@@ -2,11 +2,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  datasource:
+    url: jdbc:mysql://localhost:3306/kitchenapp
+    username: kitchenapp
+    password: VZa4u&VjFnRXn&!F62bQ
+    driver-class-name: com.mysql.jdbc.Driver
   flyway:
     url: ${spring.datasource.url}
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     enabled: true
+
 
 ---
 spring:
