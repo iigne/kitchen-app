@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IngredientController {
 
-    //TODO intellij keeps complaining about this, figure it out
     private final IngredientRepository ingredientRepository;
 
     @GetMapping("/all")
