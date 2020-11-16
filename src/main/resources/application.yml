@@ -3,15 +3,23 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:mysql://localhost:3306/kitchenapp
-    username: kitchenapp
-    password: VZa4u&VjFnRXn&!F62bQ
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:sqlserver://kitchenappdb.database.windows.net:1433;database=kitchenapp;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    username: kitchenapp@kitchenappdb
+    password: <REMOVED>
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   flyway:
     url: ${spring.datasource.url}
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     enabled: true
+---
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:sqlserver://localhost;database=kitchenapp
+    username: kitchenapp
+    password: VZa4u&VjFnRXn&!F62bQ
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 ---
 spring:
