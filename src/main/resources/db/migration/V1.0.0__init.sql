@@ -1,7 +1,6 @@
 CREATE TABLE ingredient (
-    id int not null auto_increment,
+    id int primary key identity (1,1),
     name varchar(255) not null,
-    primary key (id)
 );
 
 INSERT INTO ingredient (name) values ('Potato'), ('Carrot'), ('Apple'), ('Leek'), ('Lentils'), ('Spaghetti');
