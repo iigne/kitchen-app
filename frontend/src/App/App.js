@@ -1,10 +1,12 @@
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCarrot} from "@fortawesome/free-solid-svg-icons";
 import React, {Component} from "react";
 import axios from 'axios';
 
 import Register from "../Register/Register";
 import './App.css';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import Home from "../Home/Home";
+import {Navbar, Nav} from "react-bootstrap";
+import Login from "../Login";
 
 class App extends Component {
 
@@ -23,22 +25,21 @@ class App extends Component {
     }
 
     render() {
-        let homeMessage
-        homeMessage = this.state.loggedIn ? "Welcome back, {insert name here}!" : "Welcome! Login or register to proceed"
+
         return(
             <div className="App">
-
-                <div>
-                    <header className="App-header">
-                        <h1>Kitchen app</h1>
-                        <FontAwesomeIcon icon={faCarrot}/>
-                        <p>{homeMessage}</p>
-                    </header>
-                </div>
-
-                <div>
-                    <Register/>
-                </div>
+                <Router>
+                    <Navbar bg="light">
+                        <Navbar.Brand as={Link} to="/" className="nav-link">Kitchen app</Navbar.Brand>
+                        <Nav.Link as={Link} to="/register" className="nav-link">Register</Nav.Link>
+                        <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                    </Navbar>
+                    <Switch>
+                        <Route exact path="/" component={Home}/>
+                        <Route path="/register" component={Register}/>
+                        <Route path="/login" component={Login}/>
+                    </Switch>
+                </Router>
             </div>
         );
     }
