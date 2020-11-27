@@ -20,10 +20,6 @@ spring:
     username: kitchenapp
     password: VZa4u&VjFnRXn&!F62bQ
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-  security:
-    user:
-      name: test
-      password: 1234
 
 ---
 spring:

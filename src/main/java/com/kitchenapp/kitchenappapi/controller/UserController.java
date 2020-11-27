@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,13 +26,15 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<String> register(@RequestBody User user) {
         if(userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().build();
+            log.debug("User {} with email {} already exists", user.getUsername(), user.getEmail());
+            return ResponseEntity.badRequest().body("User with this email or username already exists");
         }
+        //TODO implement auth
 //        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(user.toString());
     }
 
 }

@@ -25,21 +25,42 @@ class Register extends Component {
 
     handleSubmit(e) {
         e.preventDefault()
-        let toSave = {
-            username: this.state.username,
-            email: this.state.email,
-            password: this.state.password
+        if(this.validateForm()) {
+            let toSave = {
+                username: this.state.username,
+                email: this.state.email,
+                password: this.state.password
+            }
+            axios.post('/user', toSave, {
+                "Content-Type":"application/json"
+            })
+                .then(res => this.setState({success: true})
+                )
+                .catch(error => {
+                    this.setState({success: false});
+                    this.setState({error: error.response.data})
+                });
+        } else {
+            this.setState({success: false});
         }
-        axios.post('/user', toSave, {
-            "Content-Type":"application/json"
-        })
-            .then(res => this.setState({success: true})
-            )
-            .catch(error => this.setState({success: false}));
     }
 
     validateForm() {
-        //TODO check if password match
+        if(this.state.username.length === 0) {
+            this.setState({error: "Username must not be blank"})
+            return false;
+        }
+        if(this.state.email.length === 0) {
+            this.setState({error: "Email must not be blank"})
+            return false;
+        }
+        if(this.state.password !== this.state.confirmPassword) {
+            this.setState({error: "Passwords must match"})
+            return false;
+        }
+        this.setState({success: null});
+        this.setState({error: ""})
+        return true;
     }
 
     render() {
@@ -53,8 +74,9 @@ class Register extends Component {
         return(
             <div className="Register">
                 <h2>Register</h2>
-                <Form onSubmit={this.handleSubmit}>
-                    {result}
+                {result}
+                {!(this.state.success != null && this.state.success===true) &&
+                <Form onSubmit={this.handleSubmit} hidden={this.state.success != null && this.state.success===true}>
                     <Form.Group controlId="formUsername">
                         <Form.Label>Username</Form.Label>
                         <Form.Control name="username" type="text" value={this.state.username} onChange={this.handleChange}/>
@@ -79,6 +101,7 @@ class Register extends Component {
                         Submit
                     </Button>
                 </Form>
+                }
             </div>
             );
     }

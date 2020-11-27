@@ -1,17 +1,12 @@
 .App {
   text-align: center;
   background-color: #282c34;
-
   display: flex;
   flex-direction: column;
   flex: 1;
-
   min-width: 100vw;
   min-height: 100vh;
-
   color: grey;
-
-
 }
 
 .App > div {
@@ -21,27 +16,11 @@
   align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   font-size: calc(10px + 2vmin);
   color: white;
-
 }
 
 .App-button {
   max-width: 15vw;
-
-}
-
-p {
-
-}
-
-.App-link {
-  color: #61dafb;
 }

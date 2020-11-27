@@ -1,5 +1,5 @@
 import {Nav, Navbar} from "react-bootstrap";
-import {BrowserRouter as Router, Link, Redirect, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import Home from "../Home/Home";
 import Register from "../Register/Register";
 import Login from "../Login/Login";
