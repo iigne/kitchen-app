@@ -6,13 +6,13 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loggedIn: props.loggedIn,
+            isAuthenticated: props.isAuthenticated,
             username: props.username
         }
     }
     render() {
         let homeMessage
-        homeMessage = this.state.loggedIn ? "Welcome back, {insert name here}!" : "Welcome! Login or register to proceed"
+        homeMessage = this.state.isAuthenticated ? "Welcome back, " + this.state.username : "Welcome! Login or register to proceed"
         return(
             <div>
                 <header className="App-header">

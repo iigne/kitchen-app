@@ -21,12 +21,11 @@ class Login extends Component {
 
     handleSubmit(e) {
         e.preventDefault()
-        let toSave = {
+        let credentials = {
             username: this.state.username,
-            email: this.state.email,
             password: this.state.password
         }
-        axios.post('/user', toSave, {
+        axios.post('/login', credentials, {
             "Content-Type":"application/json"
         })
             .then(res => this.setState({success: true})
