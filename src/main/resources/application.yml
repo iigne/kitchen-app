@@ -13,6 +13,10 @@ spring:
     password: ${spring.datasource.password}
     enabled: true
 ---
+
+jwt:
+  secret: 8syTLFk=vARDWkpHD#5E
+  expiry: 86400000
 spring:
   profiles: local
   datasource:

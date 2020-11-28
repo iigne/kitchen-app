@@ -15,9 +15,4 @@ public class KitchenAppApplication {
         SpringApplication.run(KitchenAppApplication.class, args);
     }
 
-//TODO implement auth
-//    @Bean
-//    public PasswordEncoder bCryptPasswordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 }

@@ -14,7 +14,7 @@ class Navigation extends React.Component {
         super(props);
         this.state = {
             username: "username",
-            isAuthenticated: false
+            isAuthenticated: this.props.isAuthenticated
         }
     }
 

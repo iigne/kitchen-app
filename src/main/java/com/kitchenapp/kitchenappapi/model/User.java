@@ -1,11 +1,15 @@
 package com.kitchenapp.kitchenappapi.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "[user]")
 public class User {
 

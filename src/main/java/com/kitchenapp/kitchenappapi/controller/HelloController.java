@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    @GetMapping("/hello")
+    @GetMapping("/secured-hello")
     public String hello() {
-        return "Hello from Kitchen App API";
+        return "Super secret Hello from Kitchen App API";
     }
 }
