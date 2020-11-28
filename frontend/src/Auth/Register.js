@@ -31,7 +31,7 @@ class Register extends Component {
                 email: this.state.email,
                 password: this.state.password
             }
-            axios.post('/user', toSave, {
+            axios.post('auth/register', toSave, {
                 "Content-Type":"application/json"
             })
                 .then(res => this.setState({success: true})

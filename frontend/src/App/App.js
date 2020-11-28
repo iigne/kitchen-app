@@ -6,7 +6,7 @@ import Navigation from "../Navigation/Navigation";
 class App extends Component {
 
     state = {
-        isAuthenticated: true
+        isAuthenticated: localStorage.getItem("user") != null
     }
 
     render() {

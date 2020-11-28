@@ -25,22 +25,29 @@ class Login extends Component {
             username: this.state.username,
             password: this.state.password
         }
-        axios.post('/login', credentials, {
+        axios.post('/auth/login', credentials, {
             "Content-Type":"application/json"
         })
-            .then(res => this.setState({success: true})
-            )
-            .catch(error => this.setState({success: false}));
+            .then(res => {
+                this.setState({success: true});
+                if(res.data.token) {
+                    localStorage.setItem("user", JSON.stringify(res))
+                    window.location.reload(false)
+                }
+            }
+            ).catch(error => this.setState({success: false}));
     }
 
     render() {
-        let error
+        let result
         if(this.state.success!= null && !this.state.success) {
-            error = <Alert variant={"danger"}>Login failed. Please check your details again</Alert>
+            result = <Alert variant={"danger"}>Login failed. Please check your details again</Alert>
+        } else if(this.state.success!= null && this.state.success) {
+            result = <Alert variant={"success"}>Success</Alert>
         }
         return(
             <div className="Login">
-                {error}
+                {result}
                 <h2>Login</h2>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group controlId="formUsername">
