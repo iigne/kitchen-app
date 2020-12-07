@@ -8,6 +8,6 @@ public class HelloController {
 
     @GetMapping("/secured-hello")
     public String hello() {
-        return "Super secret Hello from Kitchen App API";
+        return "Hello from the secured endpoint!";
     }
 }

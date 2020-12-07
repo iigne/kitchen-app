@@ -14,7 +14,7 @@ class Navigation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: this.props.isAuthenticated ? localStorage.getItem("user").username : null,
+            username: this.props.isAuthenticated ? JSON.parse(localStorage.getItem("user")).username : null,
             isAuthenticated: this.props.isAuthenticated
         }
     }

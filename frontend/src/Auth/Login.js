@@ -31,7 +31,7 @@ class Login extends Component {
             .then(res => {
                 this.setState({success: true});
                 if(res.data.token) {
-                    localStorage.setItem("user", JSON.stringify(res))
+                    localStorage.setItem("user", JSON.stringify(res.data))
                     window.location.reload(false)
                 }
             }
