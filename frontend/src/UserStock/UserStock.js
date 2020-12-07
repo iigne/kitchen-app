@@ -1,43 +1,49 @@
 import React from "react";
-import axios from "axios";
+import Ingredient from "./Ingredient";
 
+import './UserStock.css';
+import AddIngredient from "./AddIngredient";
+import {Container} from "react-bootstrap";
 
 class UserStock extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            success: null,
-            content: ""
+            ingredients: [
+                {name: "Bread", quantity: "1", measurement: "unit", category: "Bread"},
+                {name: "Spaghetti", quantity: "500", measurement: "grams", category: "Cupboard"},
+                {name: "Tofu", quantity: "500", measurement: "grams", category: "Fridge"},
+                {name: "Leek", quantity: "1", measurement: "unit", category: "Vegetable"},
+                {name: "Chickpeas", quantity: "4", measurement: "cans", category: "Cupboard"},
+            ]
         }
-        this.callSecuredEndpoint = this.callSecuredEndpoint.bind(this)
     }
 
-    callSecuredEndpoint() {
-        axios.get('/secured-hello',
-            {headers: {
-                authorization: 'Basic ' + window.btoa("user:hello")
-                }})
-            .then(res => {
-                this.setState({success: true});
-                this.setState({content: res.data})
-            }
-            )
-            .catch(error => {
-                this.setState({success: false});
-                this.setState({content: error.content})
-            });
+    handleAddIngredient = (ingredient) => {
+        let ingredients = [...this.state.ingredients];
+        ingredients.push(ingredient)
+        this.setState({ingredients: ingredients})
     }
 
     render() {
         return(
             <div>
-                <h1>Hello logged in user this is your ingredients</h1>
-                <button onClick={this.callSecuredEndpoint}>hello</button>
-                <p>success: {this.state.success ? "yes" : "no"}</p>
-                <p>content: {this.state.content}</p>
-            </div>
+                <h2>My ingredients</h2>
+                <Container>
+                    {this.state.ingredients.map((item) =>
+                        <Ingredient {...item}/>
+                    )}
+                    <hr/>
+                    <h5>
+                        Add ingredients:
 
+                    </h5>
+
+                    <AddIngredient addIngredientHandler={this.handleAddIngredient}/>
+
+                </Container>
+            </div>
         );
     }
 }
