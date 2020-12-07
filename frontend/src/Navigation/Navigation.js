@@ -1,20 +1,21 @@
 import {Nav, Navbar} from "react-bootstrap";
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import Home from "../Home/Home";
-import Register from "../Register/Register";
-import Login from "../Login/Login";
+import Register from "../Auth/Register";
+import Login from "../Auth/Login";
 import React from "react";
 import PrivateRoute from "./PrivateRoute";
 import UserStock from "../UserStock/UserStock";
 import PublicRoute from "./PublicRoute";
+import Logout from "../Auth/Logout";
 
 class Navigation extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            username: "username",
-            isAuthenticated: false
+            username: this.props.isAuthenticated ? JSON.parse(localStorage.getItem("user")).username : null,
+            isAuthenticated: this.props.isAuthenticated
         }
     }
 
@@ -36,6 +37,7 @@ class Navigation extends React.Component {
                     <PublicRoute path="/register" isAuthenticated={this.state.isAuthenticated} component={() => <Register />}/>
                     <PublicRoute path="/login" isAuthenticated={this.state.isAuthenticated} component={() => <Login />}/>
                     <PrivateRoute path="/user-ingredients" isAuthenticated={this.state.isAuthenticated} component={() => <UserStock />} />
+                    <PrivateRoute path="/logout" isAuthenticated={this.state.isAuthenticated} component={() => <Logout/>} />
                 </Switch>
             </Router>
         );
