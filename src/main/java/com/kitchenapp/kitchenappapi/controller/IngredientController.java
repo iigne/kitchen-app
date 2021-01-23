@@ -1,13 +1,14 @@
 package com.kitchenapp.kitchenappapi.controller;
 
+import com.kitchenapp.kitchenappapi.dto.IngredientDTO;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
+import com.kitchenapp.kitchenappapi.service.IngredientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,9 +19,26 @@ import java.util.List;
 public class IngredientController {
 
     private final IngredientRepository ingredientRepository;
+    private final IngredientService ingredientService;
 
     @GetMapping("/all")
     public ResponseEntity<List<Ingredient>> getAll(){
         return ResponseEntity.ok(ingredientRepository.findAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<Ingredient> createIngredient(@RequestBody IngredientDTO ingredientDTO) {
+        try {
+            Ingredient ingredient = ingredientService.create(ingredientDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ingredient);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Ingredient>> searchByName(@RequestParam String term) {
+        List<Ingredient> ingredients = ingredientRepository.findByNameContains(term);
+        return ResponseEntity.ok().body(ingredients);
     }
 }

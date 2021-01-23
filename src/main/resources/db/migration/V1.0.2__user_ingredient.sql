@@ -5,12 +5,13 @@ CREATE TABLE measurement (
     metric_unit varchar(15) not null
 );
 
-CREATE TABLE ingredient_category (
+CREATE TABLE category (
     id int primary key identity (1,1) not null,
-    name varchar(255) not null
+    name varchar(255) not null,
+    shelf_life_days int not null default -1
 );
 
-INSERT INTO ingredient_category (name) values ('Other');
+INSERT INTO category (name) values ('Other');
 
 CREATE TABLE user_ingredient (
     user_id int not null,
@@ -26,16 +27,16 @@ CREATE TABLE user_ingredient (
     constraint PK_user_ingredient primary key (user_id, ingredient_id)
 );
 
-ALTER TABLE ingredient ADD
-    category_id int not null default 1,
-    metric_unit varchar(15) not null default 'GRAMS',
-    shelf_life_days int not null default 100;
+ALTER TABLE ingredient ADD category_id int not null default 1;
+ALTER TABLE ingredient ADD metric_unit varchar(15) not null default 'GRAMS';
+ALTER TABLE ingredient ADD shelf_life_days int not null default 100;
 
-ALTER TABLE ingredient ADD constraint FK_ingredient_category foreign key (category_id) references ingredient_category(id);
+ALTER TABLE ingredient ADD constraint FK_ingredient_category foreign key (category_id) references category(id);
 
 CREATE TABLE ingredient_measurement (
     ingredient_id int not null,
     measurement_id int not null,
     constraint FK_ingredient_measurement_ingredient foreign key (ingredient_id) references ingredient(id),
     constraint FK_ingredient_measurement_measurement foreign key (measurement_id) references measurement(id),
+    constraint PK_ingredient_measurement primary key (ingredient_id, measurement_id)
 );

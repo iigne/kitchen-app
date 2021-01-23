@@ -1,12 +1,16 @@
 package com.kitchenapp.kitchenappapi.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name = "ingredient")
 public class Ingredient {
 
@@ -18,7 +22,10 @@ public class Ingredient {
     @Enumerated(EnumType.STRING)
     private MetricUnit metricUnit;
 
-    //TODO could be duration?
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private Category category;
+
     private int shelfLifeDays;
 
     @ManyToMany(cascade = CascadeType.ALL)
