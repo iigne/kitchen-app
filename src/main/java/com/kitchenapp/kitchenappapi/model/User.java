@@ -3,6 +3,7 @@ package com.kitchenapp.kitchenappapi.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,5 +23,8 @@ public class User {
     private String email;
 
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserIngredient> userIngredients;
 
 }
