@@ -24,7 +24,7 @@ public class IngredientDTO {
     @NotBlank
     private String category;
 
-    private int shelfLifeDays;
+    private Integer shelfLifeDays;
 
-    private List<MeasurementDTO> measurements;
+    private List<NewMeasurementDTO> measurements;
 }

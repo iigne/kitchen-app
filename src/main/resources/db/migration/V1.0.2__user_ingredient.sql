@@ -8,7 +8,7 @@ CREATE TABLE measurement (
 CREATE TABLE category (
     id int primary key identity (1,1) not null,
     name varchar(255) not null,
-    shelf_life_days int not null default -1
+    shelf_life_days int not null default 100
 );
 
 INSERT INTO category (name) values ('Other');

@@ -15,7 +15,8 @@ import java.util.Set;
 public class Ingredient {
 
     @Id
-    private int id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 

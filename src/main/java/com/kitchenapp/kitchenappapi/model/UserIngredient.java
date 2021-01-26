@@ -1,12 +1,21 @@
 package com.kitchenapp.kitchenappapi.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class UserIngredient {
     @EmbeddedId
-    private UserIngredientId id;
+    private final UserIngredientId id = new UserIngredientId();
 
     @ManyToOne
     @MapsId("ingredientId")

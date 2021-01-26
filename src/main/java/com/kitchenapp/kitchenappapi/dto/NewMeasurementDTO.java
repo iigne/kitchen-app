@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MeasurementDTO {
+public class NewMeasurementDTO {
     private String name;
     private String metricUnit;
     private int metricQuantity;
