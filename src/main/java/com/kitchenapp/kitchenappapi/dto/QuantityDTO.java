@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class QuantityDTO {
-    private int measurementId;
-    private int quantity;
+    private Integer measurementId;
+    private double quantity;
     private String measurementName;
 }

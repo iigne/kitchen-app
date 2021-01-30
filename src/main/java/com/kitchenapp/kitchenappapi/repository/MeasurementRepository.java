@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface MeasurementRepository extends JpaRepository<Measurement, Integer> {
 
-    Optional<Measurement> findByNameAndMetricQuantityAndMetricUnit(String name, int metricQuantity, MetricUnit metricUnit);
+    Optional<Measurement> findByNameAndMetricQuantityAndMetricUnit(String name, double metricQuantity, MetricUnit metricUnit);
 }

@@ -1,5 +1,6 @@
 package com.kitchenapp.kitchenappapi.controller;
 
+import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Slf4j
@@ -36,16 +38,31 @@ public class UserIngredientController {
         );
     }
 
-    @PatchMapping
-    public ResponseEntity<UserIngredientDTO> update(@RequestBody UserIngredientDTO dto) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    //TODO not necessary now
+//    @PatchMapping
+//    public ResponseEntity<UserIngredientDTO> update(@AuthenticationPrincipal JwtUserDetails userDetails,
+//                                                    @RequestBody UserIngredientDTO dto) {
+//        return ResponseEntity.status(HttpStatus.OK).body(
+//                userIngredientService.update(userDetails.getId(), dto)
+//        );
+//    }
+
+
+    @PatchMapping("/quantity")
+    public ResponseEntity<UserIngredientDTO> updateQuantity(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                                            @RequestParam int ingredientId,
+                                                            @RequestBody @NotNull QuantityDTO quantityDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                userIngredientService.updateQuantity(userDetails.getId(), ingredientId, quantityDTO)
+        );
     }
 
     //TODO ?
     @DeleteMapping
     public ResponseEntity<?> delete(@AuthenticationPrincipal JwtUserDetails userDetails,
                                     @RequestParam int ingredientId) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        userIngredientService.delete(userDetails.getId(), ingredientId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

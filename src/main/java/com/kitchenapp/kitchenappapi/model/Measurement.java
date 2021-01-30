@@ -13,11 +13,11 @@ import javax.persistence.*;
 public class Measurement {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private String name;
 
-    private int metricQuantity;
+    private float metricQuantity;
 
     @Enumerated(EnumType.STRING)
     private MetricUnit metricUnit;

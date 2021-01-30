@@ -1,7 +1,7 @@
 CREATE TABLE measurement (
     id int primary key identity (1,1) not null,
     name varchar(255) not null,
-    metric_quantity int not null,
+    metric_quantity float not null,
     metric_unit varchar(15) not null
 );
 
@@ -16,7 +16,7 @@ INSERT INTO category (name) values ('Other');
 CREATE TABLE user_ingredient (
     user_id int not null,
     ingredient_id int not null,
-    metric_quantity int not null,
+    metric_quantity float not null,
     custom_measurement_id int,
     date_added date not null default GETDATE(),
     date_last_used date,

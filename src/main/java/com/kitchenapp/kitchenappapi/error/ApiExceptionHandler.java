@@ -18,6 +18,15 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiError> handleIllegalState(IllegalStateException e) {
         final ApiError apiError = ApiError.builder()
                 .errorMessage("Something went wrong...")
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        return createResponse(apiError);
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument(IllegalArgumentException e) {
+        final ApiError apiError = ApiError.builder()
+                .errorMessage("Incorrect arguments used")
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
         return createResponse(apiError);

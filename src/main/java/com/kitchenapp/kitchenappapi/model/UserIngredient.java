@@ -1,9 +1,6 @@
 package com.kitchenapp.kitchenappapi.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class UserIngredient {
     @EmbeddedId
     private final UserIngredientId id = new UserIngredientId();
@@ -31,7 +29,7 @@ public class UserIngredient {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private int metricQuantity;
+    private double metricQuantity;
 
     private LocalDate dateAdded;
 

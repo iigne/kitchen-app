@@ -13,5 +13,5 @@ import lombok.Setter;
 public class NewMeasurementDTO {
     private String name;
     private String metricUnit;
-    private int metricQuantity;
+    private double metricQuantity;
 }
