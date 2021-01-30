@@ -17,7 +17,7 @@ public class Measurement {
 
     private String name;
 
-    private float metricQuantity;
+    private double metricQuantity;
 
     @Enumerated(EnumType.STRING)
     private MetricUnit metricUnit;

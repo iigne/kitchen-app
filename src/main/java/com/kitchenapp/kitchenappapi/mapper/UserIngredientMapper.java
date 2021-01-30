@@ -25,17 +25,17 @@ public class UserIngredientMapper {
                 .build();
     }
 
-    public static UserIngredientDTO toDTO(UserIngredient userIngredient) {
+    public static UserIngredientDTO toDTO(UserIngredient entity) {
         return UserIngredientDTO.builder()
-                .ingredientId(userIngredient.getIngredient().getId())
-                .metricQuantity(QuantityMapper.toDTO(userIngredient.getMetricQuantity(), userIngredient.getIngredient().getMetricUnit()))
-                .quantity(userIngredient.getCustomMeasurement() != null ? QuantityMapper.toDTO(userIngredient.getMetricQuantity(), userIngredient.getCustomMeasurement()) : null)
-                .dateBought(userIngredient.getDateAdded())
-                .expiryDate(userIngredient.getDateExpiry())
+                .ingredient(IngredientMapper.toDTO(entity.getIngredient()))
+                .metricQuantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getIngredient().getMetricUnit()))
+                .quantity(entity.getCustomMeasurement() != null ? QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement()) : null)
+                .dateBought(entity.getDateAdded())
+                .expiryDate(entity.getDateExpiry())
                 .build();
     }
 
-    public static List<UserIngredientDTO> toDTO(List<UserIngredient> userIngredients) {
-        return userIngredients.stream().map(UserIngredientMapper::toDTO).collect(Collectors.toList());
+    public static List<UserIngredientDTO> toDTO(List<UserIngredient> entities) {
+        return entities.stream().map(UserIngredientMapper::toDTO).collect(Collectors.toList());
     }
 }

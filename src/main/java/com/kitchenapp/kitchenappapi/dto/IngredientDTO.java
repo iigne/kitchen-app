@@ -1,9 +1,6 @@
 package com.kitchenapp.kitchenappapi.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -13,7 +10,11 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class IngredientDTO {
+
+    private int id;
+
     @NotBlank
     private String name;
 
@@ -26,5 +27,5 @@ public class IngredientDTO {
 
     private Integer shelfLifeDays;
 
-    private List<NewMeasurementDTO> measurements;
+    private List<MeasurementDTO> measurements;
 }

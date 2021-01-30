@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class UserIngredientDTO {
-    @NotNull //TODO replace with IngredientDTO
-    private int ingredientId;
+    @NotNull
+    private IngredientDTO ingredient;
 
     private QuantityDTO quantity;
 

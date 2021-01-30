@@ -33,20 +33,13 @@ public class UserIngredientController {
     @PostMapping
     public ResponseEntity<UserIngredientDTO> create(@AuthenticationPrincipal JwtUserDetails userDetails,
                                                     @RequestBody UserIngredientDTO dto) {
+        if(dto.getQuantity() == null && dto.getMetricQuantity() == null) {
+            throw new IllegalArgumentException("No quantity specified");
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 userIngredientService.create(userDetails.getId(), dto)
         );
     }
-
-    //TODO not necessary now
-//    @PatchMapping
-//    public ResponseEntity<UserIngredientDTO> update(@AuthenticationPrincipal JwtUserDetails userDetails,
-//                                                    @RequestBody UserIngredientDTO dto) {
-//        return ResponseEntity.status(HttpStatus.OK).body(
-//                userIngredientService.update(userDetails.getId(), dto)
-//        );
-//    }
-
 
     @PatchMapping("/quantity")
     public ResponseEntity<UserIngredientDTO> updateQuantity(@AuthenticationPrincipal JwtUserDetails userDetails,
@@ -57,7 +50,6 @@ public class UserIngredientController {
         );
     }
 
-    //TODO ?
     @DeleteMapping
     public ResponseEntity<?> delete(@AuthenticationPrincipal JwtUserDetails userDetails,
                                     @RequestParam int ingredientId) {

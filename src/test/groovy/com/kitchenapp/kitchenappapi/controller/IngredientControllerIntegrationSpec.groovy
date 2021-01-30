@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.controller
 
 import com.kitchenapp.kitchenappapi.dto.IngredientDTO
-import com.kitchenapp.kitchenappapi.dto.NewMeasurementDTO
+import com.kitchenapp.kitchenappapi.dto.MeasurementDTO
 import com.kitchenapp.kitchenappapi.model.Category
 import com.kitchenapp.kitchenappapi.model.Ingredient
 import com.kitchenapp.kitchenappapi.model.MetricUnit
@@ -33,7 +33,7 @@ class IngredientControllerIntegrationSpec extends Specification {
 
     def "create new ingredient with measurement"() {
         given: "measurement DTO is valid"
-        def measurementDTO = new NewMeasurementDTO(name: "Slice", metricUnit: "g", metricQuantity: 80)
+        def measurementDTO = new MeasurementDTO(name: "Slice", metricUnit: "g", metricQuantity: 80)
         and: "ingredient DTO is valid"
         def ingredientDTO = new IngredientDTO(name: "Sourdough Bread", category: "Other", metricUnit: "g", shelfLifeDays: 7, measurements: [measurementDTO])
 

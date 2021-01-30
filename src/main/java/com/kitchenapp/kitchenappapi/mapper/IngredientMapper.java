@@ -20,4 +20,15 @@ public class IngredientMapper {
                 .measurements(measurements)
                 .build();
     }
+
+    public static IngredientDTO toDTO(Ingredient entity) {
+        return IngredientDTO.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .metricUnit(entity.getMetricUnit().name())
+                .category(entity.getCategory().getName())
+                .shelfLifeDays(entity.getShelfLifeDays())
+                .measurements(MeasurementMapper.toDTO(entity.getMeasurements()))
+                .build();
+    }
 }
