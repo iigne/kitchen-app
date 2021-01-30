@@ -19,7 +19,6 @@ public class IngredientDTO {
     private String name;
 
     @NotBlank
-    @Size(max=2)
     private String metricUnit;
 
     @NotBlank

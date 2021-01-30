@@ -1,5 +1,6 @@
 package com.kitchenapp.kitchenappapi.providers.dto
 
+import com.kitchenapp.kitchenappapi.dto.IngredientDTO
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO
 import com.kitchenapp.kitchenappapi.model.Category
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
@@ -8,7 +9,7 @@ import java.time.LocalDate
 
 class UserIngredientDTOProvider {
     static Map DEFAULTS = [
-            ingredientId  : CommonTestData.INGREDIENT_ID,
+            ingredient    : IngredientDTOProvider.make(),
             quantity      : null,
             metricQuantity: null,
             expiryDate    : null,
@@ -19,7 +20,7 @@ class UserIngredientDTOProvider {
         def props = DEFAULTS + overrides
 
         return new UserIngredientDTO([
-                ingredientId  : props.ingredientId,
+                ingredient    : props.ingredient,
                 quantity      : props.quantity,
                 metricQuantity: props.metricQuantity,
                 expiryDate    : props.expiryDate,

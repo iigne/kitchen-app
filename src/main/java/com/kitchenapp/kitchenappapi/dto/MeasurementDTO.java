@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @Builder
 public class MeasurementDTO {
-    private int id;
+    private Integer id;
     private String name;
     private String metricUnit;
     private double metricQuantity;

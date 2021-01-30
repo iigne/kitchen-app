@@ -6,7 +6,7 @@ import com.kitchenapp.kitchenappapi.providers.CommonTestData
 class CategoryProvider {
     static Map DEFAULTS = [
             id: CommonTestData.CATEGORY_ID,
-            name: "Fridge",
+            name: CommonTestData.CATEGORY_NAME,
             shelfLifeDays: 7
     ]
 

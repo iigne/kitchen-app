@@ -60,24 +60,6 @@ class UserIngredientServiceSpec extends Specification {
         inputQuantity << 10
     }
 
-    def "should fail to create ingredient when DTO invalid"() {
-        given: "DTO is invalid"
-        def dto = UserIngredientDTOProvider.make()
-
-        when: "create is called"
-        userIngredientService.create(CommonTestData.USER_ID, dto)
-
-        then: "exception is thrown"
-        def ex = thrown(IllegalArgumentException)
-        ex.message == errorMessage
-
-        and: "no database interactions performed"
-        0 * userIngredientRepository.save(_)
-
-        where:
-        errorMessage = "No quantity specified"
-    }
-
     @Unroll
     def "should fail to create ingredient when there's data conflicts"() {
         given: "DTO is valid"
