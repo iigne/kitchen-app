@@ -1,17 +1,14 @@
 package com.kitchenapp.kitchenappapi.repository;
 
+import com.kitchenapp.kitchenappapi.model.Category;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {
+public interface CategoryRepository extends JpaRepository<Category, String> {
 
-    List<Ingredient> findByNameContains(String term);
-
-    Optional<Ingredient> findByName(String name);
+    Optional<Category> findByName(String name);
 }
