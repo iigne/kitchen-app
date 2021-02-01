@@ -1,5 +1,6 @@
 package com.kitchenapp.kitchenappapi.service;
 
+import com.kitchenapp.kitchenappapi.dto.MeasurementDTO;
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
@@ -47,7 +48,8 @@ public class UserIngredientService {
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("ingredientId %s not found", ingredientId)));
 
-        Measurement measurement = dto.getQuantity() != null ? measurementService.findByIdOrThrow(dto.getQuantity().getMeasurementId()) : null;
+        //TODO measurementsDTO - will hold metric and non metric value
+        Measurement measurement = measurementService.findByIdOrThrow(dto.getQuantity().getMeasurementId());
         return UserIngredientMapper.toEntity(dto, ingredient, user, measurement);
     }
 

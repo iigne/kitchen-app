@@ -5,6 +5,7 @@ import com.kitchenapp.kitchenappapi.dto.MeasurementDTO
 import com.kitchenapp.kitchenappapi.model.Category
 import com.kitchenapp.kitchenappapi.model.Ingredient
 import com.kitchenapp.kitchenappapi.model.MetricUnit
+import com.kitchenapp.kitchenappapi.providers.model.IngredientProvider
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository
 import org.codehaus.jackson.map.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,14 +51,16 @@ class IngredientControllerIntegrationSpec extends Specification {
             name == "Sourdough Bread"
             metricUnit == MetricUnit.GRAMS
             category.name == "Other"
-            measurements.size() == 1
+            measurements.size() == 2
+            //TODO check without checking order
             measurements[0].name == "Slice"
+            measurements[1].name == "g"
         }
     }
 
     def "search for ingredient"() {
         given: "there is a list of ingredients in the database"
-        def ingredients = [createTest(1), createTest(2), createTest(3)]
+        def ingredients = [IngredientProvider.make(name:"Ingredient1"), IngredientProvider.make(name:"Ingredient2"), IngredientProvider.make(name:"Ingredient3")]
         ingredientRepository.saveAll(ingredients)
         when: "a fragment is searched for"
         def term = "Ingr"
@@ -80,11 +83,6 @@ class IngredientControllerIntegrationSpec extends Specification {
 
     private static Ingredient toObject(json) {
         return new ObjectMapper().readValue(json, Ingredient.class)
-    }
-
-    private static Ingredient createTest(number) {
-        return new Ingredient(name: "Ingredient"+number,
-                category: new Category(id: 1, name:"Other"), metricUnit: MetricUnit.GRAMS)
     }
 
 }

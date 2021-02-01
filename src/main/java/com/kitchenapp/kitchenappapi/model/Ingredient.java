@@ -1,9 +1,11 @@
 package com.kitchenapp.kitchenappapi.model;
 
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -20,6 +22,7 @@ public class Ingredient {
 
     private String name;
 
+    //TODO not necessary anymore?
     @Enumerated(EnumType.STRING)
     private MetricUnit metricUnit;
 
@@ -36,4 +39,12 @@ public class Ingredient {
             inverseJoinColumns = {@JoinColumn(name = "measurement_id")}
     )
     private Set<Measurement> measurements;
+
+    @JsonIgnore
+    public Measurement getMetricMeasurement() {
+        if(measurements == null || measurements.isEmpty()) {
+            throw new IllegalStateException("Metric measurement not found");
+        }
+        return measurements.stream().filter(Measurement::isMetric).collect(Collectors.toList()).get(0);
+    }
 }

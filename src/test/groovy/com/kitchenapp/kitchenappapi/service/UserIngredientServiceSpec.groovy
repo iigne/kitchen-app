@@ -42,7 +42,7 @@ class UserIngredientServiceSpec extends Specification {
     def "should create ingredient"() {
         given: "DTO is valid"
         def quantityDTO = new QuantityDTO(measurementId: measurement.id, quantity: inputQuantity)
-        def dto = UserIngredientDTOProvider.make(quantity: quantityDTO)
+        def dto = UserIngredientDTOProvider.make(quantities: [quantityDTO])
 
         when: "create is called"
         userIngredientService.create(CommonTestData.USER_ID, dto)
@@ -51,7 +51,7 @@ class UserIngredientServiceSpec extends Specification {
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.empty()
         1 * userRepository.findById(CommonTestData.USER_ID) >> Optional.of(new User(id: CommonTestData.USER_ID))
         1 * ingredientRepository.findById(CommonTestData.INGREDIENT_ID) >> Optional.of(ingredient)
-        1 * measurementService.findByIdOrThrow(CommonTestData.MEASUREMENT_ID) >> measurement
+        1 * measurementService.findByIdOrThrow(measurement.id) >> measurement
 
         and: "ingredient created in database"
         1 * userIngredientRepository.save(_) >> UserIngredientProvider.make()
@@ -98,17 +98,17 @@ class UserIngredientServiceSpec extends Specification {
 
         then: "validations pass"
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.of(UserIngredientProvider.make())
-        measurementCalled * measurementService.findByIdOrThrow(inputMeasurementId) >> measurement
+        1 * measurementService.findByIdOrThrow(inputMeasurementId) >> measurement
 
         and: "user ingredient is saved with correct quantity"
         1 * userIngredientRepository.save(ingredient -> {
             ingredient.metricQuantity == outputMetric
-        })  >> UserIngredientProvider.make()
+        }) >> UserIngredientProvider.make()
 
         where:
-        inputMeasurementId            | inputQuantity || measurementCalled | outputMetric
-        null                          | 300           || 0                 | 300
-        CommonTestData.MEASUREMENT_ID | 2             || 1                 | 300
-        CommonTestData.MEASUREMENT_ID | 1.5           || 1                 | 225
+        inputMeasurementId                   | inputQuantity || outputMetric
+        CommonTestData.MEASUREMENT_ID_METRIC | 300           || 300
+        CommonTestData.MEASUREMENT_ID        | 2             || 300
+        CommonTestData.MEASUREMENT_ID        | 1.5           || 225
     }
 }

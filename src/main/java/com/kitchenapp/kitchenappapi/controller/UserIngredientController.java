@@ -33,9 +33,9 @@ public class UserIngredientController {
     @PostMapping
     public ResponseEntity<UserIngredientDTO> create(@AuthenticationPrincipal JwtUserDetails userDetails,
                                                     @RequestBody UserIngredientDTO dto) {
-        if(dto.getQuantity() == null && dto.getMetricQuantity() == null) {
-            throw new IllegalArgumentException("No quantity specified");
-        }
+//        if(dto.getQuantities() == null || dto.getQuantities().isEmpty()) {
+//            throw new IllegalArgumentException("No quantity specified");
+//        }
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 userIngredientService.create(userDetails.getId(), dto)
         );

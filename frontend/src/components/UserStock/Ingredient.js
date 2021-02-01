@@ -19,10 +19,10 @@ class Ingredient extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: props.name,
-            quantity: props.quantity,
-            measurement: props.measurement,
-            category: this.getIcon(props.category)
+            name: props.ingredient.name,
+            quantity: props.quantities[0].quantity,
+            measurement: props.quantities[0].measurementName,
+            category: this.getIcon(props.ingredient.category)
         }
     }
 
@@ -68,7 +68,6 @@ class Ingredient extends React.Component {
                     </Col>
 
                 </Row>
-
 
             </Container>
         )

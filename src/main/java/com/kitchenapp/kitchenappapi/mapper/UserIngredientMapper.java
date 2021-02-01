@@ -1,5 +1,6 @@
 package com.kitchenapp.kitchenappapi.mapper;
 
+import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
@@ -13,13 +14,12 @@ import java.util.stream.Collectors;
 
 public class UserIngredientMapper {
 
-    public static UserIngredient toEntity(UserIngredientDTO dto, Ingredient ingredient, User user, Measurement customMeasurement) {
+    public static UserIngredient toEntity(UserIngredientDTO dto, Ingredient ingredient, User user, Measurement measurement) {
         return UserIngredient.builder()
                 .ingredient(ingredient)
                 .user(user)
-                .customMeasurement(customMeasurement)
-                .metricQuantity(dto.getMetricQuantity() != null ? dto.getMetricQuantity().getQuantity() :
-                        MeasurementConverter.toMetric(dto.getQuantity().getQuantity(), customMeasurement))
+                .customMeasurement(measurement)
+                .metricQuantity(measurement.isMetric() ? dto.getQuantity().getQuantity() : MeasurementConverter.toMetric(dto.getQuantity().getQuantity(), measurement))
                 .dateAdded(dto.getDateBought() != null ? dto.getDateBought() : LocalDate.now())
                 .dateExpiry(dto.getExpiryDate() != null ? dto.getExpiryDate() : LocalDate.now().plusDays(ingredient.getShelfLifeDays()))
                 .build();
@@ -28,8 +28,9 @@ public class UserIngredientMapper {
     public static UserIngredientDTO toDTO(UserIngredient entity) {
         return UserIngredientDTO.builder()
                 .ingredient(IngredientMapper.toDTO(entity.getIngredient()))
-                .metricQuantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getIngredient().getMetricUnit()))
-                .quantity(entity.getCustomMeasurement() != null ? QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement()) : null)
+                .quantities(QuantityMapper.toDTO(entity))
+//                .metricQuantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getIngredient().getMetricUnit()))
+//                .quantity(entity.getCustomMeasurement() != null ? QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement()) : null)
                 .dateBought(entity.getDateAdded())
                 .expiryDate(entity.getDateExpiry())
                 .build();

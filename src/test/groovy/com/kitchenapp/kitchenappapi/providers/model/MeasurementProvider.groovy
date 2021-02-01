@@ -7,9 +7,9 @@ import com.kitchenapp.kitchenappapi.providers.CommonTestData
 class MeasurementProvider {
 
     static Map DEFAULTS = [
-            id            : CommonTestData.MEASUREMENT_ID,
-            name          : "Jar",
-            metricQuantity: 150,
+            id            : CommonTestData.MEASUREMENT_ID_METRIC,
+            name          : "g",
+            metricQuantity: 1,
             metricUnit    : MetricUnit.GRAMS
     ]
 

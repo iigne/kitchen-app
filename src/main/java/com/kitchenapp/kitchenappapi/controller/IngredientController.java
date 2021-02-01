@@ -30,15 +30,9 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@AuthenticationPrincipal final JwtUserDetails userDetails,
-                                                       @RequestBody @Valid IngredientDTO ingredientDTO) {
-        try {
+    public ResponseEntity<Ingredient> createIngredient(@RequestBody @Valid IngredientDTO ingredientDTO) {
             Ingredient ingredient = ingredientService.create(ingredientDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(ingredient);
-        } catch (Exception e) {
-            log.error("action=create_ingredient user_id={} status=error", userDetails.getId(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
     @GetMapping("/search")

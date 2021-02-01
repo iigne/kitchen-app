@@ -12,7 +12,7 @@ class IngredientProvider {
             metricUnit: MetricUnit.GRAMS,
             category: CategoryProvider.make(),
             shelfLifeDays: 14,
-            measurements: []
+            measurements: [MeasurementProvider.make()]
     ]
 
     static Ingredient make(Map overrides = [:]) {
