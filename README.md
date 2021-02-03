@@ -2,13 +2,13 @@
 A web app to help you remember about that cabbage at the back of the fridge.
 
 ## Running the application
-##Backend
-####Setting up database
+## Backend
+#### Setting up database
 Annoyingly, we are using MS SQL Server for this... But thankfully, we have docker which makes our lives a little easier. 
 
 `docker run --name sql-server-db -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=VZa4uVjFnRXnF62bQ' -p 1433:1433 mcr.microsoft.com/mssql/server:2019-latest`
 
-####Initialise the database
+#### Initialise the database
 Once our database instance is running, we need to create the database, and the user that connects to the database.
 
 We need some tools for this. Assuming we have `npm` we need to run:
