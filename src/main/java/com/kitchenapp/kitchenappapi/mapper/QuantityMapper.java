@@ -19,14 +19,4 @@ public class QuantityMapper {
                 .build();
     }
 
-    public static List<QuantityDTO> toDTO(UserIngredient userIngredient) {
-        List<QuantityDTO> quantities = new ArrayList<>();
-        quantities.add(toDTO(userIngredient.getMetricQuantity(), userIngredient.getIngredient().getMetricMeasurement()));
-        QuantityDTO custom = userIngredient.getCustomMeasurement() != null ? QuantityMapper.toDTO(userIngredient.getMetricQuantity(), userIngredient.getCustomMeasurement()) : null;
-        if(custom != null) {
-            quantities.add(custom);
-        }
-        return quantities;
-    }
-
 }

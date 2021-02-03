@@ -32,13 +32,31 @@ class UserStock extends React.Component {
         this.setState({ingredients: ingredients})
     }
 
+    handleRemoveIngredient = (id) => {
+        this.setState(prevState => {
+            const ingredients = prevState.ingredients.filter(u => u.ingredient.id !== id)
+            return {ingredients: ingredients}
+        })
+    }
+
+    handleUpdateIngredient = (ingredient) => {
+        this.setState(prevState => {
+            const ingredients = prevState.ingredients
+            const index = ingredients.findIndex(ui => ui.ingredient.id === ingredient.id)
+            ingredients.splice(index, 0, ingredient)
+            return {ingredients: ingredients}
+        })
+    }
+
     render() {
-        return(
+        return (
             <div>
                 <h2>My ingredients</h2>
                 <Container>
                     {this.state.ingredients.map((item) =>
-                        <Ingredient {...item}/>
+                        <Ingredient {...item} key={item.ingredient.id}
+                                    removeIngredientHandler={this.handleRemoveIngredient}
+                                    updateIngredientHandler={this.handleUpdateIngredient}/>
                     )}
                     <hr/>
                     <h5>

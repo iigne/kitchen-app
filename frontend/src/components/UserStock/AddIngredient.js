@@ -1,14 +1,11 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {
-    faSearch, faPlus
-} from "@fortawesome/free-solid-svg-icons";
+import {faPlus, faSearch} from "@fortawesome/free-solid-svg-icons";
 
 import './UserStock.css';
-import {Row, Col, Button, Container, Form} from "react-bootstrap";
+import {Button, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
 import axios from "axios";
 import authHeader from "../../api/auth-header";
-import Search from "./Search";
 
 
 class AddIngredient extends React.Component {
@@ -23,19 +20,21 @@ class AddIngredient extends React.Component {
             quantity: 1,
             selectedMeasurement: null,
         }
-        // this.handleSubmit = this.handleSubmit.bind(this)
-        // this.handleChange = this.handleChange.bind(this)
-        // this.handleSearch = this.handleSearch.bind(this)
-        // this.handleSearchSelection = this.handleSearchSelection.bind(this)
     }
 
     handleSearchSelection = (id) => {
-        const selected = {...this.state.searchResults[id]}
-        this.setState({selectedIngredient: selected})
-        this.setState({searchResults: []})
-        this.setState({noResults: null})
-        this.setState({searchTerm: selected.name})
-        this.setState({selectedMeasurement: selected.measurements[0].id})
+        this.setState(prevState => {
+            const searchResults = prevState.searchResults
+            const index = searchResults.findIndex(sr => sr.id === id)
+            const selected = searchResults[index]
+            return {
+                selectedIngredient: selected,
+                searchResults: [],
+                noResults: null,
+                searchTerm: selected.name,
+                selectedMeasurement: selected.measurements[0].id
+            }
+        })
     }
 
     handleSearch = (e) => {
@@ -65,83 +64,93 @@ class AddIngredient extends React.Component {
     }
 
     handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value}, () => {
-            console.log("after measurement change", this.state)
-        })
+        this.setState({[e.target.name]: e.target.value})
     }
 
-    handleSubmit = () => {
+    handleAddIngredient = () => {
         let ingredient = {...this.state.selectedIngredient}
         let quantity = {
             quantity: this.state.quantity,
             measurementId: this.state.selectedMeasurement
         }
-        const body = {
-            ingredient: {
-                id: ingredient.id
-            },
-            quantities: [quantity]
-        }
-        console.log(body)
         axios.post('/user-ingredient', {
             ingredient: {
                 id: ingredient.id
             },
-            quantities: [quantity]}, {
+            quantities: [quantity]
+        }, {
             headers: authHeader()
         }).then(res => {
             this.props.addIngredientHandler(res.data)
+            this.setState({searchTerm: ""})
+            this.setState({searchResults: []})
+            this.setState({noResults: null})
+            this.setState({selectedIngredient: null})
+            this.setState({selectedMeasurement: null})
         }).catch(error => {
             console.log(error)
         });
     }
 
     render() {
-        let isIngredientSelected = this.state.selectedIngredient != null
-        if(isIngredientSelected) {
-
-        }
         return (
             <Container className="ingredient">
                 <Form.Group controlId="formAddIngredient">
                     <Row>
                         <Col xs={1}><i><FontAwesomeIcon icon={faSearch}/></i></Col>
-                        <Col xs={6}><Form.Control name="searchTerm" placeholder="search for ingredient"
+                        <Col xs={6}><Form.Control value={this.state.searchTerm} name="searchTerm"
+                                                  placeholder="search for ingredient"
                                                   onChange={this.handleSearch}/></Col>
                         {this.state.selectedIngredient != null ?
                             <>
-                                <Col><Form.Control name="quantity" type="number" placeholder="100"
-                                                   onChange={this.handleChange}/></Col>
-                                <Col>
+                                <Col xs={2}><Form.Control name="quantity" type="number" placeholder="100"
+                                                          onChange={this.handleChange}/></Col>
+                                <Col xs={2}>
                                     <Form.Control as="select" name="selectedMeasurement" onChange={this.handleChange}>
-                                        {this.state.selectedIngredient.measurements.map((item, index) =>
-                                            <option value={item.id}>{item.name}</option>)}
+                                        {this.state.selectedIngredient.measurements.map((item) =>
+                                            <option key={item.id} value={item.id}>{item.name}</option>)}
                                     </Form.Control>
                                 </Col>
                                 <Col xs={1} className="float-right">
                                     <Button name="add" variant="outline-success"
-                                            onClick={this.handleSubmit}><FontAwesomeIcon
+                                            onClick={this.handleAddIngredient}><FontAwesomeIcon
                                         icon={faPlus}/></Button>
                                 </Col>
                             </> : <div/>
                         }
 
                     </Row>
+
                     {/*TODO move below into own component*/}
-                    {this.state.searchResults.map((item, id) =>
-                        <Row>
-                            <Col xs={1}/>
-                            <Col xs={6}>
-                                <Button onClick={() => this.handleSearchSelection(id)} variant="outline-light"
-                                        block>{item.name}</Button>
-                            </Col>
-                        </Row>
-                    )}
-                    {this.state.noResults === true ?
-                        <div>The ingredient you're searching for has not been found. Would you like to create
-                            it?</div> : ""}
+                    <Row>
+                        <Col xs={1}/>
+                        <Col xs={6}>
+                            <ListGroup>
+                                {this.state.searchResults.map((item) =>
+                                    <ListGroup.Item key={item.id} action className="searchListItem"
+                                                    onClick={() => this.handleSearchSelection(item.id)}
+                                    >{item.name}</ListGroup.Item>
+                                )}
+                                {this.state.noResults === true ?
+                                    <ListGroup.Item className="notFoundItem">The ingredient you're searching for has not
+                                        been found.
+                                        Would you like to create it?
+
+                                        <Button variant="success" size="sm"><FontAwesomeIcon
+                                            icon={faPlus}/></Button>
+                                        <span className="small-text">(Feature not implemented yet)</span>
+                                    </ListGroup.Item>
+                                    : ""}
+                            </ListGroup>
+                        </Col>
+                    </Row>
+
                 </Form.Group>
+
+
             </Container>
+
+
         )
     }
 

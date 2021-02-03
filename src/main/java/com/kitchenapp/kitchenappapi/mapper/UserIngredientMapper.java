@@ -9,6 +9,7 @@ import com.kitchenapp.kitchenappapi.model.User;
 import com.kitchenapp.kitchenappapi.model.UserIngredient;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class UserIngredientMapper {
     public static UserIngredientDTO toDTO(UserIngredient entity) {
         return UserIngredientDTO.builder()
                 .ingredient(IngredientMapper.toDTO(entity.getIngredient()))
-                .quantities(QuantityMapper.toDTO(entity))
+                .quantities(Collections.singletonList(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement())))
 //                .metricQuantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getIngredient().getMetricUnit()))
 //                .quantity(entity.getCustomMeasurement() != null ? QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement()) : null)
                 .dateBought(entity.getDateAdded())
