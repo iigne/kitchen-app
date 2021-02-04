@@ -9,11 +9,9 @@ import com.kitchenapp.kitchenappapi.model.Measurement;
 import com.kitchenapp.kitchenappapi.model.MetricUnit;
 import com.kitchenapp.kitchenappapi.repository.CategoryRepository;
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
-import com.kitchenapp.kitchenappapi.repository.MeasurementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,17 +21,17 @@ public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
     private final CategoryRepository categoryRepository;
-    private final MeasurementRepository measurementRepository;
+    private final MeasurementService measurementService;
+
 
     public Ingredient create(IngredientDTO ingredientDTO) {
-        //TODO handle when ingredient exists
-        //TODO handle with ApiError
         Category category = categoryRepository.findByName(ingredientDTO.getCategory()).orElseThrow(IllegalStateException::new);
+        Measurement measurement = measurementService.getMetricMeasurement(MetricUnit.get(ingredientDTO.getMetricUnit()));
         Set<Measurement> measurements = ingredientDTO.getMeasurements().stream()
-                .map(m -> measurementRepository.findByNameAndMetricQuantityAndMetricUnit(
-                        m.getName(), m.getMetricQuantity(), MetricUnit.get(m.getMetricUnit()))
+                .map(m -> measurementService.findByNameQuantityUnit(m.getName(), m.getMetricQuantity(), MetricUnit.get(m.getMetricUnit()))
                         .orElse(MeasurementMapper.toEntity(m)))
                 .collect(Collectors.toSet());
+        measurements.add(measurement);
         return ingredientRepository.save(IngredientMapper.toEntity(ingredientDTO, category, measurements));
     }
 }

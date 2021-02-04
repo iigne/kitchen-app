@@ -1,7 +1,9 @@
 package com.kitchenapp.kitchenappapi.mapper
 
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO
+import com.kitchenapp.kitchenappapi.model.Measurement
 import com.kitchenapp.kitchenappapi.model.MetricUnit
+import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.dto.UserIngredientDTOProvider
 import com.kitchenapp.kitchenappapi.providers.model.IngredientProvider
 import com.kitchenapp.kitchenappapi.providers.model.MeasurementProvider
@@ -16,17 +18,19 @@ class UserIngredientMapperSpec extends Specification {
     def "should correctly convert to entity"() {
 
         given: "valid ingredient and measurement"
-        def measurement = useMeasurement ? MeasurementProvider.make() : null
-        def ingredient = IngredientProvider.make(measurements: [measurement])
+        def metricMeasurement = MeasurementProvider.make()
+        def measurement =  MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID, name: "Jar", metricQuantity: 150, metricUnit: MetricUnit.GRAMS)
+        def ingredient = IngredientProvider.make(measurements: [metricMeasurement, measurement])
 
         and:
-        def metric = useMeasurement ? null : new QuantityDTO(quantity: inputQuantity)
-        def quantity = useMeasurement ? new QuantityDTO(measurementId: measurement.id, quantity: inputQuantity) : null
-        def dto = UserIngredientDTOProvider.make(quantity: quantity, metricQuantity: metric,
+        def metric = new QuantityDTO(quantity: inputQuantity)
+        def custom = new QuantityDTO(measurementId: measurement.id, quantity: inputQuantity)
+        def quantities = useMeasurement ? [custom] : [metric]
+        def dto = UserIngredientDTOProvider.make(quantities: quantities,
                 expiryDate: inputExpiry, dateBought: inputAdded)
 
         when:
-        def entity = UserIngredientMapper.toEntity(dto, ingredient, null, measurement)
+        def entity = UserIngredientMapper.toEntity(dto, ingredient, null, useMeasurement ? measurement : metricMeasurement)
 
         then:
         with(entity) {
@@ -44,8 +48,8 @@ class UserIngredientMapperSpec extends Specification {
     @Unroll
     def "should correctly convert to DTO"() {
         given: "valid ingredient and measurement"
-        def measurement = MeasurementProvider.make()
-        def ingredient = IngredientProvider.make(measurements: [measurement])
+        def measurement = MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID, name: "Jar", metricQuantity: 150, metricUnit: MetricUnit.GRAMS)
+        def ingredient = IngredientProvider.make(measurements: [MeasurementProvider.make(), measurement])
 
         and: "valid UserIngredient"
         def entity = UserIngredientProvider.make(ingredient: ingredient, customMeasurement: measurement, metricQuantity: savedMetric)
@@ -55,11 +59,16 @@ class UserIngredientMapperSpec extends Specification {
 
         then:
         with(dto) {
-            metricQuantity.quantity == savedMetric
-            metricQuantity.measurementName == MetricUnit.GRAMS.name()
-            quantity.measurementId == measurement.id
-            quantity.measurementName == measurement.name
-            quantity.quantity == expectedCustom
+            with(quantities.get(0)) {
+                measurementId == CommonTestData.MEASUREMENT_ID_METRIC
+                quantity == savedMetric
+                measurementName == MetricUnit.GRAMS.getAbbreviation()
+            }
+            with(quantities.get(1)) {
+                measurementId == CommonTestData.MEASUREMENT_ID
+                measurementName == measurement.name
+                quantity == expectedCustom
+            }
         }
         where:
         savedMetric || expectedCustom

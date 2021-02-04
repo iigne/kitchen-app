@@ -4,22 +4,18 @@ import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.model.Measurement;
 import com.kitchenapp.kitchenappapi.model.MetricUnit;
+import com.kitchenapp.kitchenappapi.model.UserIngredient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuantityMapper {
 
-    public static QuantityDTO toDTO(double metricQuantity, MetricUnit metricUnit) {
+    public static QuantityDTO toDTO(double metricQuantity, Measurement measurement) {
         return QuantityDTO.builder()
-//                .measurementId(0) TODO probably should do something abut this
-                .quantity(metricQuantity)
-                .measurementName(metricUnit.name())
-                .build();
-    }
-
-    public static QuantityDTO toDTO(double metricQuantity, Measurement customUnit) {
-        return QuantityDTO.builder()
-                .measurementId(customUnit.getId())
-                .quantity(MeasurementConverter.toMeasurement(metricQuantity, customUnit))
-                .measurementName(customUnit.getName())
+                .measurementId(measurement.getId())
+                .quantity(measurement.isMetric() ? metricQuantity : MeasurementConverter.toMeasurement(metricQuantity, measurement) )
+                .measurementName(measurement.getName())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.kitchenapp.kitchenappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,4 +22,9 @@ public class Measurement {
 
     @Enumerated(EnumType.STRING)
     private MetricUnit metricUnit;
+
+    @JsonIgnore
+    public boolean isMetric() {
+        return name.equals(metricUnit.getAbbreviation());
+    }
 }

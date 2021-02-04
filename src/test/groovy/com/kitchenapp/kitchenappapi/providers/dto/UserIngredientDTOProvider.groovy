@@ -10,8 +10,7 @@ import java.time.LocalDate
 class UserIngredientDTOProvider {
     static Map DEFAULTS = [
             ingredient    : IngredientDTOProvider.make(),
-            quantity      : null,
-            metricQuantity: null,
+            quantities    : [],
             expiryDate    : null,
             dateBought    : LocalDate.now()
     ]
@@ -21,8 +20,7 @@ class UserIngredientDTOProvider {
 
         return new UserIngredientDTO([
                 ingredient    : props.ingredient,
-                quantity      : props.quantity,
-                metricQuantity: props.metricQuantity,
+                quantities    : props.quantities,
                 expiryDate    : props.expiryDate,
                 dateBought    : props.dateBought
         ])

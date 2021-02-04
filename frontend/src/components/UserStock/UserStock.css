@@ -1,0 +1,26 @@
+.ingredientContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
+.ingredient {
+    min-width: 80vw;
+    max-width: 80vw;
+    font-size: 20px;
+    border: 1px white;
+    text-align: left;
+}
+
+.ingredientIcon {
+    padding: 1vw;
+    font-size: 25px;
+}
+
+hr {
+    background-color: white;
+}
+
+.small-text {
+    font-size: 12px;
+}
