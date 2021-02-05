@@ -1,5 +1,5 @@
 import {Nav, Navbar} from "react-bootstrap";
-import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
+import  {MemoryRouter, Link, Route, Switch} from "react-router-dom";
 import Home from "../Home/Home";
 import Register from "../Auth/Register";
 import Login from "../Auth/Login";
@@ -22,7 +22,7 @@ class Navigation extends React.Component {
     render() {
         let auth = this.state.isAuthenticated
         return (
-            <Router>
+            <MemoryRouter>
                 <Navbar bg="light">
                     <Navbar.Brand as={Link} to="/" className="nav-link">Kitchen app</Navbar.Brand>
                     {auth && <Nav.Link as={Link} to="/user-ingredients">My ingredients</Nav.Link>}
@@ -39,7 +39,7 @@ class Navigation extends React.Component {
                     <PrivateRoute path="/user-ingredients" isAuthenticated={this.state.isAuthenticated} component={() => <UserStock />} />
                     <PrivateRoute path="/logout" isAuthenticated={this.state.isAuthenticated} component={() => <Logout/>} />
                 </Switch>
-            </Router>
+            </MemoryRouter>
         );
     }
 }
