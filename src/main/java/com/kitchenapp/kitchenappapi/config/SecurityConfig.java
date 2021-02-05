@@ -19,8 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
-        // securedEnabled = true,
-        // jsr250Enabled = true,
         prePostEnabled = true
 )
 @RequiredArgsConstructor
@@ -57,13 +55,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //TODO shouldn't cors be enabled?
         http.cors().and().csrf().disable()
+
                 .exceptionHandling().authenticationEntryPoint(entryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
+                .antMatchers("/static/**").permitAll()
+                .antMatchers("/").permitAll()
                 .antMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated()
-                .and().httpBasic();
+                .anyRequest().authenticated();
 
         http.addFilterBefore(filter(), UsernamePasswordAuthenticationFilter.class);
     }
