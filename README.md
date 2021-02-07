@@ -31,11 +31,46 @@ exec sp_addrolemember 'db_owner', kitchenapp
 
 Ideally, future me will put this all into a script that does everything for you.
 
+#### Run the spring boot application
+
+1. `mvn clean install`
+2. Set active profile to local
+3. launch the application.
+
+Application will be running on port 8080. The React app interface will be available from there.
+
 ### Running the frontend application
 
-This one's easy. Just make sure you have node and npm.
+For development, it's better to run the frontend application separately, so that changes can be 
+instantly applied without need for `mvn clean install`. 
+
+We launch the React app with commands:
 
 ```
 npm install
 npm start
 ```
+
+## Deployment
+
+1. Ensure you’re on the master branch.
+2. Replace `<REMOVED>` with credentials that have been removed from git in `application.yml`
+3. Run `mvn clean install azure-webapp:deploy`. 
+
+This will trigger the build, which will 
+1. package up the React app to be served from the Spring Boot server
+2. run the test suite
+3. Push the generated application image to Azure App Service
+
+This ideally should be done through GitHub actions in the future!
+
+### Infrastructure
+
+The app is hosted on Azure App Service.
+
+**To stop the app:**
+1. Switch pricing plan to Free tier (this ensures you’re not charged)
+2. Stop the app (from the dashboard)
+
+**To check out the logs:**
+ in the sidebar there is a `Log stream` option, this is where application logs reside

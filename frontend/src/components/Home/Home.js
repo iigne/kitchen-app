@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCarrot} from "@fortawesome/free-solid-svg-icons";
 
 class Home extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -10,12 +11,13 @@ class Home extends Component {
             username: props.username
         }
     }
+
     render() {
         let homeMessage
         homeMessage = this.state.isAuthenticated ? "Welcome back, " + this.state.username : "Welcome! Login or register to proceed"
-        return(
+        return (
             <div>
-                <header className="App-header">
+                <header className="header">
                     <FontAwesomeIcon icon={faCarrot}/>
                     <p>{homeMessage}</p>
                 </header>

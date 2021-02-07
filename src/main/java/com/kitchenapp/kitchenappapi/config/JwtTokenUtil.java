@@ -2,8 +2,7 @@ package com.kitchenapp.kitchenappapi.config;
 
 
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -40,9 +39,18 @@ public class JwtTokenUtil {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt);
             return true;
+        } catch (SignatureException e) {
+            log.error("Invalid JWT Signature");
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token");
+        } catch (ExpiredJwtException e) {
+            log.error("Expired JWT token");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT exception");
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty");
         } catch (Exception e) {
-            //TODO more granular errors
-            log.error("JWT token is bad ", e);
+            log.error("JWT token did not validate for some reason ", e);
         }
         return false;
 

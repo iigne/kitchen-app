@@ -1,26 +1,14 @@
-.ingredientContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-}
-
 .ingredient {
-    min-width: 80vw;
-    max-width: 80vw;
-    font-size: 20px;
-    border: 1px white;
+    font-size: calc(10px + 2vmin);
     text-align: left;
+    max-width: 80vw;
 }
 
 .ingredientIcon {
     padding: 1vw;
-    font-size: 25px;
-}
-
-hr {
-    background-color: white;
+    font-size: calc(15px + 2vmin);
 }
 
 .small-text {
-    font-size: 12px;
+    font-size: calc(5px + 2vmin);
 }
