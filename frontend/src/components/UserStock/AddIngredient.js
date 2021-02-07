@@ -3,7 +3,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faSearch} from "@fortawesome/free-solid-svg-icons";
 
 import './UserStock.css';
-import {Button, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, FormGroup, FormLabel, InputGroup, ListGroup, Row} from "react-bootstrap";
 import axios from "axios";
 import authHeader from "../../api/auth-header";
 
@@ -17,7 +17,7 @@ class AddIngredient extends React.Component {
             searchResults: [],
             noResults: null,
             selectedIngredient: null,
-            quantity: 1,
+            quantity: 100,
             selectedMeasurement: null,
         }
     }
@@ -94,60 +94,85 @@ class AddIngredient extends React.Component {
 
     render() {
         return (
-            <Container className="ingredient">
-                <Form.Group controlId="formAddIngredient">
-                    <Row>
-                        <Col xs={1}><i><FontAwesomeIcon icon={faSearch}/></i></Col>
-                        <Col xs={6}><Form.Control value={this.state.searchTerm} name="searchTerm"
+            <Container>
+                <Form>
+                    <FormGroup>
+                        <Row>
+                            <Col>
+                                <FormLabel>Ingredient name</FormLabel>
+                                <InputGroup>
+                                    <InputGroup.Prepend>
+                                        <span className="input-group-text"> <FontAwesomeIcon icon={faSearch}/></span>
+                                    </InputGroup.Prepend>
+
+                                    <Form.Control value={this.state.searchTerm} name="searchTerm"
                                                   placeholder="search for ingredient"
-                                                  onChange={this.handleSearch}/></Col>
-                        {this.state.selectedIngredient != null ?
-                            <>
-                                <Col xs={2}><Form.Control name="quantity" type="number" placeholder="100"
-                                                          onChange={this.handleChange}/></Col>
-                                <Col xs={2}>
+                                                  onChange={this.handleSearch}/>
+                                </InputGroup>
+                            </Col>
+                        </Row>
+
+                        <ListGroup>
+                            {this.state.searchResults.map((item) =>
+                                <Row>
+                                    <Col>
+                                        <ListGroup.Item key={item.id} action className="searchListItem"
+                                                        onClick={() => this.handleSearchSelection(item.id)}
+                                        >{item.name}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                            )}
+                            {this.state.noResults === true ?
+                                <Row>
+                                    <Col>
+                                        <ListGroup.Item className="notFoundItem">The ingredient you're searching for has
+                                            not
+                                            been found.
+                                            Would you like to create it?
+
+                                            <Button variant="success" size="sm"><FontAwesomeIcon
+                                                icon={faPlus}/></Button>
+                                            <span className="small-text">(Feature not implemented yet)</span>
+                                        </ListGroup.Item>
+                                    </Col>
+                                </Row>
+
+                                : ""}
+                        </ListGroup>
+                    </FormGroup>
+
+                    {/*TODO move below into own component*/}
+
+
+                    {this.state.selectedIngredient != null ?
+                        <FormGroup>
+                            <Row>
+                                <Col>
+                                    <FormLabel>Quantity</FormLabel>
+                                </Col>
+                            </Row>
+
+                            <Row>
+                                <Col xs={4}>
+                                    <Form.Control name="quantity" type="number" placeholder="100"
+                                                  onChange={this.handleChange}/></Col>
+                                <Col xs={3}>
                                     <Form.Control as="select" name="selectedMeasurement" onChange={this.handleChange}>
                                         {this.state.selectedIngredient.measurements.map((item) =>
                                             <option key={item.id} value={item.id}>{item.name}</option>)}
                                     </Form.Control>
                                 </Col>
-                                <Col xs={1} className="float-right">
-                                    <Button name="add" variant="outline-success"
+                                <Col>
+                                    <Button className="float-right" name="add" variant="outline-success"
                                             onClick={this.handleAddIngredient}><FontAwesomeIcon
                                         icon={faPlus}/></Button>
                                 </Col>
-                            </> : <div/>
-                        }
+                            </Row>
+                        </FormGroup>
+                        : null
+                    }
 
-                    </Row>
-
-                    {/*TODO move below into own component*/}
-                    <Row>
-                        <Col xs={1}/>
-                        <Col xs={6}>
-                            <ListGroup>
-                                {this.state.searchResults.map((item) =>
-                                    <ListGroup.Item key={item.id} action className="searchListItem"
-                                                    onClick={() => this.handleSearchSelection(item.id)}
-                                    >{item.name}</ListGroup.Item>
-                                )}
-                                {this.state.noResults === true ?
-                                    <ListGroup.Item className="notFoundItem">The ingredient you're searching for has not
-                                        been found.
-                                        Would you like to create it?
-
-                                        <Button variant="success" size="sm"><FontAwesomeIcon
-                                            icon={faPlus}/></Button>
-                                        <span className="small-text">(Feature not implemented yet)</span>
-                                    </ListGroup.Item>
-                                    : ""}
-                            </ListGroup>
-                        </Col>
-                    </Row>
-
-                </Form.Group>
-
-
+                </Form>
             </Container>
 
 

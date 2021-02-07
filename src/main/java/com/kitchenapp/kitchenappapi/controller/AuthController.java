@@ -9,6 +9,7 @@ import com.kitchenapp.kitchenappapi.payload.RegisterRequest;
 import com.kitchenapp.kitchenappapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,10 +33,13 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
 
+    @Value("${jwt.expiry}")
+    private int expiry;
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
 
-        if(userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail()).isPresent()) {
+        if (userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail()).isPresent()) {
             log.debug("User {} with email {} already exists", registerRequest.getUsername(), registerRequest.getEmail());
             return ResponseEntity.badRequest().body("User with this email or username already exists");
         }
@@ -52,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -61,8 +65,8 @@ public class AuthController {
 
         JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
 
-        return ResponseEntity.ok( new JwtResponse(jwt, userDetails.getId(),
-                userDetails.getUsername(), userDetails.getEmail())
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(),
+                userDetails.getUsername(), userDetails.getEmail(), expiry)
         );
     }
 }

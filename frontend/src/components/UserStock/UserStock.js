@@ -3,7 +3,7 @@ import Ingredient from "./Ingredient";
 
 import './UserStock.css';
 import AddIngredient from "./AddIngredient";
-import {Container} from "react-bootstrap";
+import {Container, ListGroup} from "react-bootstrap";
 import authHeader from "../../api/auth-header";
 import axios from "axios";
 
@@ -49,20 +49,24 @@ class UserStock extends React.Component {
     }
 
     render() {
+        let ingredients = this.state.ingredients
         return (
             <div>
-                <h2>My ingredients</h2>
+                <header className="header">My ingredients</header>
                 <Container>
-                    {this.state.ingredients.map((item) =>
-                        <Ingredient {...item} key={item.ingredient.id}
-                                    removeIngredientHandler={this.handleRemoveIngredient}
-                                    updateIngredientHandler={this.handleUpdateIngredient}/>
-                    )}
-                    <hr/>
-                    <h5>
-                        Add ingredients:
+                    {ingredients.length > 0 ?
+                        <ListGroup>
+                            {ingredients.map((item) =>
+                                <Ingredient {...item} key={item.ingredient.id}
+                                            removeIngredientHandler={this.handleRemoveIngredient}
+                                            updateIngredientHandler={this.handleUpdateIngredient}/>
+                            )}
+                        </ListGroup>
+                        : <p>Seems like your fridge is empty! Add ingredients below</p>}
 
-                    </h5>
+                    <header className="subheader">
+                        Add ingredients
+                    </header>
 
                     <AddIngredient addIngredientHandler={this.handleAddIngredient}/>
 

@@ -15,7 +15,7 @@ import axios from "axios";
 
 
 import './UserStock.css';
-import {Button, Col, Container, Dropdown, Form, Row} from "react-bootstrap";
+import {Button, Col, Dropdown, Form, Row, ListGroup} from "react-bootstrap";
 import DropdownToggle from "react-bootstrap/DropdownToggle";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
@@ -108,34 +108,33 @@ class Ingredient extends React.Component {
         const currentlyEditing = this.state.currentlyEditing
 
         return (
-            <Container className="ingredient">
-                <hr/>
-                <Row>
+            <ListGroup.Item >
+                <Row className="ingredient">
                     <Col xs={1}>
                         <i className="ingredientIcon"><FontAwesomeIcon icon={this.state.category}/></i>
                     </Col>
-                    <Col xs={6}>
+                    <Col xs={4}>
                         <b>{this.state.name}</b>
                     </Col>
                     {currentlyEditing ?
                         <>
-                            <Col xs={2}>
+                            <Col>
                                 <Form.Control name="editedQuantity" onChange={this.handleChange}/>
                             </Col>
-                            <Col>
+                            <Col xs={1}>
                                 {this.state.measurement.measurementName}
                             </Col>
                             <Col xs={1}>
-                                <Button variant="outline-success" onClick={this.updateIngredient}>
+                                <Button size="sm" variant="outline-success" onClick={this.updateIngredient}>
                                     <FontAwesomeIcon icon={faCheck}/>
                                 </Button>
                             </Col>
                         </> :
                         <Col>{this.state.quantity} {this.state.measurement.measurementName}</Col>
                     }
-                    <Col xs={1} className="float-right">
+                    <Col xs={1}>
                         <Dropdown>
-                            <DropdownToggle variant="outline-secondary">
+                            <DropdownToggle variant="outline-secondary" size="sm">
                             </DropdownToggle>
                             <DropdownMenu>
                                 <DropdownItem onClick={() => this.deleteIngredient()}>Delete</DropdownItem>
@@ -144,7 +143,7 @@ class Ingredient extends React.Component {
                         </Dropdown>
                     </Col>
                 </Row>
-            </Container>
+            </ListGroup.Item>
         )
     }
 
