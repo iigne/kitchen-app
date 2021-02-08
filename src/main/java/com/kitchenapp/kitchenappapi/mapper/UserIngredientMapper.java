@@ -1,6 +1,5 @@
 package com.kitchenapp.kitchenappapi.mapper;
 
-import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.model.Ingredient;

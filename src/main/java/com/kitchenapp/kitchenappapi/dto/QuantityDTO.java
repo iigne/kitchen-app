@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class QuantityDTO {
     private Integer measurementId;
     private double quantity;
