@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function validateToken() {
     const user = JSON.parse(localStorage.getItem('user'));
     if(user != null ){

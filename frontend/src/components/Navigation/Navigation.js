@@ -29,19 +29,27 @@ class Navigation extends React.Component {
         return (
             <MemoryRouter>
                 <Navbar bg="light" expand="lg">
-                    <Navbar.Brand as={Link} to="/" className="nav-link"><img src={logo} width="30"
-                                                                             height="30"/> Ktchn</Navbar.Brand>
+                    <Navbar.Brand as={Link} to="/" className="nav-link">
+                        <img src={logo} width="30" height="30" alt="App logo - recipe book icon"/>
+                        Ktchn
+                    </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
-                        {auth && <Nav.Link as={Link} to="/user-ingredients"><img src={fridge} width="30" height="30"/>My
-                            ingredients</Nav.Link>}
-                        {auth && <Nav.Link as={Link} to="/recipes"><img src={recipes} width="30"
-                                                                        height="30"/> Recipes</Nav.Link>}
-                        {auth && <Nav.Link as={Link} to="/shopping-list"><img src={shopping} width="30" height="30"/>Shopping
-                            list</Nav.Link>}
-                        {auth && <Nav.Link as={Link} to="/meal-plan"><img src={calendar} width="30" height="30"/>Meal
-                            plan</Nav.Link>}
-
+                        {auth && <Nav.Link as={Link} to="/user-ingredients">
+                            <img src={fridge} width="30" height="30" alt="Fridge icon"/>
+                            My ingredients
+                        </Nav.Link>}
+                        {auth && <Nav.Link as={Link} to="/recipes">
+                            <img src={recipes} width="30" height="30" alt="Recipe book icon"/>
+                            Recipes
+                        </Nav.Link>}
+                        {auth && <Nav.Link as={Link} to="/shopping-list">
+                            <img src={shopping} width="30" height="30" alt="Shopping cart icon"/>
+                            Shopping list
+                        </Nav.Link>}
+                        {auth && <Nav.Link as={Link} to="/meal-plan">
+                            <img src={calendar} width="30" height="30" alt="Calendar icon"/>
+                            Meal plan</Nav.Link>}
 
                         {!auth && <Nav.Link as={Link} to="/register" className="nav-link ml-auto">Register</Nav.Link>}
                         {!auth && <Nav.Link as={Link} to="/login">Login</Nav.Link>}
