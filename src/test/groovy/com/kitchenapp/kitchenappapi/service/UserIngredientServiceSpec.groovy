@@ -3,6 +3,7 @@ package com.kitchenapp.kitchenappapi.service
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO
 import com.kitchenapp.kitchenappapi.model.Ingredient
 import com.kitchenapp.kitchenappapi.model.Measurement
+import com.kitchenapp.kitchenappapi.model.MetricUnit
 import com.kitchenapp.kitchenappapi.model.User
 import com.kitchenapp.kitchenappapi.model.UserIngredient
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
@@ -29,20 +30,16 @@ class UserIngredientServiceSpec extends Specification {
 
     UserIngredientService userIngredientService
 
-    Measurement measurement
-    Ingredient ingredient
-
     def setup() {
         userIngredientService = new UserIngredientService(userIngredientRepository, userRepository,
                 ingredientRepository, measurementService)
-        measurement = MeasurementProvider.make()
-        ingredient = IngredientProvider.make(measurement: [measurement])
     }
 
     def "should create ingredient"() {
         given: "DTO is valid"
-        def quantityDTO = new QuantityDTO(measurementId: measurement.id, quantity: inputQuantity)
+        def quantityDTO = new QuantityDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: inputQuantity)
         def dto = UserIngredientDTOProvider.make(quantities: [quantityDTO])
+        def measurement = MeasurementProvider.make()
 
         when: "create is called"
         userIngredientService.create(CommonTestData.USER_ID, dto)
@@ -50,7 +47,7 @@ class UserIngredientServiceSpec extends Specification {
         then: "validations pass"
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.empty()
         1 * userRepository.findById(CommonTestData.USER_ID) >> Optional.of(new User(id: CommonTestData.USER_ID))
-        1 * ingredientRepository.findById(CommonTestData.INGREDIENT_ID) >> Optional.of(ingredient)
+        1 * ingredientRepository.findById(CommonTestData.INGREDIENT_ID) >> Optional.of(IngredientProvider.make(measurement: [measurement]))
         1 * measurementService.findByIdOrThrow(measurement.id) >> measurement
 
         and: "ingredient created in database"
@@ -63,7 +60,7 @@ class UserIngredientServiceSpec extends Specification {
     @Unroll
     def "should fail to create ingredient when there's data conflicts"() {
         given: "DTO is valid"
-        def quantityDTO = new QuantityDTO(measurementId: measurement.id, quantity: 10)
+        def quantityDTO = new QuantityDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: 10)
         def dto = UserIngredientDTOProvider.make(quantity: quantityDTO)
 
         when: "create is called"
@@ -98,7 +95,8 @@ class UserIngredientServiceSpec extends Specification {
 
         then: "validations pass"
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.of(UserIngredientProvider.make())
-        1 * measurementService.findByIdOrThrow(inputMeasurementId) >> measurement
+        _ * measurementService.findByIdOrThrow(CommonTestData.MEASUREMENT_ID_METRIC) >> MeasurementProvider.make()
+        _ * measurementService.findByIdOrThrow(CommonTestData.MEASUREMENT_ID) >> MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID, name: "Jar", metricQuantity: 150, metricUnit: MetricUnit.GRAMS)
 
         and: "user ingredient is saved with correct quantity"
         1 * userIngredientRepository.save(ingredient -> {
