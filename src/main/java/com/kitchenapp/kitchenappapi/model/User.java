@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -25,6 +26,14 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private List<UserIngredient> userIngredients;
+    private Set<UserIngredient> userIngredients;
+
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name="user_recipe",
+            joinColumns = {@JoinColumn(name="user_id")},
+            inverseJoinColumns = {@JoinColumn(name="recipe_id")}
+    )
+    private Set<Recipe> userRecipes;
 
 }
