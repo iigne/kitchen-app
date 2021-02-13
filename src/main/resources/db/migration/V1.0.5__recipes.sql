@@ -2,7 +2,9 @@ CREATE TABLE recipe (
     id int primary key identity (1,1) not null,
     title varchar(255) not null,
     image_link varchar(255),
-    method text not null
+    method text not null,
+    author_user_id int,
+    constraint FK_recipe_author_user foreign key (author_user_id) references [user] (id)
 );
 
 CREATE TABLE recipe_ingredient (

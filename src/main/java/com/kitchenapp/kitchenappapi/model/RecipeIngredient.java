@@ -11,14 +11,15 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+//@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RecipeIngredient {
     @EmbeddedId
+//    @EqualsAndHashCode.Include
     private final RecipeIngredientId id = new RecipeIngredientId();
 
     @ManyToOne
     @MapsId("recipeId")
     @JoinColumn(name = "recipe_id")
-    @JsonIgnore
     private Recipe recipe;
 
     @ManyToOne
@@ -28,8 +29,10 @@ public class RecipeIngredient {
 
     @ManyToOne
     @JoinColumn(name="custom_measurement_id")
+//    @EqualsAndHashCode.Include
     private Measurement customMeasurement;
 
+//    @EqualsAndHashCode.Include
     private double metricQuantity;
 
 }

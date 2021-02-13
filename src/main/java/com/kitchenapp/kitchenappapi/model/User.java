@@ -3,7 +3,6 @@ package com.kitchenapp.kitchenappapi.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,12 +27,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<UserIngredient> userIngredients;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(
-            name="user_recipe",
-            joinColumns = {@JoinColumn(name="user_id")},
-            inverseJoinColumns = {@JoinColumn(name="recipe_id")}
-    )
+    @ManyToMany(mappedBy = "users")
     private Set<Recipe> userRecipes;
 
 }

@@ -20,7 +20,7 @@ public class UserService {
                 new EntityNotFoundException(String.format("userId %s not found", id)));
     }
 
-    public void addRecipeToUser(User user, Recipe recipe) {
+    public void addRecipeToUserLibrary(User user, Recipe recipe) {
         user.getUserRecipes().add(recipe);
         userRepository.save(user);
     }

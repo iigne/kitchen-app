@@ -1,4 +1,4 @@
-package com.kitchenapp.kitchenappapi.dto;
+package com.kitchenapp.kitchenappapi.dto.request;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RecipeIngredientDTO {
+public class RequestRecipeIngredientDTO {
     private int ingredientId;
     private Integer measurementId;
     private double quantity;

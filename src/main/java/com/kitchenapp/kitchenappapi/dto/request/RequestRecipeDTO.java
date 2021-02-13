@@ -1,4 +1,4 @@
-package com.kitchenapp.kitchenappapi.dto;
+package com.kitchenapp.kitchenappapi.dto.request;
 
 import lombok.*;
 
@@ -11,7 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class RecipeDTO {
+public class RequestRecipeDTO {
+
+    private int id;
 
     @NotNull
     private String title;
@@ -23,5 +25,5 @@ public class RecipeDTO {
 
     @NotNull
     @NotEmpty
-    private List<RecipeIngredientDTO> recipeIngredients;
+    private List<RequestRecipeIngredientDTO> recipeIngredients;
 }

@@ -25,7 +25,19 @@ public class Recipe {
     @Column(name = "method", columnDefinition = "text")
     private String method;
 
-    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<RecipeIngredient> recipeIngredients;
+
+    @ManyToOne
+    @JoinColumn(name = "author_user_id")
+    private User author;
+
+    @ManyToMany
+    @JoinTable(
+            name="user_recipe",
+            joinColumns = {@JoinColumn(name="recipe_id")},
+            inverseJoinColumns = {@JoinColumn(name="user_id")}
+    )
+    private Set<User> users;
 
 }
