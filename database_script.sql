@@ -1,4 +1,3 @@
-
 create database kitchenapp;
 use kitchenapp;
 create login kitchenapp with password='VZa4u&VjFnRXn&!F62bQ';

@@ -3,7 +3,7 @@ package com.kitchenapp.kitchenappapi.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -25,6 +25,9 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private List<UserIngredient> userIngredients;
+    private Set<UserIngredient> userIngredients;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Recipe> userRecipes;
 
 }

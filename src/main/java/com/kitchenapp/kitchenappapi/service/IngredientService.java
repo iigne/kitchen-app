@@ -12,6 +12,7 @@ import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,5 +34,10 @@ public class IngredientService {
                 .collect(Collectors.toSet());
         measurements.add(measurement);
         return ingredientRepository.save(IngredientMapper.toEntity(ingredientDTO, category, measurements));
+    }
+
+    public Ingredient findByIdOrThrow(final int id) {
+        return ingredientRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(String.format("ingredientId %s not found", id)));
     }
 }
