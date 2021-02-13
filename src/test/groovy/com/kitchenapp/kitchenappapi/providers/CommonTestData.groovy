@@ -8,5 +8,6 @@ class CommonTestData {
     static def CATEGORY_ID = 6
     static def CATEGORY_NAME = "Fridge"
     static def USER_ID = 666
+    static def RECIPE_ID = 555
 
 }

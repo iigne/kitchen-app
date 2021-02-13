@@ -5,8 +5,10 @@ import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
 import com.kitchenapp.kitchenappapi.model.Recipe;
 import com.kitchenapp.kitchenappapi.model.RecipeIngredient;
 import com.kitchenapp.kitchenappapi.model.User;
+import com.kitchenapp.kitchenappapi.repository.projection.RecipeUserIngredient;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,19 +34,20 @@ public class RecipeMapper {
                 .build();
     }
 
-    public static ResponseRecipeDTO toDTO(Recipe entity) {
+    public static ResponseRecipeDTO toDTO(Recipe entity, List<RecipeUserIngredient> recipeIngredients) {
         return ResponseRecipeDTO.builder()
                 .id(entity.getId())
                 .authorId(entity.getAuthor().getId())
                 .imageLink(entity.getImageLink())
                 .method(entity.getMethod())
                 .title(entity.getTitle())
-                .recipeIngredients(RecipeIngredientMapper.toDTOs(entity.getRecipeIngredients()))
+                .ingredients(RecipeIngredientMapper.toDTOs(recipeIngredients, entity.getRecipeIngredients()))
                 .build();
     }
 
-    public static List<ResponseRecipeDTO> toDTOs(List<Recipe> entities) {
-        return entities.stream().map(RecipeMapper::toDTO).collect(Collectors.toList());
+    public static List<ResponseRecipeDTO> toDTOs(List<Recipe> entities, List<RecipeUserIngredient> allIngredients) {
+        Map<Integer, List<RecipeUserIngredient>> ingredientsByRecipe = allIngredients.stream().collect(Collectors.groupingBy(RecipeUserIngredient::getRecipeId));
+        return entities.stream().map(e -> toDTO(e, ingredientsByRecipe.get(e.getId()))).collect(Collectors.toList());
     }
 
 }

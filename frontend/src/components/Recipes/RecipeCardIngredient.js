@@ -13,15 +13,19 @@ class RecipeCardIngredient extends React.Component {
     }
 
     render() {
-        const hasEnoughIngredient = this.state.recipeQuantity < this.state.ownedQuantity;
-        const itemVariant = hasEnoughIngredient ? "success" : "danger";
+        const recipeQuantity = this.state.recipeQuantity;
+        const ownedQuantity = this.state.ownedQuantity;
+
+        const hasFullIngredient = recipeQuantity <= ownedQuantity;
+        const hasPartialIngredient = ownedQuantity > 0;
+        const itemVariant = hasFullIngredient ? "success" : (hasPartialIngredient ? "warning" : "danger");
         return(
             <ListGroupItem variant={itemVariant}>
                 <Row>
                     <Col xs={3}>{this.state.name}</Col>
-                    <Col xs={3}>{this.state.recipeQuantity} {this.state.measurement}</Col>
+                    <Col xs={3}>{recipeQuantity} {this.state.measurement}</Col>
                     {/*TODO implement*/}
-                    <Col> (you have 0 {this.state.measurement})</Col>
+                    <Col> (you have {this.state.ownedQuantity} {this.state.measurement})</Col>
                 </Row>
 
             </ListGroupItem>

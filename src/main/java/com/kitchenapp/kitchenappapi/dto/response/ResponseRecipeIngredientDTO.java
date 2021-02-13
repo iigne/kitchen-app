@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class ResponseRecipeIngredientDTO {
     private String ingredientName;
-    private double quantity;
+    private double recipeQuantity;
+    private double ownedQuantity;
     private String measurement;
 }
-

@@ -28,49 +28,37 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping("/list/all")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAll() {
-        List<Recipe> recipes = recipeService.getAll();
-        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
+    public ResponseEntity<List<ResponseRecipeDTO>> listAll(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        return ResponseEntity.ok(recipeService.getAllWithQuantities(userDetails.getId()));
     }
 
     //TODO
     @GetMapping("/list/suggestion")
-    public ResponseEntity<List<ResponseRecipeDTO>> listSuggestions() {
-        List<Recipe> recipes = recipeService.getAll();
-        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
-    }
-
-    @GetMapping("/list/liked")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAllLikedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        List<Recipe> recipes = recipeService.getAllByUser(userDetails.getId());
-        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
+    public ResponseEntity<List<ResponseRecipeDTO>> listSuggestions(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     //TODO
-    @GetMapping("/list/created")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAllCreatedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        List<Recipe> recipes = recipeService.getAllByUser(userDetails.getId());
-        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
+    @GetMapping("/list/liked")
+    public ResponseEntity<List<ResponseRecipeDTO>> listAllLikedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/single")
-    public ResponseEntity<ResponseRecipeDTO> getById(@RequestParam final int recipeId) {
-        Recipe recipe = recipeService.getByIdOrThrow(recipeId);
-        return ResponseEntity.ok(RecipeMapper.toDTO(recipe));
+    @GetMapping("/list/created")
+    public ResponseEntity<List<ResponseRecipeDTO>> listAllCreatedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        return ResponseEntity.ok(recipeService.getAllCreatedByUser(userDetails.getId()));
     }
 
     @PostMapping
     public ResponseEntity<ResponseRecipeDTO> create(@RequestBody @Valid RequestRecipeDTO requestRecipeDTO, @AuthenticationPrincipal JwtUserDetails userDetails) {
-        Recipe recipe = recipeService.create(requestRecipeDTO, userDetails.getId());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(RecipeMapper.toDTO(recipe));
+                .body(recipeService.create(requestRecipeDTO, userDetails.getId()));
     }
 
     @PatchMapping
     public ResponseEntity<ResponseRecipeDTO> update(@RequestBody @Valid RequestRecipeDTO requestRecipeDTO, @AuthenticationPrincipal JwtUserDetails userDetails) {
-        Recipe updatedRecipe = recipeService.update(requestRecipeDTO, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK)
-                .body(RecipeMapper.toDTO(updatedRecipe));
+                .body(recipeService.update(requestRecipeDTO, userDetails.getId()));
     }
 
     @DeleteMapping

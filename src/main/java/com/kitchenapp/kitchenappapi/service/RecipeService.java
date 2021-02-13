@@ -2,11 +2,14 @@ package com.kitchenapp.kitchenappapi.service;
 
 import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO;
 import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeIngredientDTO;
+import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.RecipeIngredientMapper;
 import com.kitchenapp.kitchenappapi.mapper.RecipeMapper;
 import com.kitchenapp.kitchenappapi.model.*;
+import com.kitchenapp.kitchenappapi.repository.RecipeIngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.RecipeRepository;
+import com.kitchenapp.kitchenappapi.repository.projection.RecipeUserIngredient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
 
     private final IngredientService ingredientService;
     private final MeasurementService measurementService;
@@ -29,8 +33,16 @@ public class RecipeService {
         return recipeRepository.findAll();
     }
 
-    public List<Recipe> getAllByUser(final int userId) {
-        return new ArrayList<>(userService.findByIdOrThrow(userId).getUserRecipes());
+    public List<ResponseRecipeDTO> getAllWithQuantities(final int userId) {
+        List<Recipe> recipes = recipeRepository.findAll();
+        List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesForAllRecipesByUserId(userId);
+        return RecipeMapper.toDTOs(recipes, recipeUserIngredients);
+    }
+
+    public List<ResponseRecipeDTO> getAllCreatedByUser(final int userId) {
+        List<Recipe> recipes = recipeRepository.findAllByAuthorId(userId);
+        List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesForAllRecipesByUserId(userId);
+        return RecipeMapper.toDTOs(recipes, recipeUserIngredients);
     }
 
     public Recipe getByIdOrThrow(int recipeId) {
@@ -38,7 +50,7 @@ public class RecipeService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("recipeId %s not found", recipeId)));
     }
 
-    public Recipe create(RequestRecipeDTO requestRecipeDTO, final int userId) {
+    public ResponseRecipeDTO create(RequestRecipeDTO requestRecipeDTO, final int userId) {
 
         User user = userService.findByIdOrThrow(userId);
 
@@ -49,10 +61,12 @@ public class RecipeService {
 
         recipe.setRecipeIngredients(recipeIngredients);
 
-        return recipeRepository.save(recipe);
+        Recipe savedRecipe = recipeRepository.save(recipe);
+        List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeId(userId, savedRecipe.getId());
+        return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients);
     }
 
-    public Recipe update(RequestRecipeDTO requestRecipeDTO, final int userId) {
+    public ResponseRecipeDTO update(RequestRecipeDTO requestRecipeDTO, final int userId) {
         Recipe recipeToEdit = getByIdOrThrow(requestRecipeDTO.getId());
         final int recipeAuthorId = recipeToEdit.getAuthor().getId();
 
@@ -62,8 +76,9 @@ public class RecipeService {
 
         Set<RecipeIngredient> recipeIngredients = handleUpdateIngredients(requestRecipeDTO.getRecipeIngredients(), recipeToEdit);
         Recipe updatedRecipe = RecipeMapper.toEntity(requestRecipeDTO, recipeToEdit, recipeIngredients);
-
-        return recipeRepository.save(updatedRecipe);
+        Recipe savedRecipe = recipeRepository.save(updatedRecipe);
+        List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeId(userId, savedRecipe.getId());
+        return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients);
     }
 
     private Set<RecipeIngredient> getRecipeIngredientsFromDTO(List<RequestRecipeIngredientDTO> recipeIngredientDTOs, Recipe recipe) {

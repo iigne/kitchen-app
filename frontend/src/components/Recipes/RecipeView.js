@@ -21,7 +21,7 @@ class RecipeView extends React.Component {
             recipeAuthorId: props.authorId,
             title: props.title,
             method: this.formatMethod(props.method),
-            ingredients: props.recipeIngredients,
+            ingredients: props.ingredients,
             image: props.imageLink,
             isRecipeLiked: false
         }
@@ -72,7 +72,7 @@ class RecipeView extends React.Component {
                     <ListGroup>
                         {ingredients.map((item) =>
                             <RecipeCardIngredient name={item.ingredientName} measurement={item.measurement}
-                                                  recipeQuantity={item.quantity}/>
+                                                  recipeQuantity={item.recipeQuantity} ownedQuantity={item.ownedQuantity}/>
                         )}
                     </ListGroup>
 
