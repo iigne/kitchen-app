@@ -1,7 +1,6 @@
 package com.kitchenapp.kitchenappapi.model;
 
 import lombok.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -11,10 +10,8 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RecipeIngredient {
     @EmbeddedId
-//    @EqualsAndHashCode.Include
     private final RecipeIngredientId id = new RecipeIngredientId();
 
     @ManyToOne
@@ -29,10 +26,8 @@ public class RecipeIngredient {
 
     @ManyToOne
     @JoinColumn(name="custom_measurement_id")
-//    @EqualsAndHashCode.Include
     private Measurement customMeasurement;
 
-//    @EqualsAndHashCode.Include
     private double metricQuantity;
 
 }
