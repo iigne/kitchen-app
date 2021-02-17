@@ -15,9 +15,10 @@ class App extends Component {
     }
 
     render() {
-        return(
+        return (
             <div className="App">
                 <Navigation isAuthenticated={this.state.isAuthenticated}/>
+                <hr/>
                 <footer>
                     <small>
                         <p>
@@ -27,7 +28,6 @@ class App extends Component {
                             <a href="https://www.flaticon.com/authors/iconixar" title="iconixar"> iconixar </a>
                             from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
                         </p>
-
                     </small>
                 </footer>
             </div>
