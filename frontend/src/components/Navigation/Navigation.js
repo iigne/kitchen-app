@@ -21,6 +21,7 @@ class Navigation extends React.Component {
         super(props);
         this.state = {
             username: this.props.isAuthenticated ? JSON.parse(localStorage.getItem("user")).username : null,
+            userId: this.props.isAuthenticated ? JSON.parse(localStorage.getItem("user")).id : null,
             isAuthenticated: this.props.isAuthenticated
         }
     }
@@ -68,7 +69,7 @@ class Navigation extends React.Component {
                     <PrivateRoute path="/user-ingredients" isAuthenticated={this.state.isAuthenticated}
                                   component={() => <UserStock/>}/>
                     <PrivateRoute path="/recipes" isAuthenticated={this.state.isAuthenticated}
-                                  component={() => <RecipeLibrary/>}/>
+                                  component={() => <RecipeLibrary userId={this.state.userId}/>}/>
                     <PrivateRoute path="/logout" isAuthenticated={this.state.isAuthenticated}
                                   component={() => <Logout/>}/>
                 </Switch>

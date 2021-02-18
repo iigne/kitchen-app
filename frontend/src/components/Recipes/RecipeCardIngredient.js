@@ -21,7 +21,7 @@ class RecipeCardIngredient extends React.Component {
                     <Col xs={3}>{this.state.name}</Col>
                     <Col xs={3}>{this.state.recipeQuantity} {this.state.measurement}</Col>
                     {/*TODO implement*/}
-                    <Col>(you have 0 {this.state.measurement})</Col>
+                    <Col> (you have 0 {this.state.measurement})</Col>
                 </Row>
 
             </ListGroupItem>

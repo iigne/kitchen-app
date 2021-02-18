@@ -16,7 +16,6 @@ class RecipeCard extends React.Component {
         super(props);
         this.state = {
             id: props.id,
-            authorId: props.id,
             title: props.title,
             imageLink: props.imageLink,
             method: props.method,
@@ -77,7 +76,7 @@ class RecipeCard extends React.Component {
                 <Card.Footer>
                     <Row>
                         <Col>
-                            <Button>See full recipe</Button>
+                            <Button onClick={() => this.props.handleViewRecipe()}>See full recipe</Button>
 
                         </Col>
                         {/*TODO implement someday*/}

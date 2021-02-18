@@ -4,20 +4,29 @@ import RecipeCard from "./RecipeCard";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import BrowseOption from "./BrowseOption";
+import RecipeView from "./RecipeView";
 
 
 class RecipeLibrary extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: props.userId,
             currentShow: null,
             recipes: [],
+            inRecipeView: false
         }
     }
 
     handleLoadRecipes = (recipes, type) => {
         this.setState({recipes: recipes})
         this.setState({currentShow: type})
+    }
+
+    handleViewRecipe = () => {
+        this.setState(prevState => {
+            return {inRecipeView: !prevState.inRecipeView}
+        })
     }
 
     render() {
@@ -48,7 +57,11 @@ class RecipeLibrary extends React.Component {
                     {type}
                     <CardColumns>
                         {recipes.map((item) =>
-                            <RecipeCard {...item} key={item.id}/>
+                            <>
+                                <RecipeCard {...item} userId={this.state.userId} key={item.id} handleViewRecipe={this.handleViewRecipe}/>
+                                <RecipeView {...item} userId={this.state.userId} show={this.state.inRecipeView} hide={this.handleViewRecipe}/>
+
+                            </>
                         )}
                     </CardColumns>
                 </Container>
