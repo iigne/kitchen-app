@@ -1,6 +1,6 @@
 import {Button, Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGlobe, faHeart, faLeaf, faPencilAlt, faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
+import {faGlobe, faHeart, faLeaf, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import authHeader from "../../api/auth-header";
 import axios from "axios";
@@ -36,6 +36,8 @@ class BrowseOption extends React.Component {
             case "created":
                 icon = faPencilAlt;
                 variant = "secondary";
+                break;
+            default:
                 break;
         }
         return {icon: icon, variant: variant}
