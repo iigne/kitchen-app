@@ -6,6 +6,7 @@ import './UserStock.css';
 import {Button, Col, Container, Form, FormGroup, FormLabel, InputGroup, ListGroup, Row} from "react-bootstrap";
 import axios from "axios";
 import authHeader from "../../api/auth-header";
+import CreateIngredient from "./CreateIngredient";
 
 
 class AddIngredient extends React.Component {
@@ -19,6 +20,7 @@ class AddIngredient extends React.Component {
             selectedIngredient: null,
             quantity: 100,
             selectedMeasurement: null,
+            inCreateIngredient: false
         }
     }
 
@@ -92,7 +94,27 @@ class AddIngredient extends React.Component {
         });
     }
 
+    enterEnterCreateIngredient = () => {
+        this.setState({inCreateIngredient:true})
+        this.setState({searchResults: []})
+        this.setState({noResults: null})
+    }
+
+    handleFinishCreateIngredient = (success, name) => {
+        if(success) {
+            this.setState({inCreateIngredient: false})
+            this.setState({searchTerm: name})
+        } else {
+            //TODO handle fail
+        }
+    }
+
+    cancelCreate = () => {
+        this.setState({inCreateIngredient: false})
+    }
+
     render() {
+        let inCreateIngredient = this.state.inCreateIngredient
         return (
             <Container>
                 <Form>
@@ -126,13 +148,10 @@ class AddIngredient extends React.Component {
                                 <Row>
                                     <Col>
                                         <ListGroup.Item className="notFoundItem">The ingredient you're searching for has
-                                            not
-                                            been found.
-                                            Would you like to create it?
+                                            not been found. Would you like to create it?
 
-                                            <Button variant="success" size="sm"><FontAwesomeIcon
+                                            <Button variant="success" onClick={this.enterEnterCreateIngredient} size="sm"><FontAwesomeIcon
                                                 icon={faPlus}/></Button>
-                                            <span className="small-text">(Feature not implemented yet)</span>
                                         </ListGroup.Item>
                                     </Col>
                                 </Row>
@@ -140,6 +159,7 @@ class AddIngredient extends React.Component {
                                 : ""}
                         </ListGroup>
                     </FormGroup>
+
 
                     {/*TODO move below into own component*/}
 
@@ -173,6 +193,11 @@ class AddIngredient extends React.Component {
                     }
 
                 </Form>
+                <CreateIngredient show={inCreateIngredient}
+                                  handleFinishCreateIngredient={this.handleFinishCreateIngredient}
+                                  cancelCreate={this.cancelCreate}
+                />
+
             </Container>
 
 
