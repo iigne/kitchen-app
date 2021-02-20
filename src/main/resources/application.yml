@@ -25,7 +25,7 @@ spring:
   datasource:
     url: jdbc:sqlserver://localhost;database=kitchenapp
     username: kitchenapp
-    password: VZa4u&VjFnRXn&!F62bQ
+    password: VZa4u&VjFnRXn&F62bQ
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 ---
@@ -34,7 +34,7 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MSSQLServer;DB_CLOSE_ON_EXIT=false;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1
     username: kitchenapp
-    password: VZa4u&VjFnRXn&!F62bQ
+    password: VZa4u&VjFnRXn&F62bQ
     driver-class-name: org.h2.Driver
   jpa:
     database: h2
