@@ -23,24 +23,40 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RecipeController {
 
+    //also TODO is it better practice to have a bunch of endpoints or one and pass in an option that is string and will need to be if elsed?
+
     private final RecipeService recipeService;
 
-    @GetMapping("/all")
+    @GetMapping("/list/all")
     public ResponseEntity<List<ResponseRecipeDTO>> listAll() {
         List<Recipe> recipes = recipeService.getAll();
         return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
     }
 
-    @GetMapping
+    //TODO
+    @GetMapping("/list/suggestion")
+    public ResponseEntity<List<ResponseRecipeDTO>> listSuggestions() {
+        List<Recipe> recipes = recipeService.getAll();
+        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
+    }
+
+    @GetMapping("/list/liked")
+    public ResponseEntity<List<ResponseRecipeDTO>> listAllLikedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        List<Recipe> recipes = recipeService.getAllByUser(userDetails.getId());
+        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
+    }
+
+    //TODO
+    @GetMapping("/list/created")
+    public ResponseEntity<List<ResponseRecipeDTO>> listAllCreatedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        List<Recipe> recipes = recipeService.getAllByUser(userDetails.getId());
+        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
+    }
+
+    @GetMapping("/single")
     public ResponseEntity<ResponseRecipeDTO> getById(@RequestParam final int recipeId) {
         Recipe recipe = recipeService.getByIdOrThrow(recipeId);
         return ResponseEntity.ok(RecipeMapper.toDTO(recipe));
-    }
-
-    @GetMapping("/user")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAllByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        List<Recipe> recipes = recipeService.getAllByUser(userDetails.getId());
-        return ResponseEntity.ok(RecipeMapper.toDTOs(recipes));
     }
 
     @PostMapping

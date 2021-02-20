@@ -13,6 +13,7 @@ import fridge from './images/fridge.png'
 import recipes from './images/recipe-book.png'
 import shopping from './images/grocery-cart.png'
 import calendar from './images/calendar.png'
+import RecipeLibrary from "../Recipes/RecipeLibrary";
 
 class Navigation extends React.Component {
 
@@ -20,6 +21,7 @@ class Navigation extends React.Component {
         super(props);
         this.state = {
             username: this.props.isAuthenticated ? JSON.parse(localStorage.getItem("user")).username : null,
+            userId: this.props.isAuthenticated ? JSON.parse(localStorage.getItem("user")).id : null,
             isAuthenticated: this.props.isAuthenticated
         }
     }
@@ -40,7 +42,7 @@ class Navigation extends React.Component {
                             My ingredients
                         </Nav.Link>}
                         {auth && <Nav.Link as={Link} to="/recipes">
-                            <img src={recipes} width="30" height="30" alt="Recipe book icon"/>
+                            <img src={recipes} width="30" height="30" alt="RecipeCard book icon"/>
                             Recipes
                         </Nav.Link>}
                         {auth && <Nav.Link as={Link} to="/shopping-list">
@@ -66,6 +68,8 @@ class Navigation extends React.Component {
                     <PublicRoute path="/login" isAuthenticated={this.state.isAuthenticated} component={() => <Login/>}/>
                     <PrivateRoute path="/user-ingredients" isAuthenticated={this.state.isAuthenticated}
                                   component={() => <UserStock/>}/>
+                    <PrivateRoute path="/recipes" isAuthenticated={this.state.isAuthenticated}
+                                  component={() => <RecipeLibrary userId={this.state.userId}/>}/>
                     <PrivateRoute path="/logout" isAuthenticated={this.state.isAuthenticated}
                                   component={() => <Logout/>}/>
                 </Switch>
