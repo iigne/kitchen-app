@@ -41,8 +41,17 @@ public class RecipeService {
 
     public List<ResponseRecipeDTO> getAllCreatedByUser(final int userId) {
         List<Recipe> recipes = recipeRepository.findAllByAuthorId(userId);
-        List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesForAllRecipesByUserId(userId);
+        List<RecipeUserIngredient> recipeUserIngredients =
+                recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeIdsIn(userId,
+                        recipes.stream().map(Recipe::getId).collect(Collectors.toList()));
         return RecipeMapper.toDTOs(recipes, recipeUserIngredients);
+    }
+
+    public List<ResponseRecipeDTO> getAllLikedByUser(final int userId) {
+        Set<Recipe> userRecipes = userService.findByIdOrThrow(userId).getUserRecipes();
+        List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository
+                .fetchIngredientQuantitiesByUserIdAndRecipeIdsIn(userId, userRecipes.stream().map(Recipe::getId).collect(Collectors.toList()));
+        return RecipeMapper.toDTOs(new ArrayList<>(userRecipes), recipeUserIngredients);
     }
 
     public Recipe getByIdOrThrow(int recipeId) {
@@ -135,7 +144,6 @@ public class RecipeService {
         }
     }
 
-
     private RecipeIngredient createNew(RequestRecipeIngredientDTO dto, Recipe recipe) {
         Ingredient ingredient = ingredientService.findByIdOrThrow(dto.getIngredientId());
         Measurement measurement = measurementService.findByIdOrThrow(dto.getMeasurementId());
@@ -145,12 +153,29 @@ public class RecipeService {
     public void delete(final int recipeId, final int userId) {
         Recipe recipe = getByIdOrThrow(recipeId);
         final int recipeAuthorId = recipe.getAuthor().getId();
-
         if(userId != recipeAuthorId) {
             throw new UnsupportedOperationException(String.format("user %s is not allowed to alter recipe created by user %s", userId, recipeAuthorId));
         }
-
         recipeRepository.delete(recipe);
     }
 
+    public List<ResponseRecipeDTO> removeOrAddFromUserRecipes(final int recipeId, final int userId) {
+        User user = userService.findByIdOrThrow(userId);
+        Recipe recipe = getByIdOrThrow(recipeId);
+
+        boolean isRecipeLiked = recipe.getUsers().stream().anyMatch(u -> u.getId() == userId);
+        if(isRecipeLiked) {
+            recipe.getUsers().removeIf(r -> r.getId() == recipeId);
+        } else {
+            recipe.getUsers().add(user);
+        }
+
+        recipeRepository.save(recipe);
+
+        Set<Recipe> newUserRecipes = userService.findByIdOrThrow(userId).getUserRecipes();
+        List<RecipeUserIngredient> recipeUserIngredients =
+                recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeIdsIn(userId,
+                        newUserRecipes.stream().map(Recipe::getId).collect(Collectors.toList()));
+        return RecipeMapper.toDTOs(new ArrayList<>(newUserRecipes), recipeUserIngredients);
+    }
 }

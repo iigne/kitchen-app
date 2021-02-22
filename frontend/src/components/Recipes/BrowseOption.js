@@ -47,7 +47,6 @@ class BrowseOption extends React.Component {
         axios.get('/recipe/list/'+this.state.type,
             {headers: authHeader()})
             .then(res => {
-                console.log(res.data)
                 this.props.handleLoadRecipes(res.data, this.state.text);
             }).catch(err => {
                 console.log(err)

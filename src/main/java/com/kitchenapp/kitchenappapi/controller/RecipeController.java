@@ -38,10 +38,9 @@ public class RecipeController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    //TODO
     @GetMapping("/list/liked")
     public ResponseEntity<List<ResponseRecipeDTO>> listAllLikedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.ok(recipeService.getAllLikedByUser(userDetails.getId()));
     }
 
     @GetMapping("/list/created")
@@ -65,6 +64,11 @@ public class RecipeController {
     public ResponseEntity<?> deleteById(@RequestParam final int recipeId, @AuthenticationPrincipal JwtUserDetails userDetails) {
         recipeService.delete(recipeId, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<List<ResponseRecipeDTO>> updateUserRecipes(@RequestParam final int recipeId, @AuthenticationPrincipal JwtUserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(recipeService.removeOrAddFromUserRecipes(recipeId, userDetails.getId()));
     }
 
 }
