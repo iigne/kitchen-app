@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:sqlserver://kitchenappdb.database.windows.net:1433;database=kitchenapp;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
     username: kitchenapp@kitchenappdb
-    password: <REMOVED>
+    password: ${live_db_password}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   flyway:
     url: ${spring.datasource.url}
@@ -13,7 +13,7 @@ spring:
     password: ${spring.datasource.password}
     enabled: true
 jwt:
-  secret: <REMOVED>
+  secret: ${live_jwt_secret}
   expiry: 86400000
 ---
 
