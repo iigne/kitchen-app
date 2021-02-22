@@ -21,16 +21,17 @@ class RecipeServiceSpec extends Specification {
         recipeService = new RecipeService(recipeRepository, ingredientService, measurementService, userService)
     }
 
-    def "should create recipe"() {
-        given: "DTO is valid"
-        def ingredients = [RecipeIngredientProvider.make(), RecipeIngredientProvider.make()]
-        def savedValue = RecipeProvider.make(recipeIngredients: ingredients)
-        def dto = new RequestRecipeDTO()
-
-        when: "create is called"
-        then: "validations pass"
-        and: "database call is made"
-    }
+    //TODO :(
+//    def "should create recipe"() {
+//        given: "DTO is valid"
+//        def ingredients = [RecipeIngredientProvider.make(), RecipeIngredientProvider.make()]
+//        def savedValue = RecipeProvider.make(recipeIngredients: ingredients)
+//        def dto = new RequestRecipeDTO()
+//
+//        when: "create is called"
+//        then: "validations pass"
+//        and: "database call is made"
+//    }
 
 //    def "should update recipe"() {
 //        //TODO to test

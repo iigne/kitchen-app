@@ -32,7 +32,7 @@ public class Ingredient {
 
     private int shelfLifeDays;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "ingredient_measurement",
             joinColumns = {@JoinColumn(name = "ingredient_id")},
