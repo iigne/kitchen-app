@@ -11,6 +11,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import IconButtonLabel from "./IconButtonLabel";
+import authHeader from "../../api/auth-header";
+import axios from "axios";
 
 class RecipeView extends React.Component {
     constructor(props) {
@@ -44,7 +46,21 @@ class RecipeView extends React.Component {
     }
 
     handleDeleteRecipe = () => {
-
+        const id = this.state.id;
+        if(this.state.recipeAuthorId === this.state.userId) {
+            axios.delete('/recipe', {
+                params: {recipeId: id},
+                headers: authHeader()
+            }).then( res => {
+                this.props.handleViewRecipe()
+                this.props.handleRemoveRecipe(id);
+                }
+            ).catch(
+                error => {
+                    console.log(error)
+                }
+            )
+        }
     }
 
     handleEditRecipe = () => {
@@ -107,7 +123,7 @@ class RecipeView extends React.Component {
                             <IconButtonLabel label="Edit this recipe" icon={faPencilAlt} variant="warning"
                                              handleClick={this.handleMakeRecipe}/>
                             <IconButtonLabel label="Delete this recipe" icon={faTrash} variant="danger"
-                                             handleClick={this.handleMakeRecipe}/>
+                                             handleClick={this.handleDeleteRecipe}/>
                         </>
                     }
 
