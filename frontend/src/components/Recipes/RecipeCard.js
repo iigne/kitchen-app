@@ -19,8 +19,7 @@ class RecipeCard extends React.Component {
             title: props.title,
             imageLink: props.imageLink,
             method: props.method,
-            ingredients: props.recipeIngredients,
-            ownedIngredients: [],
+            ingredients: props.ingredients,
             displayIngredients: false
         }
     }
@@ -33,10 +32,17 @@ class RecipeCard extends React.Component {
 
     render() {
         const altText = "image of " + this.state.title;
-        const ingredients = this.state.ingredients;
-        const ownedIngredients = this.state.ownedIngredients;
-        const hasIngredients = ingredients.length === ownedIngredients.length;
-        const hasIngredientsIcon = hasIngredients ? faCheck : faTimes;
+        let ingredients = this.state.ingredients;
+
+        let ownedIngredients = ingredients.filter(i => i.ownedQuantity > 0).length
+        let ownedIngredientsFullAmount = ingredients.filter(i => i.recipeQuantity <= i.ownedQuantity).length
+        let totalIngredients = ingredients.length
+
+        const hasFullIngredients = totalIngredients === ownedIngredientsFullAmount
+        const hasPartialIngredients = totalIngredients === ownedIngredients
+
+        const hasIngredientsIcon = hasFullIngredients ? faCheck : faTimes;
+        const partialIngredientsText = hasPartialIngredients && !hasFullIngredients ? ",but not enough of some ingredients " : ""
         let displayIngredients = this.state.displayIngredients;
         let displayIngredientsToggle = displayIngredients ? faCaretUp : faCaretDown;
         return (
@@ -50,8 +56,9 @@ class RecipeCard extends React.Component {
                         <Container>
                             <Row>
                                 <Col>
-                                    <FontAwesomeIcon icon={hasIngredientsIcon}/> You have {ownedIngredients.length} out
-                                    of {ingredients.length} ingredients to make this recipe
+                                    <FontAwesomeIcon icon={hasIngredientsIcon}/>
+                                    You have {ownedIngredients}/{totalIngredients} ingredients
+                                    to make this recipe{partialIngredientsText}
                                 </Col>
                                 <Col xs={1}>
                                     <Button size="sm" variant="light" onClick={this.toggleDisplayIngredients}>
@@ -65,7 +72,7 @@ class RecipeCard extends React.Component {
                     {displayIngredients &&
                     ingredients.map((ingredient) =>
                         <RecipeCardIngredient name={ingredient.ingredientName} measurement={ingredient.measurement}
-                                              recipeQuantity={ingredient.quantity} />
+                                              recipeQuantity={ingredient.recipeQuantity} ownedQuantity={ingredient.ownedQuantity} />
                     )
                     }
                     {/*<ListGroupItem variant="success">This recipe uses up some ingredient that you should use up within this week</ListGroupItem>*/}

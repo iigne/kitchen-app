@@ -13,5 +13,5 @@ public class ResponseRecipeDTO {
     private String title;
     private String imageLink;
     private String method;
-    private List<ResponseRecipeIngredientDTO> recipeIngredients;
+    private List<ResponseRecipeIngredientDTO> ingredients;
 }
