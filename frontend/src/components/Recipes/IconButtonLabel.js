@@ -13,6 +13,16 @@ class IconButtonLabel extends React.Component {
         }
     }
 
+    static getDerivedStateFromProps(props,state) {
+        if(props.label !== state.label) {
+            return {
+                label: props.label,
+                icon: props.icon
+            };
+        }
+        return null;
+    }
+
     render() {
         return(
             <Row>

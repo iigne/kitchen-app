@@ -8,6 +8,7 @@ import com.kitchenapp.kitchenappapi.model.Recipe;
 import com.kitchenapp.kitchenappapi.model.RecipeIngredient;
 import com.kitchenapp.kitchenappapi.repository.projection.RecipeUserIngredient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +41,9 @@ public class RecipeIngredientMapper {
 //    }
 
     public static List<ResponseRecipeIngredientDTO> toDTOs(List<RecipeUserIngredient> recipeUserIngredients, Set<RecipeIngredient> recipeIngredients) {
+        if(recipeUserIngredients == null) {
+            return new ArrayList<>();
+        }
         Map<Integer, RecipeUserIngredient> ingredientMap = recipeUserIngredients.stream()
                 .collect(Collectors.toMap(RecipeUserIngredient::getIngredientId, Function.identity()));
 

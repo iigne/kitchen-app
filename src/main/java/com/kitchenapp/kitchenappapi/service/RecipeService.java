@@ -36,7 +36,7 @@ public class RecipeService {
     public List<ResponseRecipeDTO> getAllWithQuantities(final int userId) {
         List<Recipe> recipes = recipeRepository.findAll();
         List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesForAllRecipesByUserId(userId);
-        return RecipeMapper.toDTOs(recipes, recipeUserIngredients);
+        return RecipeMapper.toDTOs(recipes, recipeUserIngredients, userId);
     }
 
     public List<ResponseRecipeDTO> getAllCreatedByUser(final int userId) {
@@ -44,14 +44,14 @@ public class RecipeService {
         List<RecipeUserIngredient> recipeUserIngredients =
                 recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeIdsIn(userId,
                         recipes.stream().map(Recipe::getId).collect(Collectors.toList()));
-        return RecipeMapper.toDTOs(recipes, recipeUserIngredients);
+        return RecipeMapper.toDTOs(recipes, recipeUserIngredients, userId);
     }
 
     public List<ResponseRecipeDTO> getAllLikedByUser(final int userId) {
         Set<Recipe> userRecipes = userService.findByIdOrThrow(userId).getUserRecipes();
         List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository
                 .fetchIngredientQuantitiesByUserIdAndRecipeIdsIn(userId, userRecipes.stream().map(Recipe::getId).collect(Collectors.toList()));
-        return RecipeMapper.toDTOs(new ArrayList<>(userRecipes), recipeUserIngredients);
+        return RecipeMapper.toDTOs(new ArrayList<>(userRecipes), recipeUserIngredients, userId);
     }
 
     public Recipe getByIdOrThrow(int recipeId) {
@@ -72,7 +72,7 @@ public class RecipeService {
 
         Recipe savedRecipe = recipeRepository.save(recipe);
         List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeId(userId, savedRecipe.getId());
-        return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients);
+        return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients, userId);
     }
 
     public ResponseRecipeDTO update(RequestRecipeDTO requestRecipeDTO, final int userId) {
@@ -87,7 +87,7 @@ public class RecipeService {
         Recipe updatedRecipe = RecipeMapper.toEntity(requestRecipeDTO, recipeToEdit, recipeIngredients);
         Recipe savedRecipe = recipeRepository.save(updatedRecipe);
         List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeId(userId, savedRecipe.getId());
-        return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients);
+        return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients, userId);
     }
 
     private Set<RecipeIngredient> getRecipeIngredientsFromDTO(List<RequestRecipeIngredientDTO> recipeIngredientDTOs, Recipe recipe) {
@@ -159,23 +159,17 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
-    public List<ResponseRecipeDTO> removeOrAddFromUserRecipes(final int recipeId, final int userId) {
+    public boolean removeOrAddFromUserRecipes(final int recipeId, final int userId) {
         User user = userService.findByIdOrThrow(userId);
         Recipe recipe = getByIdOrThrow(recipeId);
 
         boolean isRecipeLiked = recipe.getUsers().stream().anyMatch(u -> u.getId() == userId);
         if(isRecipeLiked) {
-            recipe.getUsers().removeIf(r -> r.getId() == recipeId);
+            recipe.getUsers().removeIf(u -> u.getId() == userId);
         } else {
             recipe.getUsers().add(user);
         }
 
-        recipeRepository.save(recipe);
-
-        Set<Recipe> newUserRecipes = userService.findByIdOrThrow(userId).getUserRecipes();
-        List<RecipeUserIngredient> recipeUserIngredients =
-                recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeIdsIn(userId,
-                        newUserRecipes.stream().map(Recipe::getId).collect(Collectors.toList()));
-        return RecipeMapper.toDTOs(new ArrayList<>(newUserRecipes), recipeUserIngredients);
+        return recipeRepository.save(recipe).getUsers().stream().anyMatch(u -> u.getId() == userId);
     }
 }

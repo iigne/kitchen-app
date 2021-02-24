@@ -34,20 +34,21 @@ public class RecipeMapper {
                 .build();
     }
 
-    public static ResponseRecipeDTO toDTO(Recipe entity, List<RecipeUserIngredient> recipeIngredients) {
+    public static ResponseRecipeDTO toDTO(Recipe entity, List<RecipeUserIngredient> recipeIngredients, int userId) {
         return ResponseRecipeDTO.builder()
                 .id(entity.getId())
                 .authorId(entity.getAuthor().getId())
                 .imageLink(entity.getImageLink())
                 .method(entity.getMethod())
                 .title(entity.getTitle())
+                .liked(entity.getUsers().stream().anyMatch(u -> u.getId() == userId))
                 .ingredients(RecipeIngredientMapper.toDTOs(recipeIngredients, entity.getRecipeIngredients()))
                 .build();
     }
 
-    public static List<ResponseRecipeDTO> toDTOs(List<Recipe> entities, List<RecipeUserIngredient> allIngredients) {
+    public static List<ResponseRecipeDTO> toDTOs(List<Recipe> entities, List<RecipeUserIngredient> allIngredients, int userId) {
         Map<Integer, List<RecipeUserIngredient>> ingredientsByRecipe = allIngredients.stream().collect(Collectors.groupingBy(RecipeUserIngredient::getRecipeId));
-        return entities.stream().map(e -> toDTO(e, ingredientsByRecipe.get(e.getId()))).collect(Collectors.toList());
+        return entities.stream().map(e -> toDTO(e, ingredientsByRecipe.get(e.getId()), userId)).collect(Collectors.toList());
     }
 
 }
