@@ -11,6 +11,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import IconButtonLabel from "./IconButtonLabel";
+import authHeader from "../../api/auth-header";
+import axios from "axios";
 
 class RecipeView extends React.Component {
     constructor(props) {
@@ -23,7 +25,7 @@ class RecipeView extends React.Component {
             method: this.formatMethod(props.method),
             ingredients: props.ingredients,
             image: props.imageLink,
-            isRecipeLiked: false
+            liked: props.liked
         }
     }
 
@@ -32,10 +34,37 @@ class RecipeView extends React.Component {
     }
 
     handleToggleLikeRecipe = () => {
+        const id = this.state.id;
+        axios.post('/recipe/like', {}, {
+            params: {recipeId: id},
+            headers: authHeader()
+        }).then(res => {
+            this.setState(res.data);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    handleDeleteRecipe = () => {
+        const id = this.state.id;
+        if (this.state.recipeAuthorId === this.state.userId) {
+            axios.delete('/recipe', {
+                params: {recipeId: id},
+                headers: authHeader()
+            }).then(res => {
+                    this.props.handleViewRecipe()
+                    this.props.handleRemoveRecipe(id);
+                }
+            ).catch(
+                error => {
+                    console.log(error)
+                }
+            )
+        }
+    }
+
+    handleEditRecipe = () => {
         //TODO
-        this.setState(prevState => {
-            return {isRecipeLiked: !prevState.isRecipeLiked}
-        }, () => {console.log(this.state)})
     }
 
     handleMakeRecipe = () => {
@@ -43,21 +72,13 @@ class RecipeView extends React.Component {
         console.log("recipe made")
     }
 
-    handleDeleteRecipe = () => {
-
-    }
-
-    handleEditRecipe = () => {
-
-    }
-
     render() {
         const ingredients = this.state.ingredients;
         const methodSteps = this.state.method;
         const isCreatedByUser = this.state.recipeAuthorId === this.state.userId;
-        //TODO this doesnt work
-        let likedIcon = this.state.isRecipeLiked ? faHeartBroken : faHeart;
-        let likedLabel = (this.state.isRecipeLiked ? "Unlike" : "Like" ) + " this recipe";
+        let liked = this.state.liked;
+        let likedIcon = liked ? faHeartBroken : faHeart;
+        let likedLabel = (liked ? "Unlike" : "Like") + " this recipe";
         return (
             <Modal show={this.props.show} onHide={() => this.props.hide()}>
                 <Modal.Header closeButton>
@@ -72,7 +93,8 @@ class RecipeView extends React.Component {
                     <ListGroup>
                         {ingredients.map((item) =>
                             <RecipeCardIngredient name={item.ingredientName} measurement={item.measurement}
-                                                  recipeQuantity={item.recipeQuantity} ownedQuantity={item.ownedQuantity}/>
+                                                  recipeQuantity={item.recipeQuantity}
+                                                  ownedQuantity={item.ownedQuantity}/>
                         )}
                     </ListGroup>
 
@@ -101,14 +123,14 @@ class RecipeView extends React.Component {
                         </Col>
                     </Row>
 
-                    { isCreatedByUser &&
-                        <>
-                            <hr/>
-                            <IconButtonLabel label="Edit this recipe" icon={faPencilAlt} variant="warning"
-                                             handleClick={this.handleMakeRecipe}/>
-                            <IconButtonLabel label="Delete this recipe" icon={faTrash} variant="danger"
-                                             handleClick={this.handleMakeRecipe}/>
-                        </>
+                    {isCreatedByUser &&
+                    <>
+                        <hr/>
+                        <IconButtonLabel label="Edit this recipe" icon={faPencilAlt} variant="warning"
+                                         handleClick={this.handleMakeRecipe}/>
+                        <IconButtonLabel label="Delete this recipe" icon={faTrash} variant="danger"
+                                         handleClick={this.handleDeleteRecipe}/>
+                    </>
                     }
 
                 </Modal.Body>

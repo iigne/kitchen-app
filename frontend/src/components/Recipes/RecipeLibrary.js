@@ -18,6 +18,13 @@ class RecipeLibrary extends React.Component {
         }
     }
 
+    handleRemoveRecipe = (recipeId) => {
+        this.setState(prevState => {
+            let recipes = prevState.recipes.filter(r => r.id !== recipeId)
+            return {recipes: recipes}
+        })
+    }
+
     handleLoadRecipes = (recipes, type) => {
         this.setState({recipes: recipes})
         this.setState({currentShow: type})
@@ -59,7 +66,8 @@ class RecipeLibrary extends React.Component {
                         {recipes.map((item) =>
                             <>
                                 <RecipeCard {...item} userId={this.state.userId} key={item.id} handleViewRecipe={this.handleViewRecipe}/>
-                                <RecipeView {...item} userId={this.state.userId} show={this.state.inRecipeView} hide={this.handleViewRecipe}/>
+                                <RecipeView {...item} userId={this.state.userId} show={this.state.inRecipeView} hide={this.handleViewRecipe}
+                                            handleViewRecipe={this.handleViewRecipe} handleRemoveRecipe={this.handleRemoveRecipe}/>
 
                             </>
                         )}

@@ -13,5 +13,6 @@ public class ResponseRecipeDTO {
     private String title;
     private String imageLink;
     private String method;
+    private boolean liked;
     private List<ResponseRecipeIngredientDTO> ingredients;
 }

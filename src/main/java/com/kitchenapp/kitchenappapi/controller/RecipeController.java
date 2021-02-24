@@ -2,9 +2,7 @@ package com.kitchenapp.kitchenappapi.controller;
 
 import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO;
 import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
-import com.kitchenapp.kitchenappapi.mapper.RecipeMapper;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import com.kitchenapp.kitchenappapi.model.Recipe;
 import com.kitchenapp.kitchenappapi.service.RecipeService;
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -67,8 +66,9 @@ public class RecipeController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<List<ResponseRecipeDTO>> updateUserRecipes(@RequestParam final int recipeId, @AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.status(HttpStatus.OK).body(recipeService.removeOrAddFromUserRecipes(recipeId, userDetails.getId()));
+    public ResponseEntity<Map<String, Boolean>> updateUserRecipes(@RequestParam final int recipeId, @AuthenticationPrincipal JwtUserDetails userDetails) {
+        boolean likeResult = recipeService.removeOrAddFromUserRecipes(recipeId, userDetails.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("liked", likeResult));
     }
 
 }
