@@ -64,13 +64,12 @@ public class RecipeService {
         User user = userService.findByIdOrThrow(userId);
 
         Recipe recipe = recipeRepository.save(RecipeMapper.toEntity(requestRecipeDTO, user));
-        userService.addRecipeToUserLibrary(user, recipe);
 
-        Set<RecipeIngredient> recipeIngredients = getRecipeIngredientsFromDTO(requestRecipeDTO.getRecipeIngredients(), recipe);
+        Set<RecipeIngredient> recipeIngredients = getRecipeIngredientsFromDTO(requestRecipeDTO.getIngredients(), recipe);
 
         recipe.setRecipeIngredients(recipeIngredients);
-
         Recipe savedRecipe = recipeRepository.save(recipe);
+
         List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeId(userId, savedRecipe.getId());
         return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients, userId);
     }
@@ -83,7 +82,7 @@ public class RecipeService {
             throw new UnsupportedOperationException(String.format("user %s is not allowed to alter recipe created by user %s", userId, recipeAuthorId));
         }
 
-        Set<RecipeIngredient> recipeIngredients = handleUpdateIngredients(requestRecipeDTO.getRecipeIngredients(), recipeToEdit);
+        Set<RecipeIngredient> recipeIngredients = handleUpdateIngredients(requestRecipeDTO.getIngredients(), recipeToEdit);
         Recipe updatedRecipe = RecipeMapper.toEntity(requestRecipeDTO, recipeToEdit, recipeIngredients);
         Recipe savedRecipe = recipeRepository.save(updatedRecipe);
         List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesByUserIdAndRecipeId(userId, savedRecipe.getId());

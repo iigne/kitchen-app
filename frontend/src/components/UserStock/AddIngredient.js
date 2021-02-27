@@ -70,28 +70,25 @@ class AddIngredient extends React.Component {
     }
 
     handleAddIngredient = () => {
-        let ingredient = {...this.state.selectedIngredient}
-        let quantity = {
+        let ingredient = {...this.state.selectedIngredient};
+        const measurementId = this.state.selectedMeasurement;
+        const index = ingredient.measurements.findIndex(m => m.id == measurementId);
+        const selectedMeasurement = ingredient.measurements[index];
+        this.props.addIngredientHandler({
+            id: ingredient.id,
+            name: ingredient.name,
+            measurementId: measurementId,
+            measurementName: selectedMeasurement.name,
+            category: ingredient.category,
             quantity: this.state.quantity,
-            measurementId: this.state.selectedMeasurement
-        }
-        axios.post('/user-ingredient', {
-            ingredient: {
-                id: ingredient.id
-            },
-            quantities: [quantity]
-        }, {
-            headers: authHeader()
-        }).then(res => {
-            this.props.addIngredientHandler(res.data)
-            this.setState({searchTerm: ""})
-            this.setState({searchResults: []})
-            this.setState({noResults: null})
-            this.setState({selectedIngredient: null})
-            this.setState({selectedMeasurement: null})
-        }).catch(error => {
-            console.log(error)
-        });
+        })
+        this.setState({
+            searchTerm: "",
+            searchResults: [],
+            noResults: null,
+            selectedIngredient: null,
+            selectedMeasurement: null
+        })
     }
 
     enterEnterCreateIngredient = () => {
@@ -121,14 +118,13 @@ class AddIngredient extends React.Component {
                     <FormGroup>
                         <Row>
                             <Col>
-                                <FormLabel>Ingredient name</FormLabel>
+                                <FormLabel>Search for ingredient</FormLabel>
                                 <InputGroup>
                                     <InputGroup.Prepend>
                                         <span className="input-group-text"> <FontAwesomeIcon icon={faSearch}/></span>
                                     </InputGroup.Prepend>
 
                                     <Form.Control value={this.state.searchTerm} name="searchTerm"
-                                                  placeholder="search for ingredient"
                                                   onChange={this.handleSearch}/>
                                 </InputGroup>
                             </Col>

@@ -25,5 +25,5 @@ public class RequestRecipeDTO {
 
     @NotNull
     @NotEmpty
-    private List<RequestRecipeIngredientDTO> recipeIngredients;
+    private List<RequestRecipeIngredientDTO> ingredients;
 }

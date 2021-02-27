@@ -27,24 +27,63 @@ class UserStock extends React.Component {
     }
 
     handleAddIngredient = (ingredient) => {
-        let ingredients = [...this.state.ingredients];
-        ingredients.push(ingredient)
-        this.setState({ingredients: ingredients})
+        axios.post('/user-ingredient', {
+            id: ingredient.id,
+            quantity: ingredient.quantity,
+            measurementId: ingredient.measurementId
+        }, {
+            headers: authHeader()
+        }).then(res => {
+            let ingredients = [...this.state.ingredients];
+            ingredients.push(res.data)
+            this.setState({ingredients: ingredients})
+        }).catch(error => {
+            console.log(error)
+        });
     }
 
     handleRemoveIngredient = (id) => {
-        this.setState(prevState => {
-            const ingredients = prevState.ingredients.filter(u => u.ingredient.id !== id)
-            return {ingredients: ingredients}
-        })
+        axios.delete('/user-ingredient', {
+            params: {ingredientId: id},
+            headers: authHeader()
+        }).then(
+            res => {
+                this.setState(prevState => {
+                    const ingredients = prevState.ingredients.filter(u => u.id !== id)
+                    return {ingredients: ingredients}
+                });
+            }
+        ).catch(error => {
+                console.log(error)
+            }
+        )
     }
 
-    handleUpdateIngredient = (ingredient) => {
-        this.setState(prevState => {
-            const ingredients = prevState.ingredients
-            const index = ingredients.findIndex(ui => ui.ingredient.id === ingredient.id)
-            ingredients.splice(index, 0, ingredient)
-            return {ingredients: ingredients}
+    handleUpdateIngredient = (ingredientData) => {
+        const newQuantity = ingredientData.newQuantity;
+        const ingredientId = ingredientData.ingredientId;
+        const measurement = ingredientData.measurementId;
+
+        let updatedQuantity = null;
+        axios.patch('/user-ingredient/quantity', {
+                measurementId: measurement,
+                quantity: newQuantity
+            }, {
+                params: {ingredientId: ingredientId},
+                headers: authHeader()
+            }
+        ).then(res => {
+            const ingredient = res.data;
+            updatedQuantity = ingredient.quantity;
+            this.setState(prevState => {
+                const ingredients = prevState.ingredients
+                const index = ingredients.findIndex(ui => ui.id === ingredient.id)
+                ingredients.splice(index, 1, ingredient)
+                return {ingredients: ingredients}
+            })
+            return updatedQuantity;
+        }).catch(error => {
+            return updatedQuantity;
         })
     }
 
@@ -57,7 +96,7 @@ class UserStock extends React.Component {
                     {ingredients.length > 0 ?
                         <ListGroup>
                             {ingredients.map((item) =>
-                                <Ingredient {...item} key={item.ingredient.id}
+                                <Ingredient {...item} key={item.id}
                                             removeIngredientHandler={this.handleRemoveIngredient}
                                             updateIngredientHandler={this.handleUpdateIngredient}/>
                             )}

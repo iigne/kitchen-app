@@ -8,6 +8,7 @@ import com.kitchenapp.kitchenappapi.model.MetricUnit;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class IngredientMapper {
 
@@ -30,5 +31,9 @@ public class IngredientMapper {
                 .shelfLifeDays(entity.getShelfLifeDays())
                 .measurements(MeasurementMapper.toDTO(entity.getMeasurements()))
                 .build();
+    }
+
+    public static List<IngredientDTO> toDTOs(List<Ingredient> entities) {
+        return entities.stream().map(IngredientMapper::toDTO).collect(Collectors.toList());
     }
 }

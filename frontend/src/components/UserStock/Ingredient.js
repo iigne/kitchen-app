@@ -25,13 +25,15 @@ import authHeader from "../../api/auth-header";
 class Ingredient extends React.Component {
 
     constructor(props) {
+        console.log(props);
         super(props);
         this.state = {
-            id: props.ingredient.id,
-            name: props.ingredient.name,
-            quantity: props.quantities[0].quantity,
-            measurement: props.quantities[0],
-            category: this.getIcon(props.ingredient.category),
+            id: props.id,
+            name: props.name,
+            quantity: props.quantity,
+            measurement: props.measurementId,
+            measurementName:props.measurementName,
+            category: this.getIcon(props.category),
 
             currentlyEditing: false,
             editedQuantity: null
@@ -60,18 +62,7 @@ class Ingredient extends React.Component {
     }
 
     deleteIngredient = () => {
-        const id = this.state.id
-        axios.delete('/user-ingredient', {
-            params: {ingredientId: id},
-            headers: authHeader()
-        }).then(
-            res => {
-                this.props.removeIngredientHandler(id)
-            }
-        ).catch(error => {
-                console.log(error)
-            }
-        )
+        this.props.removeIngredientHandler(this.state.id);
     }
 
     startEditIngredient = () => {
@@ -80,24 +71,19 @@ class Ingredient extends React.Component {
     }
 
     updateIngredient = () => {
-        const newQuantity = this.state.editedQuantity
-        const ingredientId = this.state.id
-        const measurement = this.state.measurement.measurementId
-        axios.patch('/user-ingredient/quantity', {
-                measurementId: measurement,
-                quantity: newQuantity
-            }, {
-                params: {ingredientId: ingredientId},
-                headers: authHeader()
-            }
-        ).then(res => {
-            const updatedQuantity = res.data.quantities[0].quantity;
-            this.setState({quantity: updatedQuantity})
-            this.setState({currentlyEditing: false})
-            this.setState({editedQuantity: null})
-        }).catch(error => {
-            console.log(error)
-        })
+        const newQuantity = this.state.editedQuantity;
+        const ingredientId = this.state.id;
+        const measurementId = this.state.measurement;
+
+        this.props.updateIngredientHandler({
+            newQuantity: newQuantity,
+            ingredientId: ingredientId,
+            measurementId: measurementId
+        });
+
+        this.setState({quantity: newQuantity})
+        this.setState({currentlyEditing: false})
+        this.setState({editedQuantity: null})
     }
 
     handleChange = (e) => {
@@ -122,7 +108,7 @@ class Ingredient extends React.Component {
                                 <Form.Control name="editedQuantity" onChange={this.handleChange}/>
                             </Col>
                             <Col xs={1}>
-                                {this.state.measurement.measurementName}
+                                {this.state.measurementName}
                             </Col>
                             <Col xs={1}>
                                 <Button size="sm" variant="outline-success" onClick={this.updateIngredient}>
@@ -130,7 +116,7 @@ class Ingredient extends React.Component {
                                 </Button>
                             </Col>
                         </> :
-                        <Col>{this.state.quantity} {this.state.measurement.measurementName}</Col>
+                        <Col>{this.state.quantity} {this.state.measurementName}</Col>
                     }
                     <Col xs={1}>
                         <Dropdown>

@@ -7,9 +7,7 @@ import com.kitchenapp.kitchenappapi.model.RecipeIngredient;
 import com.kitchenapp.kitchenappapi.model.User;
 import com.kitchenapp.kitchenappapi.repository.projection.RecipeUserIngredient;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecipeMapper {
@@ -20,6 +18,7 @@ public class RecipeMapper {
                 .imageLink(requestRecipeDTO.getImageLink())
                 .method(requestRecipeDTO.getMethod())
                 .author(author)
+                .users(new HashSet<>(Collections.singletonList(author)))
                 .build();
     }
 

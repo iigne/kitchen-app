@@ -5,6 +5,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import BrowseOption from "./BrowseOption";
 import RecipeView from "./RecipeView";
+import CreateRecipe from "./CreateRecipe";
 
 
 class RecipeLibrary extends React.Component {
@@ -49,6 +50,7 @@ class RecipeLibrary extends React.Component {
                 <Button variant="outline-success">
                     <FontAwesomeIcon icon={faPlus}/> Create new recipe
                 </Button>
+                <CreateRecipe/>
 
                 <header className="subheader">Browse</header>
                 <Container>
