@@ -1,5 +1,5 @@
 import React from "react";
-import  {ListGroup, Row, Col, FormGroup, Button, Form, FormLabel, Image} from "react-bootstrap";
+import {Button, Col, Form, FormGroup, FormLabel, Image, ListGroup, Modal, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -7,7 +7,7 @@ import authHeader from "../../api/auth-header";
 import AddIngredient from "../UserStock/AddIngredient";
 import Ingredient from "../UserStock/Ingredient";
 
-class RecipeForm extends React.Component  {
+class RecipeForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,7 +27,7 @@ class RecipeForm extends React.Component  {
 
     handleRecipeMethodChange = (e) => {
         let newValue = e.target.value;
-        if(newValue.contains('\n')) {
+        if (newValue.contains('\n')) {
             newValue.replace('\n', ';')
         }
     }
@@ -38,9 +38,9 @@ class RecipeForm extends React.Component  {
 
     toggleImage = () => {
         const image = this.state.imageLink;
-        if(image == null) {
+        if (image == null) {
             const imageField = this.state.imageField;
-            if(this.isUrlValid(imageField)) {
+            if (this.isUrlValid(imageField)) {
                 this.setState({
                     imageLink: imageField,
                     isUrlValid: true
@@ -57,27 +57,24 @@ class RecipeForm extends React.Component  {
         }
     }
 
+    handleCancel = () => {
+        this.props.handleCancel(false);
+    }
+
     handleSubmit = () => {
-        console.log(this.state);
-        const isNewRecipe = this.state.id === null;
         const methodFormatted = this.state.method.replace('\n', ';');
         const ingredients = [...this.state.ingredients].map(i => ({
             ingredientId: i.id,
-            measurementId: i.measurementId,
+            measurementId: i.measurement,
             quantity: i.quantity
         }))
-        if(isNewRecipe) {
-            axios.post("/recipe", {
-                title: this.state.title,
-                imageLink: this.state.imageLink,
-                method: methodFormatted,
-                ingredients: ingredients
-            }, {headers: authHeader()}).then(res => {
-                console.log(res);
-            }).catch(err => {
-                console.log(err);
-            })
-        }
+        this.props.handleSubmit({
+            id: this.state.id,
+            title: this.state.title,
+            imageLink: this.state.imageLink,
+            method: methodFormatted,
+            ingredients: ingredients
+        })
     }
 
     handleAddIngredient = (ingredient) => {
@@ -122,60 +119,77 @@ class RecipeForm extends React.Component  {
         let isImagePresent = this.state.imageLink !== null && this.state.isUrlValid;
         let imageButtonIcon = isImagePresent ? faTrash : faPlus;
         let imageButtonVariant = isImagePresent ? "danger" : "success";
-        let notValidWarning = this.state.isUrlValid === false ?  "The URL entered is not valid" : "";
+        let notValidWarning = this.state.isUrlValid === false ? "The URL entered is not valid" : "";
 
         let ingredients = this.state.ingredients;
 
-        return(
+        return (
             <Form>
-                <FormGroup>
-                    <FormLabel>Recipe title</FormLabel>
-                    <Form.Control value={this.state.title} name="title"
-                                  onChange={this.handleChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Image</FormLabel>
-                    {isImagePresent && <Image src={this.state.imageLink} fluid/>}
-                    <Form.Text>URL of the image of a recipe. If you are uploading your own picture, please upload your
-                        picture to an image hosting platform, like imgur, Google Photos, etc. and paste the link in here</Form.Text>
-                    <Row>
-                        <Col>
-                            <Form.Control name="imageField" value={this.state.imageField}
-                                          onChange={this.handleChange}
-                                          readOnly={isImagePresent}/>
-                        </Col>
-                        <Col>
-                            <Button onClick={this.toggleImage} variant={imageButtonVariant}>
-                                <FontAwesomeIcon icon={imageButtonIcon}/>
-                            </Button>
-                        </Col>
-                    </Row>
 
-                    <Form.Text className="redText">{notValidWarning}</Form.Text>
+                <Modal show={this.props.show} onHide={() => this.props.handleCancel(false)} backdrop="static" size="lg">
+                    <Modal.Header>
+                        <FormGroup>
 
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Ingredients</FormLabel>
-                    <ListGroup>
-                        {ingredients.map((item) =>
-                            <Ingredient {...item} key={item.id}
-                                        removeIngredientHandler={this.handleRemoveIngredient}
-                                        updateIngredientHandler={this.handleUpdateIngredient}/>
-                        )}
-                    </ListGroup>
+                            <FormLabel><h2>Recipe title</h2></FormLabel>
 
-                    <AddIngredient addIngredientHandler={this.handleAddIngredient}/>
-                </FormGroup>
-                <FormGroup>
-                    <FormLabel>Method</FormLabel>
-                    <Form.Control as="textarea" value={this.formatMethod(this.state.method)}
-                                  name="method" onChange={this.handleChange}
-                    />
-                </FormGroup>
+                            <Form.Control value={this.state.title} name="title"
+                                          onChange={this.handleChange}/>
+                        </FormGroup>
+                    </Modal.Header>
+                    <Modal.Body>
 
-                <FormGroup>
-                    <Button onClick={this.handleSubmit}>Submit</Button>
-                </FormGroup>
+                        <FormGroup>
+                            <FormLabel><h2>Image</h2></FormLabel>
+                            {isImagePresent && <Image src={this.state.imageLink} fluid/>}
+                            <Form.Text>URL of the image of a recipe. If you are uploading your own picture, please
+                                upload your
+                                picture to an image hosting platform, like imgur, Google Photos, etc. and paste the link
+                                in here</Form.Text>
+                            <Row>
+                                <Col>
+                                    <Form.Control name="imageField" value={this.state.imageField}
+                                                  onChange={this.handleChange}
+                                                  readOnly={isImagePresent}/>
+                                </Col>
+                                <Col>
+                                    <Button onClick={this.toggleImage} variant={imageButtonVariant}>
+                                        <FontAwesomeIcon icon={imageButtonIcon}/>
+                                    </Button>
+                                </Col>
+                            </Row>
+
+                            <Form.Text className="redText">{notValidWarning}</Form.Text>
+
+                        </FormGroup>
+                        <FormGroup>
+                            <FormLabel><h2>Ingredients</h2></FormLabel>
+                            <ListGroup>
+                                {ingredients.map((item) =>
+                                    <Ingredient {...item} key={item.id}
+                                                removeIngredientHandler={this.handleRemoveIngredient}
+                                                updateIngredientHandler={this.handleUpdateIngredient}/>
+                                )}
+                            </ListGroup>
+
+                            <AddIngredient addIngredientHandler={this.handleAddIngredient}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormLabel><h2>Method</h2></FormLabel>
+                            <Form.Control as="textarea" value={this.formatMethod(this.state.method)}
+                                          name="method" onChange={this.handleChange}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Button onClick={this.handleSubmit}>Submit</Button>
+                            <Button variant="secondary"
+                                    onClick={this.handleCancel}>Cancel</Button>
+                        </FormGroup>
+
+                    </Modal.Body>
+                </Modal>
+
+
             </Form>
         );
     }

@@ -13,7 +13,9 @@ class CreateRecipe extends React.Component  {
 
     render() {
         return(
-          <RecipeForm id={null} title="" method="" ingredients={[]} image={null}/>
+          <RecipeForm id={null} title="" method="" ingredients={[]} image={null}
+                      show={this.state.inCreateRecipe}
+                      handleCancel={this.props.handleCancel}/>
         );
     }
 }

@@ -19,7 +19,6 @@ import {Button, Col, Dropdown, Form, Row, ListGroup} from "react-bootstrap";
 import DropdownToggle from "react-bootstrap/DropdownToggle";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
-import authHeader from "../../api/auth-header";
 
 
 class Ingredient extends React.Component {

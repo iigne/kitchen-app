@@ -30,6 +30,7 @@ public class RecipeMapper {
                 .imageLink(dto.getImageLink())
                 .method(dto.getMethod())
                 .recipeIngredients(recipeIngredients)
+                .users(recipe.getUsers())
                 .build();
     }
 
@@ -40,7 +41,7 @@ public class RecipeMapper {
                 .imageLink(entity.getImageLink())
                 .method(entity.getMethod())
                 .title(entity.getTitle())
-                .liked(entity.getUsers().stream().anyMatch(u -> u.getId() == userId))
+                .liked(entity.getUsers() != null && entity.getUsers().stream().anyMatch(u -> u.getId() == userId))
                 .ingredients(RecipeIngredientMapper.toDTOs(recipeIngredients, entity.getRecipeIngredients()))
                 .build();
     }

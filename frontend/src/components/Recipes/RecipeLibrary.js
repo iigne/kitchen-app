@@ -6,6 +6,9 @@ import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import BrowseOption from "./BrowseOption";
 import RecipeView from "./RecipeView";
 import CreateRecipe from "./CreateRecipe";
+import RecipeForm from "./RecipeForm";
+import axios from "axios";
+import authHeader from "../../api/auth-header";
 
 
 class RecipeLibrary extends React.Component {
@@ -15,7 +18,9 @@ class RecipeLibrary extends React.Component {
             userId: props.userId,
             currentShow: null,
             recipes: [],
-            inRecipeView: false
+            inRecipeView: false,
+            inRecipeViewId: null,
+            inCreateRecipe: false
         }
     }
 
@@ -31,9 +36,40 @@ class RecipeLibrary extends React.Component {
         this.setState({currentShow: type})
     }
 
-    handleViewRecipe = () => {
+    handleUpdateResults = (recipe) => {
         this.setState(prevState => {
-            return {inRecipeView: !prevState.inRecipeView}
+            const recipes = prevState.recipes;
+            const index = recipes.findIndex(r => r.id === recipe.id);
+            recipes.splice(index, 1, recipe);
+            return {recipes:recipes}
+        })
+    }
+
+    handleViewRecipe = (id) => {
+        this.setState(prevState => {
+            return {
+                inRecipeView: !prevState.inRecipeView,
+                inRecipeViewId: id
+            }
+        })
+    }
+
+    toggleCreateRecipeMode = (status) => {
+        this.setState({inCreateRecipe: status});
+    }
+
+    handleSubmitCreatedRecipe = (recipe) => {
+        axios.post("/recipe", {
+            title: recipe.title,
+            imageLink: recipe.imageLink,
+            method: recipe.method,
+            ingredients: recipe.ingredients
+        }, {
+            headers: authHeader()
+        }).then(res => {
+            this.toggleCreateRecipeMode(false);
+        }).catch(err => {
+            console.log(err);
         })
     }
 
@@ -41,16 +77,25 @@ class RecipeLibrary extends React.Component {
         let recipes = this.state.recipes
         let type = this.state.currentShow != null ?
             <header className="subheader">Displaying {this.state.currentShow}</header> : null;
+        const inCreateRecipe = this.state.inCreateRecipe;
         return (
             <Container>
 
                 <header className="header">Recipe library</header>
                 <header className="subheader">Create</header>
 
-                <Button variant="outline-success">
+                <Button variant="outline-success" onClick={() => this.toggleCreateRecipeMode(true)}>
                     <FontAwesomeIcon icon={faPlus}/> Create new recipe
                 </Button>
-                <CreateRecipe/>
+
+                {inCreateRecipe &&
+
+                <RecipeForm id={null} title="" method="" ingredients={[]} image={null}
+                            show={this.state.inCreateRecipe}
+                            handleCancel={this.toggleCreateRecipeMode}
+                            handleSubmit={this.handleSubmitCreatedRecipe}
+                />
+                 }
 
                 <header className="subheader">Browse</header>
                 <Container>
@@ -66,12 +111,14 @@ class RecipeLibrary extends React.Component {
                     {type}
                     <CardColumns>
                         {recipes.map((item) =>
-                            <>
-                                <RecipeCard {...item} userId={this.state.userId} key={item.id} handleViewRecipe={this.handleViewRecipe}/>
-                                <RecipeView {...item} userId={this.state.userId} show={this.state.inRecipeView} hide={this.handleViewRecipe}
-                                            handleViewRecipe={this.handleViewRecipe} handleRemoveRecipe={this.handleRemoveRecipe}/>
+                            <div key={item.id}>
+                                <RecipeCard {...item} userId={this.state.userId} handleViewRecipe={() => this.handleViewRecipe(item.id)}/>
+                                <RecipeView {...item} userId={this.state.userId} show={this.state.inRecipeView && this.state.inRecipeViewId === item.id}
+                                            handleViewRecipe={this.handleViewRecipe} handleRemoveRecipe={this.handleRemoveRecipe}
+                                            handleUpdateResults={this.handleUpdateResults}
+                                />
 
-                            </>
+                            </div>
                         )}
                     </CardColumns>
                 </Container>
