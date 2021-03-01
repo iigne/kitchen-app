@@ -24,7 +24,6 @@ import DropdownItem from "react-bootstrap/DropdownItem";
 class Ingredient extends React.Component {
 
     constructor(props) {
-        console.log(props);
         super(props);
         this.state = {
             id: props.id,

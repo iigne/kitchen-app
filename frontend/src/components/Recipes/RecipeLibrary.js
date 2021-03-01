@@ -58,7 +58,6 @@ class RecipeLibrary extends React.Component {
     }
 
     handleSubmitCreatedRecipe = (recipe) => {
-        console.log(recipe);
         axios.post("/recipe", {
             title: recipe.title,
             imageLink: recipe.imageLink,

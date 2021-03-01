@@ -70,7 +70,6 @@ class RecipeView extends React.Component {
     }
 
     handleSubmitEditedRecipe = (recipe) => {
-        console.log(recipe);
         axios.patch("/recipe", {
             id: recipe.id,
             title: recipe.title,

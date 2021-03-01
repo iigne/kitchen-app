@@ -74,7 +74,6 @@ class CreateIngredient extends React.Component {
             category: this.state.category,
             measurements: filteredMeasurements
         }
-        console.log(body)
         axios.post('/ingredient', body, {
             headers: authHeader()
         }).then(res => {

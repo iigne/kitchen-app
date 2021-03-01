@@ -62,14 +62,12 @@ class RecipeForm extends React.Component {
     }
 
     handleSubmit = () => {
-        console.log(this.state.ingredients)
         const methodFormatted = this.state.method.replace('\n', ';');
         const ingredients = [...this.state.ingredients].map(i => ({
             ingredientId: i.id,
             measurementId: i.measurementId,
             quantity: i.quantity
         }))
-        console.log(ingredients)
         this.props.handleSubmit({
             id: this.state.id,
             title: this.state.title,
@@ -80,7 +78,6 @@ class RecipeForm extends React.Component {
     }
 
     handleAddIngredient = (ingredient) => {
-        console.log(ingredient)
         let ingredients = [...this.state.ingredients];
         ingredients.push(ingredient)
         this.setState({ingredients: ingredients})
