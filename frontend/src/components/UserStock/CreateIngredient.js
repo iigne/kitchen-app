@@ -34,6 +34,7 @@ class CreateIngredient extends React.Component {
                 name: "",
                 metricQuantity: 100,
                 metricUnit: prevState.metricUnit,
+                submitted: false
             })
             return ({
                 addingNewMeasurement: true,
@@ -44,9 +45,10 @@ class CreateIngredient extends React.Component {
 
     handleAddMeasurement = (measurement) => {
         this.setState(prevState => {
-            const measurements = [...prevState.measurements]
-            const index = measurements.findIndex(m => m.name === "")
-            measurements.splice(index, 1, measurement)
+            measurement.submitted = true;
+            const measurements = [...prevState.measurements];
+            const index = measurements.findIndex(m => m.name === "");
+            measurements.splice(index, 1, measurement);
             return ({
                 addingNewMeasurement: false,
                 measurements: measurements
@@ -57,10 +59,9 @@ class CreateIngredient extends React.Component {
     handleRemoveMeasurement = (name) => {
         this.setState(prevState => {
             const measurements = [...prevState.measurements].filter(m => m.name !== name)
-            const measurementButton = measurements.length > 0
             return ({
                 measurements: measurements,
-                addingNewMeasurement: measurementButton
+                addingNewMeasurement: false
             })
         })
     }

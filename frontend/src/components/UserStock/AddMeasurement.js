@@ -11,7 +11,18 @@ class AddMeasurement extends React.Component {
             name: props.name,
             metricQuantity: props.metricQuantity,
             metricUnit: props.metricUnit,
-            submitted: false
+            submitted: props.submitted
+        }
+    }
+
+    static getDerivedStateFromProps(props,state) {
+        if(props.submitted !== state.submitted) {
+            return {
+                name: props.name,
+                metricQuantity: props.metricQuantity,
+                metricUnit: props.metricUnit,
+                submitted: props.submitted
+            }
         }
     }
 
@@ -19,18 +30,10 @@ class AddMeasurement extends React.Component {
         this.setState({[e.target.name]: e.target.value})
     }
 
-    handleSubmit = () => {
-        this.setState({submitted: true})
-        this.props.handleAddMeasurement({
-            name: this.state.name,
-            metricQuantity: this.state.metricQuantity,
-            metricUnit: this.state.metricUnit
-        })
-    }
-
     render() {
-        let submitted = this.state.submitted
-        let measurementName = submitted ? this.state.name : ""
+        const submitted = this.state.submitted;
+        const measurementName = submitted ? this.state.name : "";
+        const measurement = this.state;
         return (
                 <Form.Row>
                     <Col xs={1} className="form-button">
@@ -67,7 +70,7 @@ class AddMeasurement extends React.Component {
 
                     <Col xs={1} className="form-button">
                         {!submitted &&
-                        <Button onClick={this.handleSubmit} variant="outline-success" size="sm">
+                        <Button onClick={() => this.props.handleAddMeasurement(measurement)} variant="outline-success" size="sm">
                             <FontAwesomeIcon icon={faPlus}/>
                         </Button>
                         }
