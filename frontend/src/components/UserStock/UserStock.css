@@ -1,12 +1,12 @@
 .ingredient {
-    font-size: calc(10px + 2vmin);
+    align-items: center;
+    font-size: calc(16px + 0.5vmin);
     text-align: left;
     max-width: 80vw;
 }
 
 .ingredientIcon {
-    padding: 1vw;
-    font-size: calc(15px + 2vmin);
+    font-size: calc(10px + 2vmin);
 }
 
 .small-text {

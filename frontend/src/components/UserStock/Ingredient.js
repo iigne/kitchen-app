@@ -56,7 +56,7 @@ class Ingredient extends React.Component {
             case "Spice":
                 return faPepperHot;
             default:
-                return faQuestionCircle;
+                return null;
         }
     }
 
@@ -91,22 +91,26 @@ class Ingredient extends React.Component {
 
     render() {
         const currentlyEditing = this.state.currentlyEditing
+        const icon = this.state.category;
 
         return (
             <ListGroup.Item >
                 <Row className="ingredient">
-                    <Col xs={1}>
-                        <i className="ingredientIcon"><FontAwesomeIcon icon={this.state.category}/></i>
-                    </Col>
-                    <Col xs={4}>
+                    {
+                        icon && <Col xs={1}>
+                            <i className="ingredientIcon"><FontAwesomeIcon icon={this.state.category}/></i>
+                        </Col>
+                    }
+
+                    <Col>
                         <b>{this.state.name}</b>
                     </Col>
                     {currentlyEditing ?
                         <>
-                            <Col>
+                            <Col xs={3}>
                                 <Form.Control name="editedQuantity" onChange={this.handleChange}/>
                             </Col>
-                            <Col xs={1}>
+                            <Col>
                                 {this.state.measurementName}
                             </Col>
                             <Col xs={1}>
@@ -115,18 +119,21 @@ class Ingredient extends React.Component {
                                 </Button>
                             </Col>
                         </> :
+                        <>
                         <Col>{this.state.quantity} {this.state.measurementName}</Col>
+                        <Col xs={1}>
+                            <Dropdown>
+                                <DropdownToggle variant="outline-secondary" size="sm">
+                                </DropdownToggle>
+                                <DropdownMenu>
+                                    <DropdownItem onClick={() => this.deleteIngredient()}>Delete</DropdownItem>
+                                    <DropdownItem onClick={() => this.startEditIngredient()}>Edit</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </Col>
+                        </>
                     }
-                    <Col xs={1}>
-                        <Dropdown>
-                            <DropdownToggle variant="outline-secondary" size="sm">
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                <DropdownItem onClick={() => this.deleteIngredient()}>Delete</DropdownItem>
-                                <DropdownItem onClick={() => this.startEditIngredient()}>Edit</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </Col>
+
                 </Row>
             </ListGroup.Item>
         )

@@ -5,7 +5,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import BrowseOption from "./BrowseOption";
 import RecipeView from "./RecipeView";
-import CreateRecipe from "./CreateRecipe";
 import RecipeForm from "./RecipeForm";
 import axios from "axios";
 import authHeader from "../../api/auth-header";
@@ -59,6 +58,7 @@ class RecipeLibrary extends React.Component {
     }
 
     handleSubmitCreatedRecipe = (recipe) => {
+        console.log(recipe);
         axios.post("/recipe", {
             title: recipe.title,
             imageLink: recipe.imageLink,

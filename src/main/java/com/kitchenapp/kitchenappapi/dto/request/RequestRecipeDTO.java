@@ -2,6 +2,7 @@ package com.kitchenapp.kitchenappapi.dto.request;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -15,12 +16,12 @@ public class RequestRecipeDTO {
 
     private int id;
 
-    @NotNull
+    @NotBlank
     private String title;
 
     private String imageLink;
 
-    @NotNull
+    @NotBlank
     private String method;
 
     @NotNull

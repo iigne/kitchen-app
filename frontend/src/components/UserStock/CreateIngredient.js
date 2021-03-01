@@ -56,10 +56,10 @@ class CreateIngredient extends React.Component {
 
     handleRemoveMeasurement = (name) => {
         this.setState(prevState => {
-            const measurements = [...prevState.measurements]
+            const measurements = [...prevState.measurements].filter(m => m.name !== name)
             const measurementButton = measurements.length > 0
             return ({
-                measurements: measurements.filter(m => m.name !== name),
+                measurements: measurements,
                 addingNewMeasurement: measurementButton
             })
         })
@@ -80,11 +80,28 @@ class CreateIngredient extends React.Component {
         }).then(res => {
             this.setState({success: true})
             this.props.handleFinishCreateIngredient(true, this.state.name)
+            this.resetState();
         }).catch(error => {
             console.log(error)
             this.setState({success: false})
             this.props.handleFinishCreateIngredient(false, null)
         })
+    }
+
+    resetState = () => {
+        this.setState({
+            name: "",
+            category: "Vegetable",
+            metricUnit: "g",
+            measurements: [],
+            addingNewMeasurement: false,
+            success: null
+        })
+    }
+
+    handleCancel = () => {
+        this.resetState();
+        this.props.cancelCreate();
     }
 
     render() {
@@ -153,7 +170,7 @@ class CreateIngredient extends React.Component {
 
                     <FormGroup>
                         <Button onClick={this.handleSubmit}>submit</Button>
-                        <Button onClick={this.props.cancelCreate} variant="secondary">cancel</Button>
+                        <Button onClick={this.handleCancel} variant="secondary">cancel</Button>
                     </FormGroup>
                 </Form>
 

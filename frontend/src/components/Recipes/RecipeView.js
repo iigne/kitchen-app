@@ -105,10 +105,9 @@ class RecipeView extends React.Component {
         const ingredientsFormatted = [...ingredients].map(i => ({
             id: i.ingredientId,
             name: i.ingredientName,
-            measurement: i.measurementId,
+            measurementId: i.measurementId,
             measurementName: i.measurement,
             quantity: i.recipeQuantity
-
         }))
         const methodSteps = this.formatMethod(this.state.method);
         const isCreatedByUser = this.state.recipeAuthorId === this.state.userId;
