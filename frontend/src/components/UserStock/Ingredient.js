@@ -7,12 +7,8 @@ import {
     faCheck,
     faLeaf,
     faPepperHot,
-    faQuestionCircle,
     faSnowflake
 } from "@fortawesome/free-solid-svg-icons";
-
-import axios from "axios";
-
 
 import './UserStock.css';
 import {Button, Col, Dropdown, Form, Row, ListGroup} from "react-bootstrap";

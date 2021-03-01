@@ -2,8 +2,6 @@ import React from "react";
 import {Button, Col, Form, FormGroup, FormLabel, Image, ListGroup, Modal, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-import authHeader from "../../api/auth-header";
 import AddIngredient from "../UserStock/AddIngredient";
 import Ingredient from "../UserStock/Ingredient";
 
