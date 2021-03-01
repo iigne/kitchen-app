@@ -49,12 +49,10 @@ class IngredientControllerIntegrationSpec extends Specification {
         and: "response body contains the created entity"
         with(toObject(result.response.contentAsString)) {
             name == "Sourdough Bread"
-            metricUnit == MetricUnit.GRAMS
-            category.name == "Other"
+            metricUnit == MetricUnit.GRAMS.name()
+            category == "Other"
             measurements.size() == 2
-//            //TODO check without checking order
-//            measurements[0].name == "Slice"
-//            measurements[1].name == "g"
+            measurements*.name.sort() == ["g", "Slice"].sort()
         }
     }
 
@@ -81,8 +79,8 @@ class IngredientControllerIntegrationSpec extends Specification {
         return new ObjectMapper().writeValueAsString(ingredient)
     }
 
-    private static Ingredient toObject(json) {
-        return new ObjectMapper().readValue(json, Ingredient.class)
+    private static IngredientDTO toObject(json) {
+        return new ObjectMapper().readValue(json, IngredientDTO.class)
     }
 
 }

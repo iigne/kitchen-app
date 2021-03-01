@@ -26,8 +26,8 @@ class UserIngredientMapperSpec extends Specification {
         and:
         def metric = new QuantityDTO(quantity: inputQuantity)
         def custom = new QuantityDTO(measurementId: measurement.id, quantity: inputQuantity)
-        def quantities = useMeasurement ? [custom] : [metric]
-        def dto = UserIngredientDTOProvider.make(quantities: quantities,
+        def quantity = useMeasurement ? custom : metric
+        def dto = UserIngredientDTOProvider.make(quantity: quantity,
                 expiryDate: inputExpiry, dateBought: inputAdded)
 
         when:
@@ -60,13 +60,7 @@ class UserIngredientMapperSpec extends Specification {
 
         then:
         with(dto) {
-//            TODO currently metric measurement is ignored, probably shouldn't be
-//            with(quantities.get(0)) {
-//                measurementId == CommonTestData.MEASUREMENT_ID_METRIC
-//                quantity == savedMetric
-//                measurementName == MetricUnit.GRAMS.getAbbreviation()
-//            }
-            with(quantities.get(0)) {
+            with(quantity) {
                 measurementId == CommonTestData.MEASUREMENT_ID
                 measurementName == measurement.name
                 quantity == expectedCustom

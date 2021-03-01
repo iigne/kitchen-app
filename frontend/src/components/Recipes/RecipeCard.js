@@ -45,9 +45,13 @@ class RecipeCard extends React.Component {
         const partialIngredientsText = hasPartialIngredients && !hasFullIngredients ? ",but not enough of some ingredients " : ""
         let displayIngredients = this.state.displayIngredients;
         let displayIngredientsToggle = displayIngredients ? faCaretUp : faCaretDown;
+
+        const image = this.state.imageLink;
         return (
             <Card>
-                <CardImg variant="top" src={this.state.imageLink} alt={altText}/>
+                {image &&
+                <CardImg variant="top" src={image} alt={altText}/>
+                }
                 <Card.Body>
                     <Card.Title>{this.state.title}</Card.Title>
                 </Card.Body>

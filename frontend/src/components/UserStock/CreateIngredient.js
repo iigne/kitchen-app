@@ -34,6 +34,7 @@ class CreateIngredient extends React.Component {
                 name: "",
                 metricQuantity: 100,
                 metricUnit: prevState.metricUnit,
+                submitted: false
             })
             return ({
                 addingNewMeasurement: true,
@@ -44,9 +45,10 @@ class CreateIngredient extends React.Component {
 
     handleAddMeasurement = (measurement) => {
         this.setState(prevState => {
-            const measurements = [...prevState.measurements]
-            const index = measurements.findIndex(m => m.name === "")
-            measurements.splice(index, 1, measurement)
+            measurement.submitted = true;
+            const measurements = [...prevState.measurements];
+            const index = measurements.findIndex(m => m.name === "");
+            measurements.splice(index, 1, measurement);
             return ({
                 addingNewMeasurement: false,
                 measurements: measurements
@@ -56,11 +58,10 @@ class CreateIngredient extends React.Component {
 
     handleRemoveMeasurement = (name) => {
         this.setState(prevState => {
-            const measurements = [...prevState.measurements]
-            const measurementButton = measurements.length > 0
+            const measurements = [...prevState.measurements].filter(m => m.name !== name)
             return ({
-                measurements: measurements.filter(m => m.name !== name),
-                addingNewMeasurement: measurementButton
+                measurements: measurements,
+                addingNewMeasurement: false
             })
         })
     }
@@ -74,17 +75,33 @@ class CreateIngredient extends React.Component {
             category: this.state.category,
             measurements: filteredMeasurements
         }
-        console.log(body)
         axios.post('/ingredient', body, {
             headers: authHeader()
         }).then(res => {
             this.setState({success: true})
             this.props.handleFinishCreateIngredient(true, this.state.name)
+            this.resetState();
         }).catch(error => {
             console.log(error)
             this.setState({success: false})
             this.props.handleFinishCreateIngredient(false, null)
         })
+    }
+
+    resetState = () => {
+        this.setState({
+            name: "",
+            category: "Vegetable",
+            metricUnit: "g",
+            measurements: [],
+            addingNewMeasurement: false,
+            success: null
+        })
+    }
+
+    handleCancel = () => {
+        this.resetState();
+        this.props.cancelCreate();
     }
 
     render() {
@@ -153,7 +170,7 @@ class CreateIngredient extends React.Component {
 
                     <FormGroup>
                         <Button onClick={this.handleSubmit}>submit</Button>
-                        <Button onClick={this.props.cancelCreate} variant="secondary">cancel</Button>
+                        <Button onClick={this.handleCancel} variant="secondary">cancel</Button>
                     </FormGroup>
                 </Form>
 

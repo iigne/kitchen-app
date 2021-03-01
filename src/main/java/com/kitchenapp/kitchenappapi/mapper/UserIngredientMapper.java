@@ -28,9 +28,7 @@ public class UserIngredientMapper {
     public static UserIngredientDTO toDTO(UserIngredient entity) {
         return UserIngredientDTO.builder()
                 .ingredient(IngredientMapper.toDTO(entity.getIngredient()))
-                .quantities(Collections.singletonList(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement())))
-//                .metricQuantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getIngredient().getMetricUnit()))
-//                .quantity(entity.getCustomMeasurement() != null ? QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement()) : null)
+                .quantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement()))
                 .dateBought(entity.getDateAdded())
                 .expiryDate(entity.getDateExpiry())
                 .build();

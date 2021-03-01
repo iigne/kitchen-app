@@ -26,20 +26,6 @@ public class RecipeIngredientMapper {
                 .build();
     }
 
-//    public static ResponseRecipeIngredientDTO toDTO(RecipeIngredient recipeIngredient) {
-//        Measurement measurement = recipeIngredient.getCustomMeasurement();
-//        return ResponseRecipeIngredientDTO.builder()
-//                .ingredientName(recipeIngredient.getIngredient().getName())
-//                .recipeQuantity(measurement.isMetric() ? recipeIngredient.getMetricQuantity() :
-//                        MeasurementConverter.toMeasurement(recipeIngredient.getMetricQuantity(), measurement))
-//                .measurement(measurement.getName())
-//                .build();
-//    }
-//
-//    public static List<ResponseRecipeIngredientDTO> toDTOs(Set<RecipeIngredient> recipeIngredients) {
-//        return recipeIngredients.stream().map(RecipeIngredientMapper::toDTO).collect(Collectors.toList());
-//    }
-
     public static List<ResponseRecipeIngredientDTO> toDTOs(List<RecipeUserIngredient> recipeUserIngredients, Set<RecipeIngredient> recipeIngredients) {
         if(recipeUserIngredients == null) {
             return new ArrayList<>();
@@ -55,8 +41,10 @@ public class RecipeIngredientMapper {
         double userQuantity = recipeUserIngredient.getUserQuantityMetric() != null ? recipeUserIngredient.getUserQuantityMetric() : 0;
         double recipeQuantity = recipeUserIngredient.getRecipeQuantityMetric();
         return ResponseRecipeIngredientDTO.builder()
+                .ingredientId(recipeUserIngredient.getIngredientId())
                 .ingredientName(recipeUserIngredient.getIngredientName())
                 .measurement(measurement.getName())
+                .measurementId(measurement.getId())
                 .ownedQuantity(measurement.isMetric() ? userQuantity : MeasurementConverter.toMeasurement(userQuantity, measurement))
                 .recipeQuantity(measurement.isMetric() ? recipeQuantity : MeasurementConverter.toMeasurement(recipeQuantity, measurement))
                 .build();

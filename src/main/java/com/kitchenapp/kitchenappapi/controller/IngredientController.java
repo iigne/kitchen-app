@@ -1,6 +1,7 @@
 package com.kitchenapp.kitchenappapi.controller;
 
 import com.kitchenapp.kitchenappapi.dto.IngredientDTO;
+import com.kitchenapp.kitchenappapi.mapper.IngredientMapper;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
@@ -30,14 +31,14 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@RequestBody @Valid IngredientDTO ingredientDTO) {
+    public ResponseEntity<IngredientDTO> createIngredient(@RequestBody @Valid IngredientDTO ingredientDTO) {
             Ingredient ingredient = ingredientService.create(ingredientDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ingredient);
+            return ResponseEntity.status(HttpStatus.CREATED).body(IngredientMapper.toDTO(ingredient));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Ingredient>> searchByName(@RequestParam String term) {
+    public ResponseEntity<List<IngredientDTO>> searchByName(@RequestParam String term) {
         List<Ingredient> ingredients = ingredientRepository.findByNameContains(term);
-        return ResponseEntity.ok().body(ingredients);
+        return ResponseEntity.ok().body(IngredientMapper.toDTOs(ingredients));
     }
 }

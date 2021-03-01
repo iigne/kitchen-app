@@ -1,11 +1,10 @@
 package com.kitchenapp.kitchenappapi.dto;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,16 +13,14 @@ import java.util.List;
 @Builder
 public class UserIngredientDTO {
     @NotNull
+    @JsonUnwrapped
     private IngredientDTO ingredient;
 
-    private List<QuantityDTO> quantities;
+    @JsonUnwrapped
+    private QuantityDTO quantity;
 
     private LocalDate expiryDate;
 
     private LocalDate dateBought;
 
-    @JsonIgnore
-    public QuantityDTO getQuantity() {
-        return quantities.get(0);
-    }
 }
