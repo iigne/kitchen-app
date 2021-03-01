@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RequestRecipeIngredientDTO {
+public class IngredientQuantityDTO {
     private int ingredientId;
     private Integer measurementId;
     private double quantity;

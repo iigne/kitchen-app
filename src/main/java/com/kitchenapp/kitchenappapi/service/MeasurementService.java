@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +31,10 @@ public class MeasurementService {
 
     public Optional<Measurement> findByNameQuantityUnit(String name, double quantity, MetricUnit unit) {
         return measurementRepository.findByNameAndMetricQuantityAndMetricUnit(name, quantity, unit);
+    }
+
+    public List<Measurement> findByIdsIn(List<Integer> measurementIds) {
+        return measurementRepository.findByIdIn(measurementIds);
     }
 
 

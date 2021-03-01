@@ -2,6 +2,8 @@ package com.kitchenapp.kitchenappapi.controller;
 
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
+import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
 import com.kitchenapp.kitchenappapi.model.UserIngredient;
@@ -50,11 +52,18 @@ public class UserIngredientController {
         );
     }
 
+    @PatchMapping("/remove-quantities")
+    public ResponseEntity<List<UserIngredientDTO>> removeQuantities(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                                                    @RequestBody List<IngredientQuantityDTO> ingredientQuantities) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                UserIngredientMapper.toDTO(userIngredientService.updateQuantities(userDetails.getId(), ingredientQuantities))
+        );
+    }
+
     @DeleteMapping
     public ResponseEntity<?> delete(@AuthenticationPrincipal JwtUserDetails userDetails,
                                     @RequestParam int ingredientId) {
         userIngredientService.delete(userDetails.getId(), ingredientId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

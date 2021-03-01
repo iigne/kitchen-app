@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.service;
 
 import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO;
-import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeIngredientDTO;
+import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.RecipeIngredientMapper;
@@ -89,25 +89,25 @@ public class RecipeService {
         return RecipeMapper.toDTO(savedRecipe, recipeUserIngredients, userId);
     }
 
-    private Set<RecipeIngredient> getRecipeIngredientsFromDTO(List<RequestRecipeIngredientDTO> recipeIngredientDTOs, Recipe recipe) {
+    private Set<RecipeIngredient> getRecipeIngredientsFromDTO(List<IngredientQuantityDTO> recipeIngredientDTOs, Recipe recipe) {
         Set<RecipeIngredient> recipeIngredients = new HashSet<>();
 
-        for(RequestRecipeIngredientDTO dto : recipeIngredientDTOs) {
+        for(IngredientQuantityDTO dto : recipeIngredientDTOs) {
             RecipeIngredient ingredient = createNew(dto, recipe);
             recipeIngredients.add(ingredient);
         }
         return recipeIngredients;
     }
 
-    private Set<RecipeIngredient> handleUpdateIngredients(List<RequestRecipeIngredientDTO> updatedIngredients, Recipe recipe) {
+    private Set<RecipeIngredient> handleUpdateIngredients(List<IngredientQuantityDTO> updatedIngredients, Recipe recipe) {
         Set<RecipeIngredient> savedIngredients = recipe.getRecipeIngredients();
 
-        Map<Integer, RequestRecipeIngredientDTO> updatedMap = updatedIngredients.stream().collect(Collectors.toMap(RequestRecipeIngredientDTO::getIngredientId, Function.identity()));
+        Map<Integer, IngredientQuantityDTO> updatedMap = updatedIngredients.stream().collect(Collectors.toMap(IngredientQuantityDTO::getIngredientId, Function.identity()));
         Map<Integer, RecipeIngredient> savedMap = savedIngredients.stream().collect(Collectors.toMap(i -> i.getIngredient().getId(), Function.identity()));
 
-        for(Map.Entry<Integer, RequestRecipeIngredientDTO> updated : updatedMap.entrySet()) {
+        for(Map.Entry<Integer, IngredientQuantityDTO> updated : updatedMap.entrySet()) {
             RecipeIngredient savedValue = savedMap.get(updated.getKey());
-            RequestRecipeIngredientDTO updatedValue = updated.getValue();
+            IngredientQuantityDTO updatedValue = updated.getValue();
 
             if (savedValue == null) {
                 savedIngredients.add(createNew(updatedValue, recipe));
@@ -123,7 +123,7 @@ public class RecipeService {
         //handle remove
         for(Map.Entry<Integer, RecipeIngredient> saved : savedMap.entrySet()) {
             RecipeIngredient savedValue = saved.getValue();
-            RequestRecipeIngredientDTO updatedValue = updatedMap.get(saved.getKey());
+            IngredientQuantityDTO updatedValue = updatedMap.get(saved.getKey());
             if(updatedValue == null) {
                 savedIngredients.remove(savedValue);
             }
@@ -131,7 +131,7 @@ public class RecipeService {
         return savedIngredients;
     }
 
-    private boolean updatedAndSavedDiffer(RecipeIngredient saved, RequestRecipeIngredientDTO updated) {
+    private boolean updatedAndSavedDiffer(RecipeIngredient saved, IngredientQuantityDTO updated) {
         if(saved.getCustomMeasurement().getId() != updated.getMeasurementId()) {
             return true;
         } else {
@@ -143,7 +143,7 @@ public class RecipeService {
         }
     }
 
-    private RecipeIngredient createNew(RequestRecipeIngredientDTO dto, Recipe recipe) {
+    private RecipeIngredient createNew(IngredientQuantityDTO dto, Recipe recipe) {
         Ingredient ingredient = ingredientService.findByIdOrThrow(dto.getIngredientId());
         Measurement measurement = measurementService.findByIdOrThrow(dto.getMeasurementId());
         return RecipeIngredientMapper.toEntity(dto.getQuantity(), ingredient, measurement, recipe);

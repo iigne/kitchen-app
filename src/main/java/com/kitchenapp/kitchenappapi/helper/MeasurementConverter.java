@@ -12,6 +12,10 @@ public class MeasurementConverter {
         return Double.parseDouble(df.format(measurement.getMetricQuantity() * quantity));
     }
 
+    public static double toMetricIfMetric(double quantity, Measurement measurement) {
+        return measurement.isMetric() ? quantity : toMetric(quantity, measurement);
+    }
+
     public static double toMeasurement(double metricQuantity, Measurement measurement) {
         return Double.parseDouble(df.format(metricQuantity/measurement.getMetricQuantity()));
     }
