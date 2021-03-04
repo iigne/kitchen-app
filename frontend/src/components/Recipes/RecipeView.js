@@ -104,7 +104,7 @@ class RecipeView extends React.Component {
         axios.patch('/user-ingredient/remove-quantities', usedIngredients,
             {headers: authHeader()})
             .then(res => {
-                console.log(res.data);
+                // console.log(res.data);
                 //TODO update view and card to display new current quantity owned
 
                 // this.setState(prevState => {
@@ -114,7 +114,7 @@ class RecipeView extends React.Component {
                 //     const updatedOwnedQuantity =
                 // })
                 //TODO ???
-                console.log("recipe made")
+                // console.log("recipe made")
             })
             .catch(err => {
                 console.log(err);
