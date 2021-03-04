@@ -94,8 +94,31 @@ class RecipeView extends React.Component {
     }
 
     handleMakeRecipe = () => {
-        //TODO
-        console.log("recipe made")
+        const ingredients = [...this.state.ingredients];
+        const usedIngredients = ingredients.map(i => ({
+            ingredientId: i.ingredientId,
+            measurementId: i.measurementId,
+            quantity: i.recipeQuantity
+        }));
+        console.log(usedIngredients);
+        axios.patch('/user-ingredient/remove-quantities', usedIngredients,
+            {headers: authHeader()})
+            .then(res => {
+                // console.log(res.data);
+                //TODO update view and card to display new current quantity owned
+
+                // this.setState(prevState => {
+                //     const updatedIngredients = res.data.sort((a,b) => )
+                //     const ingredients = prevState.ingredients;
+                //     ingredients.map(i => i.ownedQuantity = )
+                //     const updatedOwnedQuantity =
+                // })
+                //TODO ???
+                // console.log("recipe made")
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     render() {

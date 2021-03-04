@@ -3,6 +3,7 @@ package com.kitchenapp.kitchenappapi.service;
 import com.kitchenapp.kitchenappapi.dto.MeasurementDTO;
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
+import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
@@ -12,11 +13,15 @@ import com.kitchenapp.kitchenappapi.model.UserIngredient;
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.UserRepository;
+import com.kitchenapp.kitchenappapi.repository.projection.RecipeUserIngredient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +53,6 @@ public class UserIngredientService {
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("ingredientId %s not found", ingredientId)));
 
-        //TODO measurementsDTO - will hold metric and non metric value
         Measurement measurement = measurementService.findByIdOrThrow(dto.getQuantity().getMeasurementId());
         return UserIngredientMapper.toEntity(dto, ingredient, user, measurement);
     }
@@ -67,6 +71,32 @@ public class UserIngredientService {
         double metricQuantity = measurement == null ? dto.getQuantity() : MeasurementConverter.toMetric(dto.getQuantity(), measurement);
         userIngredient.setMetricQuantity(metricQuantity);
         return UserIngredientMapper.toDTO(userIngredientRepository.save(userIngredient));
+    }
+
+    public List<UserIngredient> updateQuantities(final int userId, List<IngredientQuantityDTO> ingredientQuantities) {
+        Map<Integer, IngredientQuantityDTO> ingredientsById = ingredientQuantities.stream().collect(Collectors.toMap(IngredientQuantityDTO::getIngredientId, Function.identity()));
+        List<Integer> measurementIds = ingredientQuantities.stream().map(IngredientQuantityDTO::getMeasurementId).collect(Collectors.toList());
+        Map<Integer, Measurement> measurementsById = measurementService.findByIdsIn(measurementIds).stream().collect(Collectors.toMap(Measurement::getId, Function.identity()));
+
+        List<UserIngredient> userIngredients = userIngredientRepository.findAllByUserIdAndIngredientIdIn(userId, ingredientsById.keySet());
+        for(UserIngredient ingredient : userIngredients) {
+            final int ingredientId = ingredient.getId().getIngredientId();
+            IngredientQuantityDTO ingredientQuantity = ingredientsById.get(ingredientId);
+            if(ingredientQuantity != null) {
+                final int measurementId = ingredientQuantity.getMeasurementId();
+                Measurement measurement = measurementsById.get(measurementId);
+                if(measurement != null) {
+                    double toRemoveMetricQuantity = MeasurementConverter.toMetricIfMetric(ingredientQuantity.getQuantity(), measurement);
+                    double difference = ingredient.getMetricQuantity() - toRemoveMetricQuantity;
+                    ingredient.setMetricQuantity(difference > 0 ? difference : 0);
+                } else {
+                    throw new EntityNotFoundException(String.format("measurementId %s does not exist", measurementId));
+                }
+            } else {
+                throw new EntityNotFoundException(String.format("userId %s does not have ingredientId %s", userId, ingredientId));
+            }
+        }
+        return userIngredientRepository.saveAll(userIngredients);
     }
 
     public void delete(int id, int ingredientId) {
