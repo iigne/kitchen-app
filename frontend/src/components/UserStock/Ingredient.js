@@ -21,13 +21,15 @@ class Ingredient extends React.Component {
 
     constructor(props) {
         super(props);
+        const categoryIcon = this.getIcon(props.category);
         this.state = {
             id: props.id,
             name: props.name,
             quantity: props.quantity,
             measurement: props.measurementId,
             measurementName:props.measurementName,
-            category: this.getIcon(props.category),
+            category: categoryIcon.icon,
+            categoryColour: categoryIcon.color,
 
             currentlyEditing: false,
             editedQuantity: null
@@ -37,21 +39,44 @@ class Ingredient extends React.Component {
     getIcon(category) {
         switch (category) {
             case "Vegetable":
-                return faLeaf;
+                return {
+                    icon: faLeaf,
+                    color: "#66B447"
+                };
             case "Fruit":
-                return faAppleAlt;
+                return {
+                    icon: faAppleAlt,
+                    color:"#E9692C"
+                };
             case "Bread":
-                return faBreadSlice;
+                return {
+                    icon: faBreadSlice,
+                    color:" #EEC07B"
+                };
             case "Cupboard":
-                return faBox;
+                return {
+                    icon: faBox,
+                    color:"#d4bc89"
+                };
             case "Fridge":
-                return faSnowflake;
+                return {
+                    icon: faSnowflake,
+                    color:"#a0cbf8"
+                };
             case "Freezer":
-                return faSnowflake;
+                return {
+                    icon: faSnowflake,
+                    color:"#1530b1"
+                };
             case "Spice":
-                return faPepperHot;
+                return {
+                    icon: faPepperHot,
+                    // color:"#E32227"
+                };
             default:
-                return null;
+                return  {
+                    icon: null,
+                }
         }
     }
 
@@ -93,7 +118,7 @@ class Ingredient extends React.Component {
                 <Row className="ingredient">
                     {
                         icon && <Col xs={1}>
-                            <i className="ingredientIcon"><FontAwesomeIcon icon={this.state.category}/></i>
+                            <i className="ingredientIcon" style={{color: this.state.categoryColour}}><FontAwesomeIcon icon={this.state.category}/></i>
                         </Col>
                     }
 

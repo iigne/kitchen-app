@@ -30,7 +30,7 @@ class Navigation extends React.Component {
         let auth = this.state.isAuthenticated
         return (
             <MemoryRouter>
-                <Navbar bg="light" expand="lg">
+                <Navbar bg="light" expand="lg" className="navigation">
                     <Navbar.Brand as={Link} to="/" className="nav-link">
                         <img src={logo} width="30" height="30" alt="App logo - recipe book icon"/>
                         Ktchn
@@ -38,20 +38,18 @@ class Navigation extends React.Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         {auth && <Nav.Link as={Link} to="/user-ingredients">
-                            <img src={fridge} width="30" height="30" alt="Fridge icon"/>
-                            My ingredients
+                            <img src={fridge} width="30" height="30" alt="Fridge icon"/> My ingredients
                         </Nav.Link>}
                         {auth && <Nav.Link as={Link} to="/recipes">
-                            <img src={recipes} width="30" height="30" alt="RecipeCard book icon"/>
-                            Recipes
+                            <img src={recipes} width="30" height="30" alt="RecipeCard book icon"/> Recipes
                         </Nav.Link>}
-                        {auth && <Nav.Link as={Link} to="/shopping-list">
-                            <img src={shopping} width="30" height="30" alt="Shopping cart icon"/>
-                            Shopping list
-                        </Nav.Link>}
-                        {auth && <Nav.Link as={Link} to="/meal-plan">
-                            <img src={calendar} width="30" height="30" alt="Calendar icon"/>
-                            Meal plan</Nav.Link>}
+                        {/*{auth && <Nav.Link as={Link} to="/shopping-list">*/}
+                        {/*    <img src={shopping} width="30" height="30" alt="Shopping cart icon"/>*/}
+                        {/*    Shopping list*/}
+                        {/*</Nav.Link>}*/}
+                        {/*{auth && <Nav.Link as={Link} to="/meal-plan">*/}
+                        {/*    <img src={calendar} width="30" height="30" alt="Calendar icon"/>*/}
+                        {/*    Meal plan</Nav.Link>}*/}
 
                         {!auth && <Nav.Link as={Link} to="/register" className="nav-link ml-auto">Register</Nav.Link>}
                         {!auth && <Nav.Link as={Link} to="/login">Login</Nav.Link>}

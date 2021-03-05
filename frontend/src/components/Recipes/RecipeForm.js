@@ -20,7 +20,7 @@ class RecipeForm extends React.Component {
     }
 
     formatMethod(method) {
-        return method.split(';');
+        return method.replaceAll(';', '\n');
     }
 
     handleRecipeMethodChange = (e) => {
@@ -60,7 +60,7 @@ class RecipeForm extends React.Component {
     }
 
     handleSubmit = () => {
-        const methodFormatted = this.state.method.replace('\n', ';');
+        const methodFormatted = this.state.method.replaceAll('\n', ';');
         const ingredients = [...this.state.ingredients].map(i => ({
             ingredientId: i.id,
             measurementId: i.measurementId,
