@@ -31,7 +31,12 @@ class RecipeLibrary extends React.Component {
     }
 
     handleLoadRecipes = (recipes, type) => {
-        this.setState({recipes: recipes})
+        const sortedRecipes = recipes.sort((a,b) => {
+            const aFullDiff = a.ingredients.length - a.ingredients.filter(i => i.recipeQuantity <= i.ownedQuantity).length;
+            const bFullDiff = b.ingredients.length - b.ingredients.filter(i => i.recipeQuantity <= i.ownedQuantity).length;
+            return aFullDiff - bFullDiff;
+        })
+        this.setState({recipes: sortedRecipes})
         this.setState({currentShow: type})
     }
 
@@ -98,8 +103,9 @@ class RecipeLibrary extends React.Component {
 
                 <header className="subheader">Browse</header>
                 <Container>
-                    <BrowseOption type="suggestion" text="recipe suggestions"
-                                  handleLoadRecipes={this.handleLoadRecipes}/>
+                    {/*TODO */}
+                    {/*<BrowseOption type="suggestion" text="recipe suggestions"*/}
+                    {/*              handleLoadRecipes={this.handleLoadRecipes}/>*/}
                     <BrowseOption type="all" text="all recipes" handleLoadRecipes={this.handleLoadRecipes}/>
                     <BrowseOption type="liked" text="recipes I've liked" handleLoadRecipes={this.handleLoadRecipes}/>
                     <BrowseOption type="created" text="recipes I've created"

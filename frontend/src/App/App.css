@@ -23,7 +23,7 @@
 .subheader {
     text-align: center;
     font-size: calc(15px + 2vmin);
-    color: #ffffff;
+    color: #82996b;
     padding: 10px;
 }
 
@@ -35,4 +35,12 @@ footer {
 
 .redText {
     color: red;
+}
+
+div a {
+    color: #659145;
+}
+
+div a:hover {
+    color: #296724;
 }

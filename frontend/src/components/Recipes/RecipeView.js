@@ -141,7 +141,7 @@ class RecipeView extends React.Component {
             <>
                 {!inEditRecipe ?
 
-                    <Modal show={this.props.show} onHide={() => this.props.handleViewRecipe(null)}>
+                    <Modal size="lg" show={this.props.show} onHide={() => this.props.handleViewRecipe(null)}>
                             <Modal.Header closeButton>
                                 <Modal.Title>
                                     {this.state.title}
@@ -162,6 +162,7 @@ class RecipeView extends React.Component {
                                 <h2>Method</h2>
                                 {methodSteps.map((item) =>
                                     <Row>
+                                        <hr/>
                                         <Col>
                                             {item}
                                         </Col>
