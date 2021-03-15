@@ -1,5 +1,4 @@
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Button, Col, Row} from "react-bootstrap";
 import React from "react";
 
 class Search extends React.Component {
@@ -8,11 +7,6 @@ class Search extends React.Component {
         this.state = {
             searchResults: props.searchResults,
             noResults: props.noResults
-
-            // id: props.id,
-            // name: props.name,
-            // metricUnit: props.metricUnit,
-            // measurements: props.measurements
         }
     }
 

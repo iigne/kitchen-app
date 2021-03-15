@@ -1,5 +1,4 @@
 import React from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faAppleAlt,
     faBox,
@@ -9,15 +8,13 @@ import {
     faPepperHot,
     faSnowflake
 } from "@fortawesome/free-solid-svg-icons";
-
-import './UserStock.css';
-import {Button, Col, Dropdown, Form, Row, ListGroup} from "react-bootstrap";
+import {Button, Col, Dropdown, Form, Row} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import DropdownToggle from "react-bootstrap/DropdownToggle";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
 
-
-class Ingredient extends React.Component {
+class IngredientBase extends React.Component {
 
     constructor(props) {
         super(props);
@@ -37,6 +34,7 @@ class Ingredient extends React.Component {
     }
 
     getIcon(category) {
+        //TODO this is probably can be done with a map???
         switch (category) {
             case "Vegetable":
                 return {
@@ -110,36 +108,34 @@ class Ingredient extends React.Component {
     }
 
     render() {
-        const currentlyEditing = this.state.currentlyEditing
+        const currentlyEditing = this.state.currentlyEditing;
         const icon = this.state.category;
-
-        return (
-            <ListGroup.Item >
-                <Row className="ingredient">
-                    {
-                        icon && <Col xs={1}>
-                            <i className="ingredientIcon" style={{color: this.state.categoryColour}}><FontAwesomeIcon icon={this.state.category}/></i>
-                        </Col>
-                    }
-
-                    <Col>
-                        <b>{this.state.name}</b>
+        return(
+            <>
+                {
+                    icon && <Col xs={1}>
+                        <i className="ingredientIcon" style={{color: this.state.categoryColour}}><FontAwesomeIcon icon={this.state.category}/></i>
                     </Col>
-                    {currentlyEditing ?
-                        <>
-                            <Col xs={3}>
-                                <Form.Control name="editedQuantity" onChange={this.handleChange}/>
-                            </Col>
-                            <Col>
-                                {this.state.measurementName}
-                            </Col>
-                            <Col xs={1}>
-                                <Button size="sm" variant="outline-success" onClick={this.updateIngredient}>
-                                    <FontAwesomeIcon icon={faCheck}/>
-                                </Button>
-                            </Col>
-                        </> :
-                        <>
+                }
+
+                <Col>
+                    <b>{this.state.name}</b>
+                </Col>
+                {currentlyEditing ?
+                    <>
+                        <Col xs={3}>
+                            <Form.Control name="editedQuantity" onChange={this.handleChange}/>
+                        </Col>
+                        <Col>
+                            {this.state.measurementName}
+                        </Col>
+                        <Col xs={1}>
+                            <Button size="sm" variant="outline-success" onClick={this.updateIngredient}>
+                                <FontAwesomeIcon icon={faCheck}/>
+                            </Button>
+                        </Col>
+                    </> :
+                    <>
                         <Col>{this.state.quantity} {this.state.measurementName}</Col>
                         <Col xs={1}>
                             <Dropdown>
@@ -151,14 +147,10 @@ class Ingredient extends React.Component {
                                 </DropdownMenu>
                             </Dropdown>
                         </Col>
-                        </>
-                    }
-
-                </Row>
-            </ListGroup.Item>
-        )
+                    </>
+                }
+            </>
+        );
     }
 
-}
-
-export default Ingredient;
+} export default IngredientBase;

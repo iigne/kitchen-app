@@ -2,7 +2,7 @@ import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faSearch} from "@fortawesome/free-solid-svg-icons";
 
-import './UserStock.css';
+import '../UserStock/UserStock.css';
 import {Button, Col, Container, Form, FormGroup, FormLabel, InputGroup, ListGroup, Row} from "react-bootstrap";
 import axios from "axios";
 import authHeader from "../../api/auth-header";

@@ -1,8 +1,8 @@
 import React from "react";
-import Ingredient from "./Ingredient";
+import Ingredient from "../Ingredient/Ingredient";
 
 import './UserStock.css';
-import AddIngredient from "./AddIngredient";
+import AddIngredient from "../Ingredient/AddIngredient";
 import {Container, ListGroup} from "react-bootstrap";
 import authHeader from "../../api/auth-header";
 import axios from "axios";

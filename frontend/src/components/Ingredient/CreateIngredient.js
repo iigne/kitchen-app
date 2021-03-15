@@ -1,7 +1,7 @@
 import {Button, Form, FormGroup} from "react-bootstrap";
 import React from "react";
 
-import './UserStock.css';
+import '../UserStock/UserStock.css';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import AddMeasurement from "./AddMeasurement";

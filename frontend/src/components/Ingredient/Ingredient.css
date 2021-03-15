@@ -1,0 +1,18 @@
+.btn-rounded {
+    color: white;
+    border-radius: 50%;
+    background-color: white;
+    border: 1px solid grey;
+}
+
+.btn-rounded-checked {
+    color: black;
+    border-radius: 50%;
+    background-color: grey;
+    border: 1px solid grey;
+}
+
+.btn-rounded:hover {
+    color: white;
+}
+
