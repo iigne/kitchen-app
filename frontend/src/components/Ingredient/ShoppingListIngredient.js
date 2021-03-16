@@ -1,10 +1,9 @@
 import React from "react";
 import IngredientBase from "./IngredientBase";
-import '../Ingredient/Ingredient.css';
-
 import  {Button, ListGroup, Row} from "react-bootstrap";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import '../Ingredient/Ingredient.css';
 
 
 class ShoppingListIngredient extends React.Component{
@@ -23,10 +22,9 @@ class ShoppingListIngredient extends React.Component{
     }
 
     handleCheckboxClick = () => {
-        this.props.handleCheckboxChange(this.state.id);
         this.setState(prevState => {
             return {ticked: !prevState.ticked}
-        });
+        }, () => this.props.handleCheckboxChange(this.state));
     }
 
     render() {

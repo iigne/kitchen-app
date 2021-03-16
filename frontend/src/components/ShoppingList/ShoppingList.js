@@ -4,6 +4,8 @@ import AddIngredient from "../Ingredient/AddIngredient";
 import IconButtonLabel from "../Recipes/IconButtonLabel";
 import {faCheck, faTrash} from "@fortawesome/free-solid-svg-icons";
 import ShoppingListIngredient from "../Ingredient/ShoppingListIngredient";
+import '../Ingredient/Ingredient.css';
+
 
 
 class ShoppingList extends React.Component {
@@ -47,13 +49,10 @@ class ShoppingList extends React.Component {
         const measurement = ingredientData.measurementId;
     }
 
-    handleCheckboxChange = (id) => {
+    handleCheckboxChange = (ingredient) => {
         this.setState(prevState => {
             const oldIngredients = prevState.ingredients;
-            const index = oldIngredients.findIndex(i => i.id === id);
-            const ingredient = oldIngredients[index];
-            ingredient.ticked = !ingredient.ticked;
-            console.log(ingredient);
+            const index = oldIngredients.findIndex(i => i.id === ingredient.id);
             oldIngredients.splice(index, 1, ingredient);
             return {ingredients: oldIngredients}
         })
@@ -62,7 +61,6 @@ class ShoppingList extends React.Component {
     handleFinishShopping = () => {
         //TODO connect to backend
         this.setState(prevState => {
-            console.log(prevState.ingredients)
             const ingredients = prevState.ingredients.filter(i => !i.ticked)
             return {ingredients: ingredients}
         })
