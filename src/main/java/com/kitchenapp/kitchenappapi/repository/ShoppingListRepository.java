@@ -6,10 +6,13 @@ import org.springframework.data.jpa.repository.Modifying;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface ShoppingListRepository extends JpaRepository<ShoppingUserIngredient, Integer> {
 
     List<ShoppingUserIngredient> findAllByUserId(final int userId);
+
+    Optional<ShoppingUserIngredient> findByUserIdAndIngredientId(final int userId, final int ingredientId);
 
     @Modifying
     @Transactional

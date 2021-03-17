@@ -70,6 +70,7 @@ public class UserIngredientService {
         Measurement measurement = measurementId != null ? measurementService.findByIdOrThrow(measurementId) : null;
         double metricQuantity = measurement == null ? dto.getQuantity() : MeasurementConverter.toMetric(dto.getQuantity(), measurement);
         userIngredient.setMetricQuantity(metricQuantity);
+        //TODO handle measurement change
         return UserIngredientMapper.toDTO(userIngredientRepository.save(userIngredient));
     }
 
