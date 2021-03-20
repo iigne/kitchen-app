@@ -30,4 +30,7 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Recipe> userRecipes;
 
+    @OneToMany(mappedBy = "user")
+    private Set<ShoppingUserIngredient> shoppingUserIngredients;
+
 }
