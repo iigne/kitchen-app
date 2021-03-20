@@ -2,10 +2,7 @@ package com.kitchenapp.kitchenappapi.mapper;
 
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
-import com.kitchenapp.kitchenappapi.model.Ingredient;
-import com.kitchenapp.kitchenappapi.model.Measurement;
-import com.kitchenapp.kitchenappapi.model.User;
-import com.kitchenapp.kitchenappapi.model.UserIngredient;
+import com.kitchenapp.kitchenappapi.model.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -22,6 +19,15 @@ public class UserIngredientMapper {
                 .metricQuantity(measurement.isMetric() ? dto.getQuantity().getQuantity() : MeasurementConverter.toMetric(dto.getQuantity().getQuantity(), measurement))
                 .dateAdded(dto.getDateBought() != null ? dto.getDateBought() : LocalDate.now())
                 .dateExpiry(dto.getExpiryDate() != null ? dto.getExpiryDate() : LocalDate.now().plusDays(ingredient.getShelfLifeDays()))
+                .build();
+    }
+
+    public static UserIngredient toEntity(ShoppingUserIngredient shoppingUserIngredient) {
+        return UserIngredient.builder()
+                .ingredient(shoppingUserIngredient.getIngredient())
+                .user(shoppingUserIngredient.getUser())
+                .customMeasurement(shoppingUserIngredient.getMeasurement())
+                .metricQuantity(shoppingUserIngredient.getMetricQuantity())
                 .build();
     }
 

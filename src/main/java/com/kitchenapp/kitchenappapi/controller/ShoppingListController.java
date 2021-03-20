@@ -47,24 +47,11 @@ public class ShoppingListController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ShoppingListMapper.toDTOs(ingredients));
     }
 
-    @DeleteMapping("/multiple")
-    public ResponseEntity<?> clearList(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        shoppingListService.deleteAllByUser(userDetails.getId());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
     @PatchMapping
     public ResponseEntity<ShoppingListItemDTO> updateListItem(@RequestBody @Valid IngredientQuantityDTO item,
                                                               @AuthenticationPrincipal JwtUserDetails userDetails) {
         ShoppingUserIngredient ingredient = shoppingListService.updateFromDTO(item, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(ShoppingListMapper.toDTO(ingredient));
-    }
-
-
-    @DeleteMapping
-    public ResponseEntity<?> deleteItem(@RequestParam final int ingredientId, @AuthenticationPrincipal JwtUserDetails userDetails) {
-        shoppingListService.deleteByIngredientAndUserId(ingredientId, userDetails.getId());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/tick")
@@ -74,13 +61,23 @@ public class ShoppingListController {
         return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("ticked", ticked));
     }
 
-    //this will be used for removing ticked off items from user's list
-    //and importing to user's stock
-    @DeleteMapping("/list/clear-and-import") //TODO rename this is horrible
-    public ResponseEntity<List<ShoppingListItemDTO>> clearItemsFromListAndImport(List<Integer> ingredientIds,
-                                                                                 @AuthenticationPrincipal JwtUserDetails userDetails) {
+    @DeleteMapping
+    public ResponseEntity<?> deleteItem(@RequestParam final int ingredientId, @AuthenticationPrincipal JwtUserDetails userDetails) {
+        shoppingListService.deleteByIngredientAndUserId(ingredientId, userDetails.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    @DeleteMapping("/multiple")
+    public ResponseEntity<?> clearList(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        shoppingListService.deleteAllByUser(userDetails.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @PostMapping("/clear-and-import")
+    public ResponseEntity<List<ShoppingListItemDTO>> clearAndImportTickedItems(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        shoppingListService.clearAndImport(userDetails.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

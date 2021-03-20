@@ -14,6 +14,10 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingUserIngred
 
     Optional<ShoppingUserIngredient> findByUserIdAndIngredientId(final int userId, final int ingredientId);
 
+    List<ShoppingUserIngredient> findAllByUserIdAndIngredientIdIn(final int userId, final List<Integer> ingredientIds);
+
+    List<ShoppingUserIngredient> findAllByUserIdAndTickedIsTrue(final int userId);
+
     @Modifying
     @Transactional
     void deleteAllByIngredientIdInAndUserId(final List<Integer> ingredientIds, final int userId);

@@ -6,10 +6,7 @@ import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
-import com.kitchenapp.kitchenappapi.model.Ingredient;
-import com.kitchenapp.kitchenappapi.model.Measurement;
-import com.kitchenapp.kitchenappapi.model.User;
-import com.kitchenapp.kitchenappapi.model.UserIngredient;
+import com.kitchenapp.kitchenappapi.model.*;
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.UserRepository;
@@ -18,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -79,7 +77,7 @@ public class UserIngredientService {
         List<Integer> measurementIds = ingredientQuantities.stream().map(IngredientQuantityDTO::getMeasurementId).collect(Collectors.toList());
         Map<Integer, Measurement> measurementsById = measurementService.findByIdsIn(measurementIds).stream().collect(Collectors.toMap(Measurement::getId, Function.identity()));
 
-        List<UserIngredient> userIngredients = userIngredientRepository.findAllByUserIdAndIngredientIdIn(userId, ingredientsById.keySet());
+        List<UserIngredient> userIngredients = userIngredientRepository.findAllByUserIdAndIngredientIdIn(userId, new ArrayList<>(ingredientsById.keySet()));
         for(UserIngredient ingredient : userIngredients) {
             final int ingredientId = ingredient.getId().getIngredientId();
             IngredientQuantityDTO ingredientQuantity = ingredientsById.get(ingredientId);
@@ -100,8 +98,16 @@ public class UserIngredientService {
         return userIngredientRepository.saveAll(userIngredients);
     }
 
+    public List<UserIngredient> getByIds(final List<Integer> ingredientIds, final int userId) {
+        return userIngredientRepository.findAllByUserIdAndIngredientIdIn(userId, ingredientIds);
+    }
+
     public void delete(int id, int ingredientId) {
         userIngredientRepository.deleteByIngredientIdAndUserId(ingredientId, id);
+    }
+
+    public List<UserIngredient> saveAll(List<UserIngredient> ingredients) {
+        return userIngredientRepository.saveAll(ingredients);
     }
 
 }
