@@ -150,7 +150,7 @@ class CreateIngredient extends React.Component {
                         <Form.Label>Additional measurements</Form.Label>
                         <Form.Text className="text-muted">Optional - enter any additional measurements for this product
                             and
-                            weight of this measurement in selected metric unit, e.g. can (400g), jar (500ml), piece
+                            weight/volume of this measurement in selected metric unit, e.g. can (400g), jar (500ml), piece
                             (5g),
                             etc. </Form.Text>
                         {measurements.map((item) =>
