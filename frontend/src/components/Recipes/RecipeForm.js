@@ -2,8 +2,8 @@ import React from "react";
 import {Button, Col, Form, FormGroup, FormLabel, Image, ListGroup, Modal, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
-import AddIngredient from "../UserStock/AddIngredient";
-import Ingredient from "../UserStock/Ingredient";
+import AddIngredient from "../Ingredient/AddIngredient";
+import Ingredient from "../Ingredient/Ingredient";
 
 class RecipeForm extends React.Component {
     constructor(props) {

@@ -14,6 +14,7 @@ import recipes from './images/recipe-book.png'
 import shopping from './images/grocery-cart.png'
 import calendar from './images/calendar.png'
 import RecipeLibrary from "../Recipes/RecipeLibrary";
+import ShoppingList from "../ShoppingList/ShoppingList";
 
 class Navigation extends React.Component {
 
@@ -43,10 +44,10 @@ class Navigation extends React.Component {
                         {auth && <Nav.Link as={Link} to="/recipes">
                             <img src={recipes} width="30" height="30" alt="RecipeCard book icon"/> Recipes
                         </Nav.Link>}
-                        {/*{auth && <Nav.Link as={Link} to="/shopping-list">*/}
-                        {/*    <img src={shopping} width="30" height="30" alt="Shopping cart icon"/>*/}
-                        {/*    Shopping list*/}
-                        {/*</Nav.Link>}*/}
+                        {auth && <Nav.Link as={Link} to="/shopping-list">
+                            <img src={shopping} width="30" height="30" alt="Shopping cart icon"/>
+                            Shopping list
+                        </Nav.Link>}
                         {/*{auth && <Nav.Link as={Link} to="/meal-plan">*/}
                         {/*    <img src={calendar} width="30" height="30" alt="Calendar icon"/>*/}
                         {/*    Meal plan</Nav.Link>}*/}
@@ -68,6 +69,8 @@ class Navigation extends React.Component {
                                   component={() => <UserStock/>}/>
                     <PrivateRoute path="/recipes" isAuthenticated={this.state.isAuthenticated}
                                   component={() => <RecipeLibrary userId={this.state.userId}/>}/>
+                    <PrivateRoute path="/shopping-list" isAuthenticated={this.state.isAuthenticated}
+                                  component={() => <ShoppingList userId={this.state.userId}/>}/>
                     <PrivateRoute path="/logout" isAuthenticated={this.state.isAuthenticated}
                                   component={() => <Logout/>}/>
                 </Switch>
