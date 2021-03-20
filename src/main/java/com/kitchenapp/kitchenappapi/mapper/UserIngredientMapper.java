@@ -23,11 +23,14 @@ public class UserIngredientMapper {
     }
 
     public static UserIngredient toEntity(ShoppingUserIngredient shoppingUserIngredient) {
+        Ingredient ingredient = shoppingUserIngredient.getIngredient();
         return UserIngredient.builder()
-                .ingredient(shoppingUserIngredient.getIngredient())
+                .ingredient(ingredient)
                 .user(shoppingUserIngredient.getUser())
                 .customMeasurement(shoppingUserIngredient.getMeasurement())
                 .metricQuantity(shoppingUserIngredient.getMetricQuantity())
+                .dateAdded(LocalDate.now())
+                .dateExpiry(LocalDate.now().plusDays(ingredient.getShelfLifeDays()))
                 .build();
     }
 

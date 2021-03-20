@@ -81,7 +81,7 @@ public class ShoppingListService {
 
         //TODO this definitely needs a test
         List<ShoppingUserIngredient> shoppingIngredients = getTickedByUser(userId);
-        List<Integer> ingredientIds = shoppingIngredients.stream().map(i -> i.getId().getIngredientId()).collect(Collectors.toList());
+        List<Integer> ingredientIds = shoppingIngredients.stream().map(i -> i.getIngredient().getId()).collect(Collectors.toList());
         List<UserIngredient> userIngredients = userIngredientService.getByIds(ingredientIds, userId);
 
         List<UserIngredient> updatedIngredients = extractUserIngredientsFromShopping(shoppingIngredients, userIngredients);
@@ -92,9 +92,9 @@ public class ShoppingListService {
     public List<UserIngredient> extractUserIngredientsFromShopping(List<ShoppingUserIngredient> shoppingUserIngredients,
                                                                    List<UserIngredient> userIngredients) {
         Map<Integer, ShoppingUserIngredient> shoppingMap = shoppingUserIngredients.stream().collect(
-                Collectors.toMap(i -> i.getId().getIngredientId(), Function.identity()));
+                Collectors.toMap(i -> i.getIngredient().getId(), Function.identity()));
         Map<Integer, UserIngredient> userIngredientMap = userIngredients.stream().collect(
-                Collectors.toMap(i -> i.getId().getIngredientId(), Function.identity()));
+                Collectors.toMap(i -> i.getIngredient().getId(), Function.identity()));
 
         List<UserIngredient> toSave = new ArrayList<>();
         for(Integer key : shoppingMap.keySet()) {
