@@ -5,7 +5,7 @@ import {
     faHeart,
     faHeartBroken,
     faInfoCircle,
-    faPencilAlt,
+    faPencilAlt, faShoppingBasket,
     faTrash,
     faUtensils
 } from "@fortawesome/free-solid-svg-icons";
@@ -100,10 +100,10 @@ class RecipeView extends React.Component {
             measurementId: i.measurementId,
             quantity: i.recipeQuantity
         }));
-        console.log(usedIngredients);
         axios.patch('/user-ingredient/remove-quantities', usedIngredients,
             {headers: authHeader()})
             .then(res => {
+                //TODO verification
                 // console.log(res.data);
                 //TODO update view and card to display new current quantity owned
 
@@ -119,6 +119,22 @@ class RecipeView extends React.Component {
             .catch(err => {
                 console.log(err);
             })
+    }
+
+    handleAddIngredientsToShopping = () => {
+        const ingredients = [...this.state.ingredients];
+        const formattedIngredients = ingredients.map(i => ({
+            ingredientId: i.ingredientId,
+            measurementId: i.measurementId,
+            quantity: i.recipeQuantity
+        }))
+        axios.post('/shopping/multiple', formattedIngredients, {
+            headers: authHeader()
+        }).then(res => {
+            console.log("added stuff")
+        }).catch(err => {
+            console.log(err);
+        })
     }
 
     render() {
@@ -171,6 +187,8 @@ class RecipeView extends React.Component {
 
 
                                 <h2>Options</h2>
+                                <IconButtonLabel label="Add ingredients to shopping list" icon={faShoppingBasket} variant="outline-secondary"
+                                                 handleClick={this.handleAddIngredientsToShopping}/>
                                 <IconButtonLabel label={likedLabel} variant="outline-danger" icon={likedIcon}
                                                  handleClick={this.handleToggleLikeRecipe}/>
                                 <IconButtonLabel label="Make this recipe" icon={faUtensils}
