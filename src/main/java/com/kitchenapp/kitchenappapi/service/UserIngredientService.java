@@ -65,10 +65,10 @@ public class UserIngredientService {
                 new EntityNotFoundException(String.format("userId %s and ingredientId %s doesn't exist", userId, ingredientId)));
 
         final Integer measurementId = dto.getMeasurementId();
-        Measurement measurement = measurementId != null ? measurementService.findByIdOrThrow(measurementId) : null;
-        double metricQuantity = measurement == null ? dto.getQuantity() : MeasurementConverter.toMetric(dto.getQuantity(), measurement);
+        Measurement measurement = measurementService.findByIdOrThrow(measurementId);
+        double metricQuantity = MeasurementConverter.toMetricIfMetric(dto.getQuantity(), measurement);
         userIngredient.setMetricQuantity(metricQuantity);
-        //TODO handle measurement change
+        userIngredient.setCustomMeasurement(measurement);
         return UserIngredientMapper.toDTO(userIngredientRepository.save(userIngredient));
     }
 

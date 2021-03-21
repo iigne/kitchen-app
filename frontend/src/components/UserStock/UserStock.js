@@ -63,8 +63,6 @@ class UserStock extends React.Component {
         const newQuantity = ingredientData.newQuantity;
         const ingredientId = ingredientData.ingredientId;
         const measurement = ingredientData.measurementId;
-
-        let updatedQuantity = null;
         axios.patch('/user-ingredient/quantity', {
                 measurementId: measurement,
                 quantity: newQuantity
@@ -74,16 +72,14 @@ class UserStock extends React.Component {
             }
         ).then(res => {
             const ingredient = res.data;
-            updatedQuantity = ingredient.quantity;
             this.setState(prevState => {
                 const ingredients = prevState.ingredients
                 const index = ingredients.findIndex(ui => ui.id === ingredient.id)
                 ingredients.splice(index, 1, ingredient)
                 return {ingredients: ingredients}
             })
-            return updatedQuantity;
         }).catch(error => {
-            return updatedQuantity;
+            console.log(error);
         })
     }
 

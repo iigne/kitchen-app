@@ -1,80 +1,30 @@
 import React from "react";
-import {
-    faAppleAlt,
-    faBox,
-    faBreadSlice,
-    faCheck,
-    faLeaf,
-    faPepperHot,
-    faSnowflake
-} from "@fortawesome/free-solid-svg-icons";
-import {Button, Col, Dropdown, Form, Row} from "react-bootstrap";
+import {faCheck,} from "@fortawesome/free-solid-svg-icons";
+import {Button, Col, Dropdown, Form} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import DropdownToggle from "react-bootstrap/DropdownToggle";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
+import {icons} from "./icons";
 
 class IngredientBase extends React.Component {
 
     constructor(props) {
         super(props);
-        const categoryIcon = this.getIcon(props.category);
+        const icon = icons.get(props.category);
+        const categoryIcon = icon === undefined ? {icon: null, categoryColour: null} : icon;
         this.state = {
             id: props.id,
             name: props.name,
             quantity: props.quantity,
             measurement: props.measurementId,
-            measurementName:props.measurementName,
+            measurementName: props.measurementName,
+            measurements: props.measurements,
             category: categoryIcon.icon,
             categoryColour: categoryIcon.color,
 
             currentlyEditing: false,
             editedQuantity: null
-        }
-    }
-
-    getIcon(category) {
-        //TODO this is probably can be done with a map???
-        switch (category) {
-            case "Vegetable":
-                return {
-                    icon: faLeaf,
-                    color: "#66B447"
-                };
-            case "Fruit":
-                return {
-                    icon: faAppleAlt,
-                    color:"#E9692C"
-                };
-            case "Bread":
-                return {
-                    icon: faBreadSlice,
-                    color:" #EEC07B"
-                };
-            case "Cupboard":
-                return {
-                    icon: faBox,
-                    color:"#d4bc89"
-                };
-            case "Fridge":
-                return {
-                    icon: faSnowflake,
-                    color:"#a0cbf8"
-                };
-            case "Freezer":
-                return {
-                    icon: faSnowflake,
-                    color:"#1530b1"
-                };
-            case "Spice":
-                return {
-                    icon: faPepperHot,
-                    // color:"#E32227"
-                };
-            default:
-                return  {
-                    icon: null,
-                }
         }
     }
 
@@ -88,9 +38,13 @@ class IngredientBase extends React.Component {
     }
 
     updateIngredient = () => {
+        const measurements = [...this.state.measurements];
         const newQuantity = this.state.editedQuantity;
         const ingredientId = this.state.id;
         const measurementId = this.state.measurement;
+
+        const index = measurements.findIndex( m => m.id == measurementId)
+        const newMeasurementName = measurements[index].name;
 
         this.props.updateIngredientHandler({
             newQuantity: newQuantity,
@@ -101,6 +55,7 @@ class IngredientBase extends React.Component {
         this.setState({quantity: newQuantity})
         this.setState({currentlyEditing: false})
         this.setState({editedQuantity: null})
+        this.setState({measurementName: newMeasurementName});
     }
 
     handleChange = (e) => {
@@ -110,11 +65,16 @@ class IngredientBase extends React.Component {
     render() {
         const currentlyEditing = this.state.currentlyEditing;
         const icon = this.state.category;
-        return(
+        const currentMeasurement = this.state.measurement;
+        const measurements = this.state.measurements;
+        const measurementsAvailable = measurements !== undefined;
+        const quantity = this.state.quantity;
+        return (
             <>
                 {
                     icon && <Col xs={1}>
-                        <i className="ingredientIcon" style={{color: this.state.categoryColour}}><FontAwesomeIcon icon={this.state.category}/></i>
+                        <i className="ingredientIcon" style={{color: this.state.categoryColour}}><FontAwesomeIcon
+                            icon={this.state.category}/></i>
                     </Col>
                 }
 
@@ -124,10 +84,17 @@ class IngredientBase extends React.Component {
                 {currentlyEditing ?
                     <>
                         <Col xs={3}>
-                            <Form.Control name="editedQuantity" onChange={this.handleChange}/>
+                            <Form.Control name="editedQuantity" onChange={this.handleChange} defaultValue={quantity}/>
                         </Col>
                         <Col>
-                            {this.state.measurementName}
+                            {measurementsAvailable ?
+                                <Form.Control name="measurement" as="select" onChange={this.handleChange} defaultValue={currentMeasurement}>
+                                    {measurements.map((item) =>
+                                        <option key={item.id} value={item.id}>{item.name}</option>)}
+                                </Form.Control>
+                                :
+                                this.state.measurementName
+                            }
                         </Col>
                         <Col xs={1}>
                             <Button size="sm" variant="outline-success" onClick={this.updateIngredient}>
@@ -153,4 +120,6 @@ class IngredientBase extends React.Component {
         );
     }
 
-} export default IngredientBase;
+}
+
+export default IngredientBase;
