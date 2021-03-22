@@ -86,7 +86,7 @@ class IngredientBase extends React.Component {
                         <Col xs={3}>
                             <Form.Control name="editedQuantity" onChange={this.handleChange} defaultValue={quantity}/>
                         </Col>
-                        <Col>
+                        <Col xs={3}>
                             {measurementsAvailable ?
                                 <Form.Control name="measurement" as="select" onChange={this.handleChange} defaultValue={currentMeasurement}>
                                     {measurements.map((item) =>

@@ -1,6 +1,6 @@
 import React from "react";
 import IngredientBase from "./IngredientBase";
-import  {Button, ListGroup, Row} from "react-bootstrap";
+import  {Col,Button, ListGroup, Row} from "react-bootstrap";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import '../Ingredient/Ingredient.css';
@@ -38,9 +38,12 @@ class ShoppingListIngredient extends React.Component{
 
             <div style={textStyle} className="ingredient">
                 <Row>
-                    <Button variant={ticked ? "rounded-checked" : "rounded"}  onClick={this.handleCheckboxClick}>
+                    <Col xs={1}>
+                        <Button size="sm" variant={ticked ? "rounded-checked" : "rounded"}  onClick={this.handleCheckboxClick}>
                             <FontAwesomeIcon icon={faCheck}/>
-                    </Button>
+                        </Button>
+                    </Col>
+
 
                     <IngredientBase {...ingredient}
                                     removeIngredientHandler={this.props.removeIngredientHandler}
