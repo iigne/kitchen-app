@@ -14,6 +14,7 @@ class Ingredient extends React.Component {
             quantity: props.quantity,
             measurementId: props.measurementId,
             measurementName:props.measurementName,
+            measurements: props.measurements,
             category: props.category
         }
     }

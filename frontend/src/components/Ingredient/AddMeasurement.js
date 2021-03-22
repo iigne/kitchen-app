@@ -54,7 +54,7 @@ class AddMeasurement extends React.Component {
 
                     <Col>
                         <FormGroup>
-                            <FormLabel>Amount in metric</FormLabel>
+                            <FormLabel>Weight/volume in metric</FormLabel>
                             <InputGroup>
                                 <Form.Control value={this.state.metricQuantity} name="metricQuantity"
                                               onChange={this.handleChange}
