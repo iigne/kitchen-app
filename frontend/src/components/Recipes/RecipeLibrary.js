@@ -72,7 +72,9 @@ class RecipeLibrary extends React.Component {
             headers: authHeader()
         }).then(res => {
             this.toggleCreateRecipeMode(false);
+            this.props.showAlert("Recipe created", "success");
         }).catch(err => {
+            this.props.showAlert("Failed to create recipe", "error");
             console.log(err);
         })
     }
@@ -98,6 +100,7 @@ class RecipeLibrary extends React.Component {
                             show={this.state.inCreateRecipe}
                             handleCancel={this.toggleCreateRecipeMode}
                             handleSubmit={this.handleSubmitCreatedRecipe}
+                            showAlert={this.props.showAlert}
                 />
                  }
 
@@ -106,10 +109,13 @@ class RecipeLibrary extends React.Component {
                     {/*TODO */}
                     {/*<BrowseOption type="suggestion" text="recipe suggestions"*/}
                     {/*              handleLoadRecipes={this.handleLoadRecipes}/>*/}
-                    <BrowseOption type="all" text="all recipes" handleLoadRecipes={this.handleLoadRecipes}/>
-                    <BrowseOption type="liked" text="recipes I've liked" handleLoadRecipes={this.handleLoadRecipes}/>
-                    <BrowseOption type="created" text="recipes I've created"
-                                  handleLoadRecipes={this.handleLoadRecipes}/>
+                    <BrowseOption type="all" text="all recipes" handleLoadRecipes={this.handleLoadRecipes}
+                                  showAlert={this.props.showAlert}/>
+                    <BrowseOption type="liked" text="recipes I've liked" handleLoadRecipes={this.handleLoadRecipes}
+                                  showAlert={this.props.showAlert}/>
+                    <BrowseOption type="created" text="recipes I've created" andleLoadRecipes={this.handleLoadRecipes}
+                                  showAlert={this.props.showAlert}
+                    />
                 </Container>
 
                 <Container>
@@ -118,11 +124,13 @@ class RecipeLibrary extends React.Component {
                         {recipes.map((item) =>
                             <div key={item.id}>
                                 <RecipeCard {...item} userId={this.state.userId} handleViewRecipe={() => this.handleViewRecipe(item.id)}/>
-                                <RecipeView {...item} userId={this.state.userId} show={this.state.inRecipeView && this.state.inRecipeViewId === item.id}
-                                            handleViewRecipe={this.handleViewRecipe} handleRemoveRecipe={this.handleRemoveRecipe}
+                                <RecipeView {...item} userId={this.state.userId}
+                                            show={this.state.inRecipeView && this.state.inRecipeViewId === item.id}
+                                            handleViewRecipe={this.handleViewRecipe}
+                                            handleRemoveRecipe={this.handleRemoveRecipe}
                                             handleUpdateResults={this.handleUpdateResults}
+                                            showAlert={this.props.showAlert}
                                 />
-
                             </div>
                         )}
                     </CardColumns>

@@ -49,6 +49,7 @@ class BrowseOption extends React.Component {
             .then(res => {
                 this.props.handleLoadRecipes(res.data, this.state.text);
             }).catch(err => {
+                this.props.showAlert("Failed to fetch recipes", "error");
                 console.log(err)
         })
     }

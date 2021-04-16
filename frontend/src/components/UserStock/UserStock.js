@@ -22,7 +22,8 @@ class UserStock extends React.Component {
                 this.setState({ingredients: res.data})
             }
         ).catch(error => {
-            console.log(error)
+            console.log(error);
+            this.props.showAlert("Failed fetching ingredients", "error");
         })
     }
 
@@ -38,7 +39,8 @@ class UserStock extends React.Component {
             ingredients.push(res.data)
             this.setState({ingredients: ingredients})
         }).catch(error => {
-            console.log(error)
+            this.props.showAlert("Failed adding ingredient", "error");
+            console.log(error);
         });
     }
 
@@ -54,7 +56,8 @@ class UserStock extends React.Component {
                 });
             }
         ).catch(error => {
-                console.log(error)
+            this.props.showAlert("Failed removing ingredient", "error");
+            console.log(error);
             }
         )
     }
@@ -79,6 +82,7 @@ class UserStock extends React.Component {
                 return {ingredients: ingredients}
             })
         }).catch(error => {
+            this.props.showAlert("Failed updating ingredient", "error");
             console.log(error);
         })
     }
@@ -103,7 +107,7 @@ class UserStock extends React.Component {
                         Add ingredients
                     </header>
 
-                    <AddIngredient addIngredientHandler={this.handleAddIngredient}/>
+                    <AddIngredient addIngredientHandler={this.handleAddIngredient} showAlert={this.props.showAlert}/>
 
                 </Container>
             </div>

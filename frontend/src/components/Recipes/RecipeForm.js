@@ -169,7 +169,9 @@ class RecipeForm extends React.Component {
                                 )}
                             </ListGroup>
 
-                            <AddIngredient addIngredientHandler={this.handleAddIngredient}/>
+                            <AddIngredient addIngredientHandler={this.handleAddIngredient}
+                                           showAlert={this.props.showAlert}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <FormLabel><h2>Method</h2></FormLabel>

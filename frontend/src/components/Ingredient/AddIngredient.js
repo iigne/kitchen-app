@@ -57,6 +57,7 @@ class AddIngredient extends React.Component {
                     }
                 }
             ).catch(error => {
+                this.props.showAlert("Search has failed", "error")
                 console.log(error)
             })
         } else {
@@ -97,12 +98,18 @@ class AddIngredient extends React.Component {
         this.setState({noResults: null})
     }
 
-    handleFinishCreateIngredient = (success, name) => {
+    handleFinishCreateIngredient = (success, name, status) => {
         if(success) {
             this.setState({inCreateIngredient: false})
             this.setState({searchTerm: name})
+            this.props.showAlert("Ingredient created - you can now search for it", "success");
         } else {
-            //TODO handle fail
+            console.log(status);
+            if(status === 400) {
+                this.props.showAlert("Creation failed - some fields have invalid values", "error");
+            } else {
+                this.props.showAlert("Failed to create ingredient", "error");
+            }
         }
     }
 

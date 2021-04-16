@@ -43,6 +43,7 @@ class RecipeView extends React.Component {
         }).then(res => {
             this.setState(res.data);
         }).catch(err => {
+            this.props.showAlert("Failed to like/unlike recipe", "error");
             console.log(err);
         })
     }
@@ -56,9 +57,11 @@ class RecipeView extends React.Component {
             }).then(res => {
                     this.props.handleViewRecipe(null);
                     this.props.handleRemoveRecipe(id);
+                    this.props.showAlert("Recipe has been deleted", "info");
                 }
             ).catch(
                 error => {
+                    this.props.showAlert("Failed to delete recipe", "error");
                     console.log(error)
                 }
             )
@@ -88,7 +91,9 @@ class RecipeView extends React.Component {
                 ingredients: editedRecipe.ingredients
             })
             this.props.handleUpdateResults(editedRecipe);
+            this.props.showAlert("Recipe has been updated", "success");
         }).catch(err => {
+            this.props.showAlert("Failed to update recipe", "error");
             console.log(err);
         })
     }
@@ -103,20 +108,10 @@ class RecipeView extends React.Component {
         axios.patch('/user-ingredient/remove-quantities', usedIngredients,
             {headers: authHeader()})
             .then(res => {
-                //TODO verification
-                // console.log(res.data);
-                //TODO update view and card to display new current quantity owned
-
-                // this.setState(prevState => {
-                //     const updatedIngredients = res.data.sort((a,b) => )
-                //     const ingredients = prevState.ingredients;
-                //     ingredients.map(i => i.ownedQuantity = )
-                //     const updatedOwnedQuantity =
-                // })
-                //TODO ???
-                // console.log("recipe made")
+                this.props.showAlert("Recipe made - used ingredients have been removed from your stock", "info");
             })
             .catch(err => {
+                this.props.showAlert("Failed to make recipe", "error");
                 console.log(err);
             })
     }
@@ -131,8 +126,9 @@ class RecipeView extends React.Component {
         axios.post('/shopping/multiple', formattedIngredients, {
             headers: authHeader()
         }).then(res => {
-            console.log("added stuff")
+            this.props.showAlert("Ingredients have been added to shopping list", "info");
         }).catch(err => {
+            this.props.showAlert("Failed to add ingredients to shopping list", "error");
             console.log(err);
         })
     }
