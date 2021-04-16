@@ -113,7 +113,7 @@ class RecipeLibrary extends React.Component {
                                   showAlert={this.props.showAlert}/>
                     <BrowseOption type="liked" text="recipes I've liked" handleLoadRecipes={this.handleLoadRecipes}
                                   showAlert={this.props.showAlert}/>
-                    <BrowseOption type="created" text="recipes I've created" andleLoadRecipes={this.handleLoadRecipes}
+                    <BrowseOption type="created" text="recipes I've created" handleLoadRecipes={this.handleLoadRecipes}
                                   showAlert={this.props.showAlert}
                     />
                 </Container>

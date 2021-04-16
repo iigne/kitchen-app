@@ -2,14 +2,9 @@ import React, {Component} from "react";
 
 import './App.css';
 import Navigation from "../components/Navigation/Navigation";
-import validateToken from "../api/token-valid";
 import {withAlert} from "react-alert";
 
 class App extends Component {
-
-    componentDidMount() {
-        validateToken();
-    }
 
     showAlert = (text, type) => {
         if (type === "error"){

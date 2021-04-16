@@ -23,6 +23,7 @@ class ShoppingList extends React.Component {
                 this.setState({ingredients: res.data})
             }
         ).catch(error => {
+            this.props.showAlert("Failed fetching shopping list items", "error");
             console.log(error)
         })
     }
@@ -39,6 +40,7 @@ class ShoppingList extends React.Component {
             ingredients.push(res.data)
             this.setState({ingredients: ingredients})
         }).catch(error => {
+            this.props.showAlert("Failed adding shopping list item", "error");
             console.log(error)
         });
     }
@@ -55,6 +57,7 @@ class ShoppingList extends React.Component {
                 });
             }
         ).catch(error => {
+                this.props.showAlert("Failed removing shopping list item", "error");
                 console.log(error)
             }
         )
@@ -81,6 +84,7 @@ class ShoppingList extends React.Component {
                 return {ingredients: ingredients}
             })
         }).catch(error => {
+            this.props.showAlert("Failed updating shopping list item", "error");
             console.log(error)
         })
     }
@@ -100,6 +104,7 @@ class ShoppingList extends React.Component {
                 })
             }
         ).catch(error => {
+            this.props.showAlert("Failed updating shopping list item status", "error");
             console.log(error);
         })
 
@@ -113,7 +118,9 @@ class ShoppingList extends React.Component {
                 const ingredients = prevState.ingredients.filter(i => !i.ticked);
                 return {ingredients: ingredients};
             })
+            this.props.showAlert("Ticked items have been added to your stock", "success");
         }).catch(error => {
+            this.props.showAlert("Failed to finish shopping", "error");
             console.log(error);
         })
     }
@@ -124,6 +131,7 @@ class ShoppingList extends React.Component {
         }).then(res => {
             this.setState({ingredients: []})
         }).catch(error => {
+            this.props.showAlert("Failed to clear list", "error");
             console.log(error);
         })
     }
