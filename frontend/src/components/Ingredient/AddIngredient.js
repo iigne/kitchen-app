@@ -57,6 +57,7 @@ class AddIngredient extends React.Component {
                     }
                 }
             ).catch(error => {
+                this.props.showAlert("Search has failed", "error")
                 console.log(error)
             })
         } else {
@@ -71,8 +72,8 @@ class AddIngredient extends React.Component {
 
     handleAddIngredient = () => {
         let ingredient = {...this.state.selectedIngredient};
-        const measurementId = this.state.selectedMeasurement;
-        const index = ingredient.measurements.findIndex(m => m.id == measurementId);
+        const measurementId = parseInt(this.state.selectedMeasurement);
+        const index = ingredient.measurements.findIndex(m => m.id === measurementId);
         const selectedMeasurement = ingredient.measurements[index];
         this.props.addIngredientHandler({
             id: ingredient.id,
@@ -97,12 +98,18 @@ class AddIngredient extends React.Component {
         this.setState({noResults: null})
     }
 
-    handleFinishCreateIngredient = (success, name) => {
+    handleFinishCreateIngredient = (success, name, status) => {
         if(success) {
             this.setState({inCreateIngredient: false})
             this.setState({searchTerm: name})
+            this.props.showAlert("Ingredient created - you can now search for it", "success");
         } else {
-            //TODO handle fail
+            console.log(status);
+            if(status === 400) {
+                this.props.showAlert("Creation failed - some fields have invalid values", "error");
+            } else {
+                this.props.showAlert("Failed to create ingredient", "error");
+            }
         }
     }
 
@@ -132,11 +139,12 @@ class AddIngredient extends React.Component {
 
                         <ListGroup>
                             {this.state.searchResults.map((item) =>
-                                <Row>
+                                <Row key={item.id}>
                                     <Col>
-                                        <ListGroup.Item key={item.id} action className="searchListItem"
-                                                        onClick={() => this.handleSearchSelection(item.id)}
-                                        >{item.name}</ListGroup.Item>
+                                        <ListGroup.Item action className="searchListItem"
+                                                        onClick={() => this.handleSearchSelection(item.id)}>
+                                            {item.name}
+                                        </ListGroup.Item>
                                     </Col>
                                 </Row>
                             )}

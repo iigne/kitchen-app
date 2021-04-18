@@ -19,7 +19,6 @@ class CreateIngredient extends React.Component {
             metricUnit: "g",
             measurements: [],
             addingNewMeasurement: false,
-            success: null
         }
     }
 
@@ -78,13 +77,11 @@ class CreateIngredient extends React.Component {
         axios.post('/ingredient', body, {
             headers: authHeader()
         }).then(res => {
-            this.setState({success: true})
-            this.props.handleFinishCreateIngredient(true, this.state.name)
+            this.props.handleFinishCreateIngredient(true, this.state.name, res.status);
             this.resetState();
         }).catch(error => {
-            console.log(error)
-            this.setState({success: false})
-            this.props.handleFinishCreateIngredient(false, null)
+            console.log(error);
+            this.props.handleFinishCreateIngredient(false, null, error.response.status);
         })
     }
 
@@ -95,7 +92,6 @@ class CreateIngredient extends React.Component {
             metricUnit: "g",
             measurements: [],
             addingNewMeasurement: false,
-            success: null
         })
     }
 
@@ -107,7 +103,6 @@ class CreateIngredient extends React.Component {
     render() {
         let measurements = this.state.measurements
         let creatingMeasurement = this.state.addingNewMeasurement
-        // let showAlert = this.state.showAlert
         if (!this.props.show) {
             return null
         } else {

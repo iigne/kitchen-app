@@ -55,10 +55,19 @@ public class ApiExceptionHandler {
         return createResponse(apiError);
     }
 
+    @ExceptionHandler(value = UserAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleUserExistsError(UserAlreadyExistsException e) {
+        final ApiError apiError = ApiError.builder()
+                .errorMessage("Username or email already in use")
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .build();
+        return createResponse(apiError);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ApiError> handleError(Exception e) {
         final ApiError apiError = ApiError.builder()
-                .errorMessage("An internal error has occurred...")
+                .errorMessage("An internal error has occurred: "+ e.getMessage())
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
         return createResponse(apiError);

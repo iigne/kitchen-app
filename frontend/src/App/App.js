@@ -2,22 +2,25 @@ import React, {Component} from "react";
 
 import './App.css';
 import Navigation from "../components/Navigation/Navigation";
-import validateToken from "../api/token-valid";
+import {withAlert} from "react-alert";
 
 class App extends Component {
 
-    state = {
-        isAuthenticated: localStorage.getItem("user") != null
+    showAlert = (text, type) => {
+        if (type === "error"){
+            this.props.alert.error(text);
+        } else if (type === "success") {
+            this.props.alert.success(text);
+        } else {
+            this.props.alert.show(text);
+        }
     }
 
-    componentDidMount() {
-        validateToken();
-    }
 
     render() {
         return (
             <div className="App">
-                <Navigation isAuthenticated={this.state.isAuthenticated}/>
+                <Navigation showAlert={this.showAlert}/>
                 <hr/>
                 <footer>
                     <small>
@@ -35,4 +38,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default withAlert()(App);
