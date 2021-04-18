@@ -37,6 +37,7 @@ public class RecipeIngredientMapper {
     }
 
     public static ResponseRecipeIngredientDTO toDTO(RecipeUserIngredient recipeUserIngredient, RecipeIngredient recipeIngredient) {
+        Ingredient ingredient = recipeIngredient.getIngredient();
         Measurement measurement = recipeIngredient.getCustomMeasurement();
         double userQuantity = recipeUserIngredient.getUserQuantityMetric() != null ? recipeUserIngredient.getUserQuantityMetric() : 0;
         double recipeQuantity = recipeUserIngredient.getRecipeQuantityMetric();
@@ -47,6 +48,7 @@ public class RecipeIngredientMapper {
                 .measurementId(measurement.getId())
                 .ownedQuantity(measurement.isMetric() ? userQuantity : MeasurementConverter.toMeasurement(userQuantity, measurement))
                 .recipeQuantity(measurement.isMetric() ? recipeQuantity : MeasurementConverter.toMeasurement(recipeQuantity, measurement))
+                .measurements(MeasurementMapper.toDTO(ingredient.getMeasurements()))
                 .build();
     }
 

@@ -11,7 +11,7 @@ class RecipeForm extends React.Component {
         this.state = {
             id: props.id,
             title: props.title,
-            imageField: props.imageLink,
+            imageField: props.imageLink != null ? props.imageLink : "",
             imageLink: props.imageLink,
             imageUrlValid: null,
             method: props.method,
@@ -91,11 +91,12 @@ class RecipeForm extends React.Component {
     handleUpdateIngredient = (ingredientData) => {
         const newQuantity = ingredientData.newQuantity;
         const ingredientId = ingredientData.ingredientId;
-        const measurement = ingredientData.measurementId;
+        const newMeasurementId = ingredientData.measurementId;
         this.setState(prevState => {
             const ingredients = prevState.ingredients;
             let ingredient = ingredients.find(i => i.id === ingredientId);
             ingredient.quantity = newQuantity;
+            ingredient.measurementId = newMeasurementId;
             const index = ingredients.findIndex(i => i.id === ingredientId);
             ingredients.splice(index, 1, ingredient);
             return {ingredients: ingredients};

@@ -75,7 +75,8 @@ class RecipeCard extends React.Component {
                     </ListGroupItem>
                     {displayIngredients &&
                     ingredients.map((ingredient) =>
-                        <RecipeCardIngredient name={ingredient.ingredientName} measurement={ingredient.measurement}
+                        <RecipeCardIngredient key={ingredient.ingredientId}
+                            name={ingredient.ingredientName} measurement={ingredient.measurement}
                                               recipeQuantity={ingredient.recipeQuantity} ownedQuantity={ingredient.ownedQuantity} />
                     )
                     }

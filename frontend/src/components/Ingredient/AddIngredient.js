@@ -72,8 +72,8 @@ class AddIngredient extends React.Component {
 
     handleAddIngredient = () => {
         let ingredient = {...this.state.selectedIngredient};
-        const measurementId = this.state.selectedMeasurement;
-        const index = ingredient.measurements.findIndex(m => m.id == measurementId);
+        const measurementId = parseInt(this.state.selectedMeasurement);
+        const index = ingredient.measurements.findIndex(m => m.id === measurementId);
         const selectedMeasurement = ingredient.measurements[index];
         this.props.addIngredientHandler({
             id: ingredient.id,
@@ -139,11 +139,12 @@ class AddIngredient extends React.Component {
 
                         <ListGroup>
                             {this.state.searchResults.map((item) =>
-                                <Row>
+                                <Row key={item.id}>
                                     <Col>
-                                        <ListGroup.Item key={item.id} action className="searchListItem"
-                                                        onClick={() => this.handleSearchSelection(item.id)}
-                                        >{item.name}</ListGroup.Item>
+                                        <ListGroup.Item action className="searchListItem"
+                                                        onClick={() => this.handleSearchSelection(item.id)}>
+                                            {item.name}
+                                        </ListGroup.Item>
                                     </Col>
                                 </Row>
                             )}

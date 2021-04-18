@@ -141,7 +141,8 @@ class RecipeView extends React.Component {
             name: i.ingredientName,
             measurementId: i.measurementId,
             measurementName: i.measurement,
-            quantity: i.recipeQuantity
+            quantity: i.recipeQuantity,
+            measurements: i.measurements
         }))
         const methodSteps = this.formatMethod(this.state.method);
         const isCreatedByUser = this.state.recipeAuthorId === this.state.userId;
@@ -153,7 +154,7 @@ class RecipeView extends React.Component {
             <>
                 {!inEditRecipe ?
 
-                    <Modal size="lg" show={this.props.show} onHide={() => this.props.handleViewRecipe(null)}>
+                    <Modal size="lg" show={this.props.show} onHide={() => this.props.handleViewRecipe(recipeId)}>
                             <Modal.Header closeButton>
                                 <Modal.Title>
                                     {this.state.title}
@@ -165,15 +166,16 @@ class RecipeView extends React.Component {
                                 <h2>Ingredients</h2>
                                 <ListGroup>
                                     {ingredients.map((item) =>
-                                        <RecipeCardIngredient name={item.ingredientName} measurement={item.measurement}
+                                        <RecipeCardIngredient key={item.ingredientId}
+                                                              name={item.ingredientName} measurement={item.measurement}
                                                               recipeQuantity={item.recipeQuantity}
                                                               ownedQuantity={item.ownedQuantity}/>
                                     )}
                                 </ListGroup>
 
                                 <h2>Method</h2>
-                                {methodSteps.map((item) =>
-                                    <Row>
+                                {methodSteps.map((item, index) =>
+                                    <Row key={index}>
                                         <hr/>
                                         <Col>
                                             {item}

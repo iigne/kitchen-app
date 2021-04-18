@@ -41,9 +41,9 @@ class IngredientBase extends React.Component {
         const measurements = [...this.state.measurements];
         const newQuantity = this.state.editedQuantity;
         const ingredientId = this.state.id;
-        const measurementId = this.state.measurement;
+        const measurementId = parseInt(this.state.measurement);
 
-        const index = measurements.findIndex( m => m.id == measurementId)
+        const index = measurements.findIndex( m => m.id === measurementId)
         const newMeasurementName = measurements[index].name;
 
         this.props.updateIngredientHandler({

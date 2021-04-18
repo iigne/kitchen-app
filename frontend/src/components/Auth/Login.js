@@ -8,8 +8,7 @@ class Login extends Component {
         super(props);
         this.state = {
             username: "",
-            password: "",
-            success: false
+            password: ""
         }
     }
 
@@ -27,7 +26,6 @@ class Login extends Component {
             "Content-Type": "application/json"
         })
             .then(res => {
-                    this.setState({success: true});
                     if (res.data.token) {
                         this.props.handleLogin(res.data);
                     }
