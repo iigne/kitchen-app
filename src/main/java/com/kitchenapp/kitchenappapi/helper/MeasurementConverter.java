@@ -20,4 +20,9 @@ public class MeasurementConverter {
         return Double.parseDouble(df.format(metricQuantity/measurement.getMetricQuantity()));
     }
 
+    public static double toMeasurement(double originalQuantity, Measurement originalMeasurement, Measurement newMeasurement) {
+        final double metricQuantity = toMetricIfMetric(originalQuantity, originalMeasurement);
+        return toMeasurement(metricQuantity, newMeasurement);
+    }
+
 }
