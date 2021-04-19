@@ -20,14 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 
-
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test") //TODO create test configuration with these annotations
-@WithMockUser
-class IngredientControllerIntegrationSpec extends Specification {
-    @Autowired
-    private MockMvc mvc
+class IngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
 
     @Autowired
     IngredientRepository ingredientRepository
@@ -73,14 +66,6 @@ class IngredientControllerIntegrationSpec extends Specification {
             contentAsString.contains("Ingredient2")
             contentAsString.contains("Ingredient3")
         }
-    }
-
-    private static String toJson(ingredient) {
-        return new ObjectMapper().writeValueAsString(ingredient)
-    }
-
-    private static IngredientDTO toObject(json) {
-        return new ObjectMapper().readValue(json, IngredientDTO.class)
     }
 
 }
