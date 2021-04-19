@@ -29,10 +29,6 @@ public class RecipeService {
     private final MeasurementService measurementService;
     private final UserService userService;
 
-    public List<Recipe> getAll() {
-        return recipeRepository.findAll();
-    }
-
     public List<ResponseRecipeDTO> getAllWithQuantities(final int userId) {
         List<Recipe> recipes = recipeRepository.findAll();
         List<RecipeUserIngredient> recipeUserIngredients = recipeIngredientRepository.fetchIngredientQuantitiesForAllRecipesByUserId(userId);
