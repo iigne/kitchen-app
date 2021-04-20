@@ -3,7 +3,6 @@ package com.kitchenapp.kitchenappapi.service
 import com.kitchenapp.kitchenappapi.config.JwtTokenUtil
 import com.kitchenapp.kitchenappapi.error.UserAlreadyExistsException
 import com.kitchenapp.kitchenappapi.payload.RegisterRequest
-import com.kitchenapp.kitchenappapi.providers.model.UserProvider
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.crypto.password.PasswordEncoder
 import spock.lang.Specification
@@ -36,8 +35,8 @@ class AuthServiceSpec extends Specification {
         1 * userService.save(username, email, encodedPassword)
 
         where:
-        username| password | email    | encodedPassword
-        "user" | "password" | "email" | "totally-encrypted-password"
+        username | password   | email   | encodedPassword
+        "user"   | "password" | "email" | "totally-encrypted-password"
     }
 
     def "should fail to register"() {
@@ -54,7 +53,7 @@ class AuthServiceSpec extends Specification {
         thrown(UserAlreadyExistsException)
 
         where:
-        username | email
+        username   | email
         "existing" | "user@test.com"
     }
 

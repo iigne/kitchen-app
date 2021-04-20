@@ -1,16 +1,17 @@
 package com.kitchenapp.kitchenappapi.service;
 
-import com.kitchenapp.kitchenappapi.dto.MeasurementDTO;
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
-import com.kitchenapp.kitchenappapi.model.*;
+import com.kitchenapp.kitchenappapi.model.Ingredient;
+import com.kitchenapp.kitchenappapi.model.Measurement;
+import com.kitchenapp.kitchenappapi.model.User;
+import com.kitchenapp.kitchenappapi.model.UserIngredient;
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.UserRepository;
-import com.kitchenapp.kitchenappapi.repository.projection.RecipeUserIngredient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

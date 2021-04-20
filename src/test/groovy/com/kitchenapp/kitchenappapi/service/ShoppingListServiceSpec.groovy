@@ -5,6 +5,7 @@ import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.model.*
 import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class ShoppingListServiceSpec extends Specification {
 
@@ -59,6 +60,7 @@ class ShoppingListServiceSpec extends Specification {
         10  | 11  | 100           | 100               | 100
     }
 
+    @Unroll
     def "should create shopping list item"() {
         given: "ingredients, measurements and user exist"
         def ingredient1 = IngredientProvider.make(id: id1)

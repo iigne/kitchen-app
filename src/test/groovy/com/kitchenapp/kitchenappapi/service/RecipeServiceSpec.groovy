@@ -95,14 +95,11 @@ class RecipeServiceSpec extends Specification {
         1 * recipeRepository.findById(recipe.id) >> Optional.of(recipe)
 
         and: "correct user is added/removed correctly"
-        recipe.getUsers() >> usersList
-
         1 * recipeRepository.save(savedRecipe -> {
             savedRecipe.users*.id.sort() == changedUsersList*.id.sort()
         }) >> recipe
 
         and: "correct liked status is returned"
-        recipe.getUsers() >> changedUsersList
         result == liked
 
         where:
@@ -113,6 +110,7 @@ class RecipeServiceSpec extends Specification {
         [UserProvider.make(id: 123)]                      || [UserProvider.make(id: 123), UserProvider.make()] | true
     }
 
+    @Unroll
     def "should update recipe"() {
 
         given: "user and ingredients exist"

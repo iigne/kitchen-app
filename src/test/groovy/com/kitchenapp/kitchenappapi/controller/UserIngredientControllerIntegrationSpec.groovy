@@ -29,7 +29,7 @@ class UserIngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
         def user = userRepository.findByUsername(auth.getName())
 
         and: "some ingredient exists in the database"
-        def ingredient = ingredientRepository.findAll().get(0)
+       // def ingredient = ingredientRepository.findAll().get(0)
 
         and: "valid user ingredient DTO"
 //        def userIngredientDTO = new UserIngredientDTO(ingredientId: ingredient.getId(),
