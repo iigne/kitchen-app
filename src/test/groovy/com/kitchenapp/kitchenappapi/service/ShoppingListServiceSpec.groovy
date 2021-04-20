@@ -101,6 +101,25 @@ class ShoppingListServiceSpec extends Specification {
     }
 
     def "should correctly tick and untick"() {
+        given: "user and shopping item exists"
+        def user = UserProvider.make()
+        def shoppingItem = ShoppingUserIngredientProvider.make(user: user, ticked: tickBefore)
+
+        when: "addOrRemoveTick is called"
+        def result = shoppingListService.addOrRemoveTick(CommonTestData.INGREDIENT_ID, user.id)
+
+        then: "correct tick value is saved"
+        1 * shoppingListRepository.findByUserIdAndIngredientId(user.id, CommonTestData.INGREDIENT_ID) >> Optional.of(shoppingItem)
+        1 * shoppingListRepository.save(ingredient -> {
+            ingredient.ticked == tickAfter
+        }) >> shoppingItem
+
+        result == tickAfter
+
+        where:
+        tickBefore | tickAfter
+        true       | false
+        false      | true
 
     }
 }
