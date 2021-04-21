@@ -1,19 +1,21 @@
 package com.kitchenapp.kitchenappapi.error;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Builder
 public class ApiError {
 
-    private final String errorMessage;
-    private final List<String> validationErrors;
-    private final HttpStatus httpStatus;
-    private final int httpStatusCode;
+    private String errorMessage;
+    private List<String> validationErrors;
+    private HttpStatus httpStatus;
+    private int httpStatusCode;
 
     public int getHttpStatusCode() {
         return httpStatus != null ? httpStatus.value() : HttpStatus.INTERNAL_SERVER_ERROR.value();

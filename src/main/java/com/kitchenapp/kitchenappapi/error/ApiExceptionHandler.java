@@ -64,6 +64,15 @@ public class ApiExceptionHandler {
         return createResponse(apiError);
     }
 
+    @ExceptionHandler(value = UnsupportedOperationException.class)
+    public ResponseEntity<ApiError> handleUnsupportedOperation(UnsupportedOperationException e) {
+        final ApiError apiError = ApiError.builder()
+                .errorMessage("You are not allowed to perform this operation")
+                .httpStatus(HttpStatus.FORBIDDEN)
+                .build();
+        return createResponse(apiError);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ApiError> handleError(Exception e) {
         final ApiError apiError = ApiError.builder()
@@ -72,6 +81,7 @@ public class ApiExceptionHandler {
                 .build();
         return createResponse(apiError);
     }
+
 
     private static ResponseEntity<ApiError> createResponse(final ApiError apiError) {
         return ResponseEntity.status(apiError.getHttpStatusCode()).body(apiError);

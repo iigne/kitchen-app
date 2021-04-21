@@ -4,10 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.kitchenapp.kitchenappapi.dto.IngredientDTO
+import com.kitchenapp.kitchenappapi.dto.ShoppingListItemDTO
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO
+import com.kitchenapp.kitchenappapi.error.ApiError
 import com.kitchenapp.kitchenappapi.model.Ingredient
+import com.kitchenapp.kitchenappapi.model.Recipe
 import com.kitchenapp.kitchenappapi.model.User
 import com.kitchenapp.kitchenappapi.providers.model.IngredientProvider
+import com.kitchenapp.kitchenappapi.providers.model.RecipeProvider
 import com.kitchenapp.kitchenappapi.providers.model.UserProvider
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository
 import com.kitchenapp.kitchenappapi.repository.UserRepository
@@ -33,6 +37,7 @@ import spock.lang.Specification
 abstract class AbstractIntegrationSpec extends Specification {
 
     static final int MOCK_USER_ID = 666
+    static final int OTHER_MOCK_USER_ID = 667
 
     @Autowired
     protected MockMvc mvc
@@ -47,6 +52,7 @@ abstract class AbstractIntegrationSpec extends Specification {
         userRepository.deleteAll()
     }
 
+    //TODO move below into own class
     protected static String toJson(object) {
         return new ObjectMapper().writeValueAsString(object)
     }
@@ -61,15 +67,29 @@ abstract class AbstractIntegrationSpec extends Specification {
         return objectMapper.readValue(json, new TypeReference<List<UserIngredientDTO>>() {})
     }
 
-    protected List<Ingredient> createIngredients() {
-        def ingredients = [IngredientProvider.make(name:"Ingredient1"), IngredientProvider.make(name:"Ingredient2"), IngredientProvider.make(name:"Ingredient3")]
-        return ingredientRepository.saveAll(ingredients)
+    protected static ApiError toApiError(json) {
+        return new ObjectMapper().readValue(json, ApiError.class)
     }
 
-    protected User getUser() {
+    protected static List<ShoppingListItemDTO> toShoppingItemDTOList(json) {
+        ObjectMapper objectMapper = new ObjectMapper()
+        return objectMapper.readValue(json, new TypeReference<List<ShoppingListItemDTO>>() {})
+    }
+
+    protected User getLoggedInUser() {
         def auth = SecurityContextHolder.getContext().authentication
         return userRepository.findById(MOCK_USER_ID).orElse(
                 userRepository.save(UserProvider.make(username: auth.getName())))
+    }
+
+    protected User getAnotherUser() {
+        return userRepository.findById(OTHER_MOCK_USER_ID).orElse(
+                userRepository.save(UserProvider.make(id: OTHER_MOCK_USER_ID, username: "differentName")))
+    }
+
+    protected List<Ingredient> createIngredients() {
+        def ingredients = [IngredientProvider.make(name: "Ingredient1"), IngredientProvider.make(name: "Ingredient2"), IngredientProvider.make(name: "Ingredient3")]
+        return ingredientRepository.saveAll(ingredients)
     }
 
 }

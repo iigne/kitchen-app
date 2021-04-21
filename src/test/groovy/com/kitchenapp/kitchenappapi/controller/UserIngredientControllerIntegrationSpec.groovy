@@ -20,7 +20,7 @@ class UserIngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
 
     def "should display user ingredients"() {
         given: "logged in user exists in database"
-        def user = getUser()
+        def user = getLoggedInUser()
 
         and: "ingredients exist in db"
         def savedIngredients = createIngredients()
@@ -43,7 +43,7 @@ class UserIngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
 
     def "should delete user ingredient"() {
         given: "logged in user exists in database"
-        def user = getUser()
+        def user = getLoggedInUser()
 
         and: "ingredients exist in db"
         def savedIngredients = createIngredients()

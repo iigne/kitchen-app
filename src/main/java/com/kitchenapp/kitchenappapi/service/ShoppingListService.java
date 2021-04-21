@@ -127,14 +127,6 @@ public class ShoppingListService {
                         String.format("userId %s and ingredientId %s doesn't exist", userId, ingredientId)));
     }
 
-    public List<ShoppingUserIngredient> getByIdsOrThrow(final List<Integer> ingredientIds, final int userId) {
-        List<ShoppingUserIngredient> ingredients = shoppingListRepository.findAllByUserIdAndIngredientIdIn(userId, ingredientIds);
-        if(ingredientIds.size() > ingredients.size()) {
-            throw new EntityNotFoundException("Given ingredientIds were not all found in the database");
-        }
-        return ingredients;
-    }
-
     public List<ShoppingUserIngredient> getTickedByUser(final int userId) {
         return shoppingListRepository.findAllByUserIdAndTickedIsTrue(userId);
     }
