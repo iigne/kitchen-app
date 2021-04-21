@@ -14,14 +14,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import spock.lang.Specification
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test") //TODO create test configuration with these annotations
-@WithMockUser()
-class UserIngredientControllerIntegrationSpec extends Specification {
-
-    @Autowired
-    private MockMvc mvc
+class UserIngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
 
     @Autowired
     private IngredientRepository ingredientRepository
@@ -36,7 +29,7 @@ class UserIngredientControllerIntegrationSpec extends Specification {
         def user = userRepository.findByUsername(auth.getName())
 
         and: "some ingredient exists in the database"
-//        def ingredient = ingredientRepository.findAll().get(0)
+       // def ingredient = ingredientRepository.findAll().get(0)
 
         and: "valid user ingredient DTO"
 //        def userIngredientDTO = new UserIngredientDTO(ingredientId: ingredient.getId(),
