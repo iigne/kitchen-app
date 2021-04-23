@@ -1,25 +1,11 @@
 package com.kitchenapp.kitchenappapi.controller
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.kitchenapp.kitchenappapi.dto.IngredientDTO
-import com.kitchenapp.kitchenappapi.dto.ShoppingListItemDTO
-import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO
-import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO
-import com.kitchenapp.kitchenappapi.error.ApiError
-import com.kitchenapp.kitchenappapi.model.Ingredient
-import com.kitchenapp.kitchenappapi.model.Recipe
-import com.kitchenapp.kitchenappapi.model.RecipeIngredient
-import com.kitchenapp.kitchenappapi.model.User
-import com.kitchenapp.kitchenappapi.model.UserIngredient
-import com.kitchenapp.kitchenappapi.providers.model.IngredientProvider
-import com.kitchenapp.kitchenappapi.providers.model.RecipeIngredientProvider
-import com.kitchenapp.kitchenappapi.providers.model.RecipeProvider
-import com.kitchenapp.kitchenappapi.providers.model.UserIngredientProvider
-import com.kitchenapp.kitchenappapi.providers.model.UserProvider
+
+import com.kitchenapp.kitchenappapi.model.*
+import com.kitchenapp.kitchenappapi.providers.model.*
 import com.kitchenapp.kitchenappapi.repository.IngredientRepository
 import com.kitchenapp.kitchenappapi.repository.RecipeRepository
+import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository
 import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository
 import com.kitchenapp.kitchenappapi.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,6 +19,10 @@ import spock.lang.Specification
 
 /**
  * Abstract class containing configuration and common methods for integration tests.
+ * Also deals with data preparation and cleanup after tests.
+ *
+ * This ensures tests only have the code for testing rather all the
+ * prep and cleanup.
  *
  * Note: the <code>@Sql</code> annotation resets numbering so that we always have
  * the same ID for the test user.
@@ -53,7 +43,7 @@ abstract class AbstractIntegrationSpec extends Specification {
     IngredientRepository ingredientRepository
 
     @Autowired
-    private UserRepository userRepository
+    UserRepository userRepository
 
     @Autowired
     RecipeRepository recipeRepository
@@ -61,38 +51,18 @@ abstract class AbstractIntegrationSpec extends Specification {
     @Autowired
     UserIngredientRepository userIngredientRepository
 
+    @Autowired
+    ShoppingListRepository shoppingListRepository
 
     def setup() {
         userRepository.deleteAll()
     }
 
-    //TODO move below into own class
-    protected static String toJson(object) {
-        return new ObjectMapper().writeValueAsString(object)
-    }
-
-    protected static IngredientDTO toIngredientDTO(json) {
-        return new ObjectMapper().readValue(json, IngredientDTO.class)
-    }
-
-    protected static List<UserIngredientDTO> toUserIngredientDTOList(json) {
-        ObjectMapper objectMapper = new ObjectMapper()
-        objectMapper.registerModule(new JavaTimeModule())
-        return objectMapper.readValue(json, new TypeReference<List<UserIngredientDTO>>() {})
-    }
-
-    protected static ApiError toApiError(json) {
-        return new ObjectMapper().readValue(json, ApiError.class)
-    }
-
-    protected static List<ShoppingListItemDTO> toShoppingItemDTOList(json) {
-        ObjectMapper objectMapper = new ObjectMapper()
-        return objectMapper.readValue(json, new TypeReference<List<ShoppingListItemDTO>>() {})
-    }
-
-    protected static List<ResponseRecipeDTO> toRecipeDTOList(json) {
-        ObjectMapper objectMapper = new ObjectMapper()
-        return objectMapper.readValue(json, new TypeReference<List<ResponseRecipeDTO>>() {})
+    def cleanup() {
+        userIngredientRepository.deleteAll()
+        shoppingListRepository.deleteAll()
+        recipeRepository.deleteAll()
+        ingredientRepository.deleteAll()
     }
 
     protected User getLoggedInUser() {
@@ -114,8 +84,10 @@ abstract class AbstractIntegrationSpec extends Specification {
     protected Recipe createRecipe(user, ingredients) {
         def recipe = recipeRepository.save(RecipeProvider.make(author: user, users: [user]))
         def recipeIngredients = []
-        ingredients.each{it -> recipeIngredients.add(
-                RecipeIngredientProvider.make(recipe: recipe, ingredient: it, metricQuantity: 150))}
+        ingredients.each { it ->
+            recipeIngredients.add(
+                    RecipeIngredientProvider.make(recipe: recipe, ingredient: it, metricQuantity: 150))
+        }
         recipe.setRecipeIngredients(recipeIngredients as Set<RecipeIngredient>)
         return recipeRepository.save(recipe)
     }
@@ -123,6 +95,14 @@ abstract class AbstractIntegrationSpec extends Specification {
     protected UserIngredient creatUserIngredient(user, ingredient) {
         def userIngredient = UserIngredientProvider.make(user: user, ingredient: ingredient, metricQuantity: 150)
         return userIngredientRepository.save(userIngredient)
+    }
+
+    protected List<ShoppingUserIngredient> createShoppingListItems(user, ingredients) {
+        return shoppingListRepository.saveAll([
+                ShoppingUserIngredientProvider.make(user: user, ingredient: ingredients.get(0), ticked: true),
+                ShoppingUserIngredientProvider.make(user: user, ingredient: ingredients.get(1)),
+                ShoppingUserIngredientProvider.make(user: getAnotherUser(), ingredient: ingredients.get(2)),
+        ])
     }
 
 }

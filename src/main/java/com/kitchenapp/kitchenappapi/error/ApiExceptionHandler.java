@@ -59,7 +59,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiError> handleUserExistsError(UserAlreadyExistsException e) {
         final ApiError apiError = ApiError.builder()
                 .errorMessage("Username or email already in use")
-                .httpStatus(HttpStatus.NOT_FOUND)
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
         return createResponse(apiError);
     }

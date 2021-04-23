@@ -1,21 +1,12 @@
 package com.kitchenapp.kitchenappapi.controller
 
-import com.kitchenapp.kitchenappapi.providers.model.ShoppingUserIngredientProvider
-import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository
-import org.springframework.beans.factory.annotation.Autowired
 
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toShoppingItemDTOList
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 
 @WithMockCustomUser(id = MOCK_USER_ID)
 class ShoppingListControllerIntegrationSpec extends AbstractIntegrationSpec {
-
-    @Autowired
-    ShoppingListRepository shoppingListRepository
-
-    def cleanup() {
-        shoppingListRepository.deleteAll()
-    }
 
     def "should list all items for user"() {
         given: "logged in user exists in database"
@@ -82,14 +73,5 @@ class ShoppingListControllerIntegrationSpec extends AbstractIntegrationSpec {
         updatedList.size() == 1
         updatedList*.ticked == [false]
     }
-
-    def createShoppingListItems(user, ingredients) {
-        shoppingListRepository.saveAll([
-                ShoppingUserIngredientProvider.make(user: user, ingredient: ingredients.get(0), ticked: true),
-                ShoppingUserIngredientProvider.make(user: user, ingredient: ingredients.get(1)),
-                ShoppingUserIngredientProvider.make(user: getAnotherUser(), ingredient: ingredients.get(2)),
-        ])
-    }
-
 
 }

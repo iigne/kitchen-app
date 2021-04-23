@@ -5,16 +5,14 @@ import com.kitchenapp.kitchenappapi.dto.MeasurementDTO
 import com.kitchenapp.kitchenappapi.model.MetricUnit
 import org.springframework.security.test.context.support.WithMockUser
 
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toIngredientDTO
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toJson
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 @WithMockUser
 class IngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
-
-    def cleanup() {
-        ingredientRepository.deleteAll()
-    }
 
     def "create new ingredient with measurement"() {
         given: "measurement DTO is valid"

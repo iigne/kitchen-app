@@ -4,17 +4,14 @@ import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO
 import com.kitchenapp.kitchenappapi.providers.model.RecipeProvider
 import spock.lang.Unroll
 
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toApiError
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toJson
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toRecipeDTOList
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 
 @WithMockCustomUser(id = MOCK_USER_ID)
 class RecipeControllerIntegrationSpec extends AbstractIntegrationSpec {
-
-    def cleanup() {
-        userIngredientRepository.deleteAll()
-        recipeRepository.deleteAll()
-        ingredientRepository.deleteAll()
-    }
 
     @Unroll
     def "should fetch recipes"() {
@@ -111,8 +108,6 @@ class RecipeControllerIntegrationSpec extends AbstractIntegrationSpec {
 
         and: "recipe is still in the database"
         recipeRepository.findById(recipe.id).isPresent()
-
-
     }
 
 }

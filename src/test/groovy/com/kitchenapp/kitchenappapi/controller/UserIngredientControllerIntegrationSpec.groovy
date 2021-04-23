@@ -1,19 +1,12 @@
 package com.kitchenapp.kitchenappapi.controller
 
-import com.kitchenapp.kitchenappapi.providers.model.UserIngredientProvider
-import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository
-import org.springframework.beans.factory.annotation.Autowired
 
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toUserIngredientDTOList
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
 @WithMockCustomUser(id = MOCK_USER_ID)
 class UserIngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
-
-    def cleanup() {
-        userIngredientRepository.deleteAll()
-        ingredientRepository.deleteAll()
-    }
 
     def "should display user ingredients"() {
         given: "logged in user exists in database"
