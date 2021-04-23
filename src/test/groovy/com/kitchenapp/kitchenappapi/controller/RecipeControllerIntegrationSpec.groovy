@@ -2,34 +2,56 @@ package com.kitchenapp.kitchenappapi.controller
 
 import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO
 import com.kitchenapp.kitchenappapi.providers.model.RecipeProvider
-import com.kitchenapp.kitchenappapi.repository.RecipeRepository
-import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Unroll
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 
 @WithMockCustomUser(id = MOCK_USER_ID)
 class RecipeControllerIntegrationSpec extends AbstractIntegrationSpec {
 
-    @Autowired
-    RecipeRepository recipeRepository
-
     def cleanup() {
+        userIngredientRepository.deleteAll()
         recipeRepository.deleteAll()
+        ingredientRepository.deleteAll()
     }
 
+    @Unroll
     def "should fetch recipes"() {
-//        given: "user exists in the database and is logged in"
-//        def user = getUser()
-//        and: "there exist recipes in the database"
-//
-//
-//        where:
-//        endpoint | number
-//        "all"    | 3
-//        "liked"  | 2
-//        "created"| 1
+        given: "user exists in the database and is logged in"
+        def user = getLoggedInUser()
+
+        and: "ingredients and user ingredients exist"
+        def ingredients = createIngredients()
+        def testIngredient = ingredients.get(0)
+        creatUserIngredient(user, testIngredient)
+
+        and: "there exist recipes in the database"
+        createRecipe(user, ingredients)
+        createRecipe(getAnotherUser(), ingredients)
+
+        when: "user fetches recipes"
+        def result = mvc.perform(get("/recipe/list/" + endpoint))
+                .andReturn()
+
+        then: "status is ok"
+        result.response.status == 200
+
+        and: "correct number of recipes are fetched in correct format"
+        with(toRecipeDTOList(result.response.contentAsString)) { recipeList ->
+            recipeList.size() == numberOfRecipes
+            recipeList.each { recipeEntry ->
+                recipeEntry.ingredients.size() == ingredients.size()
+                recipeEntry.ingredients*.recipeQuantity == [150, 150, 150]
+                recipeEntry.ingredients*.ownedQuantity.sort() == [0, 0, 150]
+            }
+        }
+
+        where:
+        endpoint  | numberOfRecipes
+        "all"     | 2
+        "liked"   | 1
+        "created" | 1
     }
 
     def "should fail to create recipe"() {
