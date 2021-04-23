@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,29 +23,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RecipeController {
 
-    //also TODO is it better practice to have a bunch of endpoints or one and pass in an option that is string and will need to be if elsed?
-
     private final RecipeService recipeService;
 
-    @GetMapping("/list/all")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAll(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.ok(recipeService.getAllWithQuantities(userDetails.getId()));
-    }
-
-    //TODO
-    @GetMapping("/list/suggestion")
-    public ResponseEntity<List<ResponseRecipeDTO>> listSuggestions(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
-    @GetMapping("/list/liked")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAllLikedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.ok(recipeService.getAllLikedByUser(userDetails.getId()));
-    }
-
-    @GetMapping("/list/created")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAllCreatedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.ok(recipeService.getAllCreatedByUser(userDetails.getId()));
+    @GetMapping("/list")
+    public ResponseEntity<List<ResponseRecipeDTO>> listAll(@RequestParam final String option, @AuthenticationPrincipal JwtUserDetails userDetails) {
+        switch (option) {
+            case "liked":
+                return ResponseEntity.ok(recipeService.getAllLikedByUser(userDetails.getId()));
+            case "created":
+                return ResponseEntity.ok(recipeService.getAllCreatedByUser(userDetails.getId()));
+            default:
+                return ResponseEntity.ok(recipeService.getAllWithQuantities(userDetails.getId()));
+        }
     }
 
     @PostMapping

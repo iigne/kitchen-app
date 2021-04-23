@@ -83,6 +83,8 @@ class RecipeLibrary extends React.Component {
         let recipes = this.state.recipes
         let type = this.state.currentShow != null ?
             <header className="subheader">Displaying {this.state.currentShow}</header> : null;
+        let noRecipesMessage = this.state.currentShow != null && recipes.length === 0 ?
+            <p>No recipes found! Try creating or liking more recipes...</p> : null;
         const inCreateRecipe = this.state.inCreateRecipe;
         return (
             <Container>
@@ -120,6 +122,7 @@ class RecipeLibrary extends React.Component {
 
                 <Container>
                     {type}
+                    {noRecipesMessage}
                     <CardColumns>
                         {recipes.map((item) =>
                             <div key={item.id}>

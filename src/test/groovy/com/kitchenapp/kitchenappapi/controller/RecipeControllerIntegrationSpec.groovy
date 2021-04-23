@@ -4,9 +4,7 @@ import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO
 import com.kitchenapp.kitchenappapi.providers.model.RecipeProvider
 import spock.lang.Unroll
 
-import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toApiError
-import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toJson
-import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toRecipeDTOList
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.*
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 
@@ -28,7 +26,8 @@ class RecipeControllerIntegrationSpec extends AbstractIntegrationSpec {
         createRecipe(getAnotherUser(), ingredients)
 
         when: "user fetches recipes"
-        def result = mvc.perform(get("/recipe/list/" + endpoint))
+        def result = mvc.perform(get("/recipe/list/")
+                .param("option", endpoint))
                 .andReturn()
 
         then: "status is ok"
