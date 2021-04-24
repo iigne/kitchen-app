@@ -75,7 +75,7 @@ class ShoppingListServiceSpec extends Specification {
 
         when: "create is called for new shopping item"
         def shoppingIngredient2DTO = IngredientQuantityDTO.builder().ingredientId(id2).measurementId(measurement2id).quantity(quantity2).build()
-        shoppingListService.createItemForUser(shoppingIngredient2DTO, user.id)
+        shoppingListService.create(user.id, shoppingIngredient2DTO)
 
         then:
         1 * shoppingListRepository.findByUserIdAndIngredientId(user.id, id2) >> {

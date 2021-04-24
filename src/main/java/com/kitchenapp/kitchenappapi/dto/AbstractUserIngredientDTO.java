@@ -11,8 +11,11 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @SuperBuilder
-public class ShoppingListItemDTO extends AbstractUserIngredientDTO {
+public abstract class AbstractUserIngredientDTO {
+    @NotNull
+    @JsonUnwrapped
+    protected IngredientDTO ingredient;
 
-    private boolean ticked;
-
+    @JsonUnwrapped
+    protected QuantityDTO quantity;
 }

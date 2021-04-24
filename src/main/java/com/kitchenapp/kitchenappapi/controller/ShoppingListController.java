@@ -28,14 +28,14 @@ public class ShoppingListController {
 
     @GetMapping
     public ResponseEntity<List<ShoppingListItemDTO>> getListByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        List<ShoppingUserIngredient> ingredients = shoppingListService.findAllByUser(userDetails.getId());
+        List<ShoppingUserIngredient> ingredients = shoppingListService.findAllByUserId(userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(ShoppingListMapper.toDTOs(ingredients));
     }
 
     @PostMapping
     public ResponseEntity<ShoppingListItemDTO> createListItem(@RequestBody @Valid IngredientQuantityDTO item,
                                                               @AuthenticationPrincipal JwtUserDetails userDetails) {
-        ShoppingUserIngredient ingredient = shoppingListService.createItemForUser(item, userDetails.getId());
+        ShoppingUserIngredient ingredient = shoppingListService.create(userDetails.getId(), item);
         return ResponseEntity.status(HttpStatus.CREATED).body(ShoppingListMapper.toDTO(ingredient));
     }
 
@@ -50,7 +50,7 @@ public class ShoppingListController {
     @PatchMapping
     public ResponseEntity<ShoppingListItemDTO> updateListItem(@RequestBody @Valid IngredientQuantityDTO item,
                                                               @AuthenticationPrincipal JwtUserDetails userDetails) {
-        ShoppingUserIngredient ingredient = shoppingListService.updateFromDTO(item, userDetails.getId());
+        ShoppingUserIngredient ingredient = shoppingListService.update(userDetails.getId(), item);
         return ResponseEntity.status(HttpStatus.OK).body(ShoppingListMapper.toDTO(ingredient));
     }
 

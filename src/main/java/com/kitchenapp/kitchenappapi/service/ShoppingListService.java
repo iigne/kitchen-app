@@ -1,85 +1,48 @@
 package com.kitchenapp.kitchenappapi.service;
 
 import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
-import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.ShoppingListMapper;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
 import com.kitchenapp.kitchenappapi.model.*;
 import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class ShoppingListService {
+public class ShoppingListService extends AbstractUserIngredientService<ShoppingUserIngredient, ShoppingListRepository, IngredientQuantityDTO> {
 
     private final ShoppingListRepository shoppingListRepository;
-
-    private final MeasurementService measurementService;
-    private final UserService userService;
-    private final IngredientService ingredientService;
     private final UserIngredientService userIngredientService;
 
-    public List<ShoppingUserIngredient> findAllByUser(final int userId) {
-        return shoppingListRepository.findAllByUserId(userId);
+    @Override
+    protected ShoppingListRepository getRepository() {
+        return shoppingListRepository;
     }
 
-    public ShoppingUserIngredient createItemForUser(IngredientQuantityDTO item, final int userId) {
-        return shoppingListRepository.save(createFromDTO(item, userId));
+    @Override
+    protected ShoppingUserIngredient mapToEntity(IngredientQuantityDTO dto, Ingredient ingredient, User user, Measurement measurement) {
+        return ShoppingListMapper.toEntity(ingredient, user, measurement, dto.getQuantity());
+    }
+
+    public ShoppingListService(ShoppingListRepository shoppingListRepository, MeasurementService measurementService, UserService userService,
+                               IngredientService ingredientService, UserIngredientService userIngredientService) {
+        super(measurementService, userService, ingredientService);
+        this.shoppingListRepository = shoppingListRepository;
+        this.userIngredientService = userIngredientService;
     }
 
     public List<ShoppingUserIngredient> createItemsForUser(List<IngredientQuantityDTO> items, final int userId) {
-        List<ShoppingUserIngredient> toSave = items.stream().map(i -> createFromDTO(i, userId)).collect(Collectors.toList());
+        List<ShoppingUserIngredient> toSave = items.stream().map(i -> create(userId, i)).collect(Collectors.toList());
         return shoppingListRepository.saveAll(toSave);
     }
 
-    private ShoppingUserIngredient createFromDTO(IngredientQuantityDTO newItem, final int userId) {
-        final int ingredientId = newItem.getIngredientId();
-        User user = userService.findByIdOrThrow(userId);
-        Ingredient ingredient = ingredientService.findByIdOrThrow(newItem.getIngredientId());
-        Measurement measurement = measurementService.findByIdOrThrow(newItem.getMeasurementId());
-
-        Optional<ShoppingUserIngredient> existingItem = shoppingListRepository.findByUserIdAndIngredientId(userId, ingredientId);
-        if(existingItem.isPresent()) {
-            ShoppingUserIngredient item = existingItem.get();
-
-            double addedQuantityInMetric = MeasurementConverter.toMetricIfMetric(newItem.getQuantity(), measurement);
-            double totalMetricQuantity = item.getMetricQuantity() + addedQuantityInMetric;
-            double newQuantity = MeasurementConverter.toMeasurement(totalMetricQuantity, item.getMeasurement());
-            //keeping original measurement if item has been added this way
-            return updateShoppingListItem(item, item.getMeasurement(), newQuantity);
-        }
-
-        return ShoppingListMapper.toEntity(ingredient, user, measurement, newItem.getQuantity());
-    }
-
-    public ShoppingUserIngredient updateFromDTO(IngredientQuantityDTO item, final int userId) {
-        ShoppingUserIngredient ingredient = getByIdOrThrow(item.getIngredientId(), userId);
-        Measurement measurement = measurementService.findByIdOrThrow(item.getMeasurementId());
-
-        return updateShoppingListItem(ingredient, measurement, item.getQuantity());
-    }
-
-    private ShoppingUserIngredient updateShoppingListItem(ShoppingUserIngredient savedItem, Measurement measurement, double newQuantity) {
-
-        double metricQuantity =  MeasurementConverter.toMetricIfMetric(newQuantity, measurement);
-
-        savedItem.setMetricQuantity(metricQuantity);
-        savedItem.setMeasurement(measurement);
-        return shoppingListRepository.save(savedItem);
-
-    }
-
     public boolean addOrRemoveTick(final int ingredientId, final int userId) {
-        ShoppingUserIngredient ingredient = getByIdOrThrow(ingredientId, userId);
+        ShoppingUserIngredient ingredient = getByIngredientIdAndUserIdOrThrow(ingredientId, userId);
         boolean tickedValue = ingredient.isTicked();
         ingredient.setTicked(!tickedValue);
         return shoppingListRepository.save(ingredient).isTicked();
@@ -88,7 +51,6 @@ public class ShoppingListService {
     //TODO maybe we want this as transactional
     public void clearAndImport(final int userId) {
 
-        //TODO this definitely needs a test
         List<ShoppingUserIngredient> shoppingIngredients = getTickedByUser(userId);
         List<Integer> ingredientIds = shoppingIngredients.stream().map(i -> i.getIngredient().getId()).collect(Collectors.toList());
         List<UserIngredient> userIngredients = userIngredientService.getByIds(ingredientIds, userId);
@@ -106,10 +68,10 @@ public class ShoppingListService {
                 Collectors.toMap(i -> i.getIngredient().getId(), Function.identity()));
 
         List<UserIngredient> toSave = new ArrayList<>();
-        for(Integer key : shoppingMap.keySet()) {
+        for (Integer key : shoppingMap.keySet()) {
             UserIngredient userIngredient = userIngredientMap.get(key);
             ShoppingUserIngredient shoppingIngredient = shoppingMap.get(key);
-            if(userIngredient != null) {
+            if (userIngredient != null) {
                 double currentQuantity = userIngredient.getMetricQuantity();
                 double shoppingQuantity = shoppingIngredient.getMetricQuantity();
                 userIngredient.setMetricQuantity(currentQuantity + shoppingQuantity);
@@ -121,23 +83,12 @@ public class ShoppingListService {
         return toSave;
     }
 
-    public ShoppingUserIngredient getByIdOrThrow(final int ingredientId, final int userId) {
-        return shoppingListRepository.findByUserIdAndIngredientId(userId, ingredientId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("userId %s and ingredientId %s doesn't exist", userId, ingredientId)));
-    }
-
     public List<ShoppingUserIngredient> getTickedByUser(final int userId) {
         return shoppingListRepository.findAllByUserIdAndTickedIsTrue(userId);
     }
 
     public void deleteAllByUser(final int userId) {
         shoppingListRepository.deleteAllByUserId(userId);
-    }
-
-    public void deleteByIngredientAndUserId(final int ingredientId, final  int userId) {
-        ShoppingUserIngredient ingredient = getByIdOrThrow(ingredientId, userId);
-        shoppingListRepository.delete(ingredient);
     }
 
 }

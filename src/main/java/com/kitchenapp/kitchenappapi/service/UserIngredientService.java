@@ -1,8 +1,10 @@
 package com.kitchenapp.kitchenappapi.service;
 
+import com.kitchenapp.kitchenappapi.dto.AbstractUserIngredientDTO;
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestUserIngredientDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
@@ -21,55 +23,27 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class UserIngredientService {
+public class UserIngredientService extends AbstractUserIngredientService<UserIngredient, UserIngredientRepository, RequestUserIngredientDTO> {
 
     private final UserIngredientRepository userIngredientRepository;
 
-    private final UserService userService;
-    private final IngredientService ingredientService;
-    private final MeasurementService measurementService;
-
-
-    public List<UserIngredient> listAllForUser(final int userId) {
-        return userIngredientRepository.findAllByUserId(userId);
+    @Override
+    protected UserIngredientRepository getRepository() {
+        return userIngredientRepository;
     }
 
-    public UserIngredient create(final int userId, final UserIngredientDTO dto) {
-
-        final int ingredientId = dto.getIngredient().getId();
-
-        userIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId).ifPresent(
-                ui -> { throw new IllegalStateException(
-                        String.format("userId %s and ingredientId %s already exists", userId, ingredientId));
-                });
-
-        return userIngredientRepository.save(createFromDTO(userId, dto));
-    }
-
-    private UserIngredient createFromDTO(final int userId, final UserIngredientDTO dto) {
-        final int ingredientId = dto.getIngredient().getId();
-        final int measurementId = dto.getQuantity().getMeasurementId();
-
-        User user = userService.findByIdOrThrow(userId);
-        Ingredient ingredient = ingredientService.findByIdOrThrow(ingredientId);
-        Measurement measurement = measurementService.findByIdOrThrow(measurementId);
-
+    @Override
+    protected UserIngredient mapToEntity(RequestUserIngredientDTO dto, Ingredient ingredient, User user, Measurement measurement) {
         return UserIngredientMapper.toEntity(dto, ingredient, user, measurement);
     }
 
+    public UserIngredientService(UserIngredientRepository userIngredientRepository, MeasurementService measurementService, UserService userService, IngredientService ingredientService) {
+        super(measurementService, userService, ingredientService);
+        this.userIngredientRepository = userIngredientRepository;
+    }
 
     public UserIngredient updateQuantity(final int userId, int ingredientId, QuantityDTO dto) {
-
-        UserIngredient userIngredient = userIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId).orElseThrow(() ->
-                new EntityNotFoundException(String.format("userId %s and ingredientId %s doesn't exist", userId, ingredientId)));
-
-        final Integer measurementId = dto.getMeasurementId();
-        Measurement measurement = measurementService.findByIdOrThrow(measurementId);
-        double metricQuantity = MeasurementConverter.toMetricIfMetric(dto.getQuantity(), measurement);
-        userIngredient.setMetricQuantity(metricQuantity);
-        userIngredient.setMeasurement(measurement);
-        return userIngredientRepository.save(userIngredient);
+        return update(userId, ingredientId, dto.getMeasurementId(), dto.getQuantity());
     }
 
     public List<UserIngredient> updateQuantities(final int userId, List<IngredientQuantityDTO> ingredientQuantities) {
@@ -100,10 +74,6 @@ public class UserIngredientService {
 
     public List<UserIngredient> getByIds(final List<Integer> ingredientIds, final int userId) {
         return userIngredientRepository.findAllByUserIdAndIngredientIdIn(userId, ingredientIds);
-    }
-
-    public void delete(int id, int ingredientId) {
-        userIngredientRepository.deleteByIngredientIdAndUserId(ingredientId, id);
     }
 
     public List<UserIngredient> saveAll(List<UserIngredient> ingredients) {

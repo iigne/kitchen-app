@@ -92,7 +92,7 @@ abstract class AbstractIntegrationSpec extends Specification {
         return recipeRepository.save(recipe)
     }
 
-    protected UserIngredient creatUserIngredient(user, ingredient) {
+    protected UserIngredient createUserIngredient(user, ingredient) {
         def userIngredient = UserIngredientProvider.make(user: user, ingredient: ingredient, metricQuantity: 150)
         return userIngredientRepository.save(userIngredient)
     }

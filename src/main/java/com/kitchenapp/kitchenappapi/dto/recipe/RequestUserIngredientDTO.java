@@ -1,4 +1,4 @@
-package com.kitchenapp.kitchenappapi.dto;
+package com.kitchenapp.kitchenappapi.dto.recipe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,10 +13,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class UserIngredientDTO extends AbstractUserIngredientDTO {
-
+public class RequestUserIngredientDTO extends IngredientQuantityDTO {
     private LocalDate expiryDate;
 
     private LocalDate dateBought;
-
 }

@@ -1,8 +1,8 @@
 package com.kitchenapp.kitchenappapi.controller;
 
-import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
 import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestUserIngredientDTO;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
 import com.kitchenapp.kitchenappapi.service.UserIngredientService;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper.toDTO;
@@ -29,23 +28,22 @@ public class UserIngredientController {
     @GetMapping
     public ResponseEntity<List<UserIngredientDTO>> getByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                UserIngredientMapper.toDTO(userIngredientService.listAllForUser(userDetails.getId())));
+                UserIngredientMapper.toDTO(userIngredientService.findAllByUserId(userDetails.getId())));
     }
 
     @PostMapping
     public ResponseEntity<UserIngredientDTO> create(@AuthenticationPrincipal JwtUserDetails userDetails,
-                                                    @RequestBody UserIngredientDTO dto) {
+                                                    @RequestBody RequestUserIngredientDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 toDTO(userIngredientService.create(userDetails.getId(), dto))
         );
     }
 
-    @PatchMapping("/quantity")
-    public ResponseEntity<UserIngredientDTO> updateQuantity(@AuthenticationPrincipal JwtUserDetails userDetails,
-                                                            @RequestParam int ingredientId,
-                                                            @RequestBody @NotNull QuantityDTO quantityDTO) {
+    @PatchMapping
+    public ResponseEntity<UserIngredientDTO> update(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                                    @RequestBody RequestUserIngredientDTO dto) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                UserIngredientMapper.toDTO(userIngredientService.updateQuantity(userDetails.getId(), ingredientId, quantityDTO))
+                UserIngredientMapper.toDTO(userIngredientService.update(userDetails.getId(), dto))
         );
     }
 
@@ -60,7 +58,7 @@ public class UserIngredientController {
     @DeleteMapping
     public ResponseEntity<?> delete(@AuthenticationPrincipal JwtUserDetails userDetails,
                                     @RequestParam int ingredientId) {
-        userIngredientService.delete(userDetails.getId(), ingredientId);
+        userIngredientService.deleteByIngredientAndUserId(ingredientId, userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

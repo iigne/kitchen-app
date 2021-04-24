@@ -19,7 +19,7 @@ class RecipeControllerIntegrationSpec extends AbstractIntegrationSpec {
         and: "ingredients and user ingredients exist"
         def ingredients = createIngredients()
         def testIngredient = ingredients.get(0)
-        creatUserIngredient(user, testIngredient)
+        createUserIngredient(user, testIngredient)
 
         and: "there exist recipes in the database"
         createRecipe(user, ingredients)

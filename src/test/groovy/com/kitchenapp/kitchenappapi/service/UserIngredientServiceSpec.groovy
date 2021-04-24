@@ -2,6 +2,7 @@ package com.kitchenapp.kitchenappapi.service
 
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO
 import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestUserIngredientDTO
 import com.kitchenapp.kitchenappapi.model.MetricUnit
 import com.kitchenapp.kitchenappapi.model.UserIngredientId
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
@@ -26,14 +27,13 @@ class UserIngredientServiceSpec extends Specification {
     UserIngredientService userIngredientService
 
     def setup() {
-        userIngredientService = new UserIngredientService(userIngredientRepository, userService,
-                ingredientService, measurementService)
+        userIngredientService = new UserIngredientService(userIngredientRepository, measurementService,
+                userService, ingredientService)
     }
 
     def "should create ingredient"() {
         given: "DTO is valid"
-        def quantityDTO = new QuantityDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: inputQuantity)
-        def dto = UserIngredientDTOProvider.make(quantities: [quantityDTO])
+        def dto = new RequestUserIngredientDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: inputQuantity, ingredientId: CommonTestData.INGREDIENT_ID)
         def measurement = MeasurementProvider.make()
 
         when: "create is called"
@@ -54,14 +54,12 @@ class UserIngredientServiceSpec extends Specification {
 
     def "should fail to create ingredient when there's data conflicts"() {
         given: "DTO is valid"
-        def quantityDTO = new QuantityDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: 10)
-        def dto = UserIngredientDTOProvider.make(quantity: quantityDTO)
+        def dto = new RequestUserIngredientDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: 150, ingredientId: CommonTestData.INGREDIENT_ID)
 
         when: "create is called"
         userIngredientService.create(CommonTestData.USER_ID, dto)
 
         then: "exceptions are thrown"
-        1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.empty()
         userService.findByIdOrThrow(CommonTestData.USER_ID) >> { throw new EntityNotFoundException() }
         ingredientService.findByIdOrThrow(CommonTestData.INGREDIENT_ID) >> { throw new EntityNotFoundException() }
 
