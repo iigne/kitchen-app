@@ -1,4 +1,4 @@
-package com.kitchenapp.kitchenappapi.dto.request;
+package com.kitchenapp.kitchenappapi.dto.recipe;
 
 import lombok.*;
 

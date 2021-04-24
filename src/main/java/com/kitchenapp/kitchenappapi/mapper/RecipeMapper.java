@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.mapper;
 
-import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO;
-import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestRecipeDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.ResponseRecipeDTO;
 import com.kitchenapp.kitchenappapi.model.Recipe;
 import com.kitchenapp.kitchenappapi.model.RecipeIngredient;
 import com.kitchenapp.kitchenappapi.model.User;

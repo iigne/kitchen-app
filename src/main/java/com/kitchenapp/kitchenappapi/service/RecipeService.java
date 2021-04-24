@@ -1,8 +1,8 @@
 package com.kitchenapp.kitchenappapi.service;
 
-import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO;
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
-import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestRecipeDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.ResponseRecipeDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.RecipeIngredientMapper;
 import com.kitchenapp.kitchenappapi.mapper.RecipeMapper;

@@ -72,6 +72,11 @@ class ShoppingListControllerIntegrationSpec extends AbstractIntegrationSpec {
         def updatedList = shoppingListRepository.findAllByUserId(user.id)
         updatedList.size() == 1
         updatedList*.ticked == [false]
+
+        and: "ticked items are in user ingredients"
+        def userIngredients = userIngredientRepository.findAllByUserId(user.id)
+        userIngredients.size() == 1
+        userIngredients*.metricQuantity == [100]
     }
 
 }

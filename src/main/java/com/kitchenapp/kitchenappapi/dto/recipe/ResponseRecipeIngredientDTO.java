@@ -1,4 +1,4 @@
-package com.kitchenapp.kitchenappapi.dto.response;
+package com.kitchenapp.kitchenappapi.dto.recipe;
 
 import com.kitchenapp.kitchenappapi.dto.MeasurementDTO;
 import lombok.AllArgsConstructor;

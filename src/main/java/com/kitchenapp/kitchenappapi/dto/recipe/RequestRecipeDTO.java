@@ -1,5 +1,6 @@
-package com.kitchenapp.kitchenappapi.dto.request;
+package com.kitchenapp.kitchenappapi.dto.recipe;
 
+import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;

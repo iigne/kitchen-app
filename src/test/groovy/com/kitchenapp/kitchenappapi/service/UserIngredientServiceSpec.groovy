@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.service
 
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO
 import com.kitchenapp.kitchenappapi.model.MetricUnit
 import com.kitchenapp.kitchenappapi.model.User
 import com.kitchenapp.kitchenappapi.model.UserIngredientId

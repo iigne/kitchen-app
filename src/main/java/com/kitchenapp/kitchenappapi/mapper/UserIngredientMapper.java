@@ -15,7 +15,7 @@ public class UserIngredientMapper {
         return UserIngredient.builder()
                 .ingredient(ingredient)
                 .user(user)
-                .customMeasurement(measurement)
+                .measurement(measurement)
                 .metricQuantity(measurement.isMetric() ? dto.getQuantity().getQuantity() : MeasurementConverter.toMetric(dto.getQuantity().getQuantity(), measurement))
                 .dateAdded(dto.getDateBought() != null ? dto.getDateBought() : LocalDate.now())
                 .dateExpiry(dto.getExpiryDate() != null ? dto.getExpiryDate() : LocalDate.now().plusDays(ingredient.getShelfLifeDays()))
@@ -27,7 +27,7 @@ public class UserIngredientMapper {
         return UserIngredient.builder()
                 .ingredient(ingredient)
                 .user(shoppingUserIngredient.getUser())
-                .customMeasurement(shoppingUserIngredient.getMeasurement())
+                .measurement(shoppingUserIngredient.getMeasurement())
                 .metricQuantity(shoppingUserIngredient.getMetricQuantity())
                 .dateAdded(LocalDate.now())
                 .dateExpiry(LocalDate.now().plusDays(ingredient.getShelfLifeDays()))
@@ -37,7 +37,7 @@ public class UserIngredientMapper {
     public static UserIngredientDTO toDTO(UserIngredient entity) {
         return UserIngredientDTO.builder()
                 .ingredient(IngredientMapper.toDTO(entity.getIngredient()))
-                .quantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getCustomMeasurement()))
+                .quantity(QuantityMapper.toDTO(entity.getMetricQuantity(), entity.getMeasurement()))
                 .dateBought(entity.getDateAdded())
                 .expiryDate(entity.getDateExpiry())
                 .build();

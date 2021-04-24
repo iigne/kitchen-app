@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.service
 
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.model.*
 import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository

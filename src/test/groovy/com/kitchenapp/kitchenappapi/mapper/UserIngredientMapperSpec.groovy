@@ -53,7 +53,7 @@ class UserIngredientMapperSpec extends Specification {
         def ingredient = IngredientProvider.make(measurements: [MeasurementProvider.make(), measurement])
 
         and: "valid UserIngredient"
-        def entity = UserIngredientProvider.make(ingredient: ingredient, customMeasurement: measurement, metricQuantity: savedMetric)
+        def entity = UserIngredientProvider.make(ingredient: ingredient, measurement: measurement, metricQuantity: savedMetric)
 
         when: "convert to DTO"
         def dto = UserIngredientMapper.toDTO(entity)

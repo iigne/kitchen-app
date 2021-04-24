@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.controller;
 
-import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO;
-import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestRecipeDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.ResponseRecipeDTO;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
 import com.kitchenapp.kitchenappapi.service.RecipeService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

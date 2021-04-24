@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.controller
 
-import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestRecipeDTO
 import com.kitchenapp.kitchenappapi.providers.model.RecipeProvider
 import spock.lang.Unroll
 

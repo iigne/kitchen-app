@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.kitchenapp.kitchenappapi.dto.IngredientDTO
 import com.kitchenapp.kitchenappapi.dto.ShoppingListItemDTO
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO
-import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO
+import com.kitchenapp.kitchenappapi.dto.recipe.ResponseRecipeDTO
 import com.kitchenapp.kitchenappapi.error.ApiError
 
 

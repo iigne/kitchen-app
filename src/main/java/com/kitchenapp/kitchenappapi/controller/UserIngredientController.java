@@ -2,11 +2,9 @@ package com.kitchenapp.kitchenappapi.controller;
 
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
-import com.kitchenapp.kitchenappapi.model.Ingredient;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import com.kitchenapp.kitchenappapi.model.UserIngredient;
 import com.kitchenapp.kitchenappapi.service.UserIngredientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

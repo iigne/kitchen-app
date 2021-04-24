@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.controller;
 
 import com.kitchenapp.kitchenappapi.dto.ShoppingListItemDTO;
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
 import com.kitchenapp.kitchenappapi.mapper.ShoppingListMapper;
 import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
 import com.kitchenapp.kitchenappapi.model.ShoppingUserIngredient;

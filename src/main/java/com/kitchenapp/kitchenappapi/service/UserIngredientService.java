@@ -2,7 +2,7 @@ package com.kitchenapp.kitchenappapi.service;
 
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
 import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
 import com.kitchenapp.kitchenappapi.helper.MeasurementConverter;
 import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
 import com.kitchenapp.kitchenappapi.model.Ingredient;
@@ -69,7 +69,7 @@ public class UserIngredientService {
         Measurement measurement = measurementService.findByIdOrThrow(measurementId);
         double metricQuantity = MeasurementConverter.toMetricIfMetric(dto.getQuantity(), measurement);
         userIngredient.setMetricQuantity(metricQuantity);
-        userIngredient.setCustomMeasurement(measurement);
+        userIngredient.setMeasurement(measurement);
         return UserIngredientMapper.toDTO(userIngredientRepository.save(userIngredient));
     }
 
