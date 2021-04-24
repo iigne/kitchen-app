@@ -9,9 +9,7 @@ import com.kitchenapp.kitchenappapi.model.Ingredient;
 import com.kitchenapp.kitchenappapi.model.Measurement;
 import com.kitchenapp.kitchenappapi.model.User;
 import com.kitchenapp.kitchenappapi.model.UserIngredient;
-import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
 import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository;
-import com.kitchenapp.kitchenappapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +25,17 @@ import java.util.stream.Collectors;
 public class UserIngredientService {
 
     private final UserIngredientRepository userIngredientRepository;
-    private final UserRepository userRepository;
-    private final IngredientRepository ingredientRepository;
+
+    private final UserService userService;
+    private final IngredientService ingredientService;
     private final MeasurementService measurementService;
 
-    public UserIngredientDTO create(final int userId, final UserIngredientDTO dto) {
+
+    public List<UserIngredient> listAllForUser(final int userId) {
+        return userIngredientRepository.findAllByUserId(userId);
+    }
+
+    public UserIngredient create(final int userId, final UserIngredientDTO dto) {
 
         final int ingredientId = dto.getIngredient().getId();
 
@@ -40,27 +44,22 @@ public class UserIngredientService {
                         String.format("userId %s and ingredientId %s already exists", userId, ingredientId));
                 });
 
-        UserIngredient userIngredient = userIngredientRepository.save(mapToEntity(userId, dto));
-        return UserIngredientMapper.toDTO(userIngredient);
+        return userIngredientRepository.save(createFromDTO(userId, dto));
     }
 
-    private UserIngredient mapToEntity(final int userId, final UserIngredientDTO dto) {
+    private UserIngredient createFromDTO(final int userId, final UserIngredientDTO dto) {
         final int ingredientId = dto.getIngredient().getId();
+        final int measurementId = dto.getQuantity().getMeasurementId();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("userId %s not found", userId)));
-        Ingredient ingredient = ingredientRepository.findById(ingredientId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("ingredientId %s not found", ingredientId)));
+        User user = userService.findByIdOrThrow(userId);
+        Ingredient ingredient = ingredientService.findByIdOrThrow(ingredientId);
+        Measurement measurement = measurementService.findByIdOrThrow(measurementId);
 
-        Measurement measurement = measurementService.findByIdOrThrow(dto.getQuantity().getMeasurementId());
         return UserIngredientMapper.toEntity(dto, ingredient, user, measurement);
     }
 
-    public List<UserIngredientDTO> listAllForUser(final int userId) {
-        return UserIngredientMapper.toDTO(userIngredientRepository.findAllByUserId(userId));
-    }
 
-    public UserIngredientDTO updateQuantity(final int userId, int ingredientId, QuantityDTO dto) {
+    public UserIngredient updateQuantity(final int userId, int ingredientId, QuantityDTO dto) {
 
         UserIngredient userIngredient = userIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId).orElseThrow(() ->
                 new EntityNotFoundException(String.format("userId %s and ingredientId %s doesn't exist", userId, ingredientId)));
@@ -70,7 +69,7 @@ public class UserIngredientService {
         double metricQuantity = MeasurementConverter.toMetricIfMetric(dto.getQuantity(), measurement);
         userIngredient.setMetricQuantity(metricQuantity);
         userIngredient.setMeasurement(measurement);
-        return UserIngredientMapper.toDTO(userIngredientRepository.save(userIngredient));
+        return userIngredientRepository.save(userIngredient);
     }
 
     public List<UserIngredient> updateQuantities(final int userId, List<IngredientQuantityDTO> ingredientQuantities) {

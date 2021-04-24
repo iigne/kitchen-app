@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+import static com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper.toDTO;
+
 @Slf4j
 @RestController
 @RequestMapping("/user-ingredient")
@@ -27,17 +29,14 @@ public class UserIngredientController {
     @GetMapping
     public ResponseEntity<List<UserIngredientDTO>> getByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                userIngredientService.listAllForUser(userDetails.getId()));
+                UserIngredientMapper.toDTO(userIngredientService.listAllForUser(userDetails.getId())));
     }
 
     @PostMapping
     public ResponseEntity<UserIngredientDTO> create(@AuthenticationPrincipal JwtUserDetails userDetails,
                                                     @RequestBody UserIngredientDTO dto) {
-//        if(dto.getQuantities() == null || dto.getQuantities().isEmpty()) {
-//            throw new IllegalArgumentException("No quantity specified");
-//        }
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                userIngredientService.create(userDetails.getId(), dto)
+                toDTO(userIngredientService.create(userDetails.getId(), dto))
         );
     }
 
@@ -46,7 +45,7 @@ public class UserIngredientController {
                                                             @RequestParam int ingredientId,
                                                             @RequestBody @NotNull QuantityDTO quantityDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                userIngredientService.updateQuantity(userDetails.getId(), ingredientId, quantityDTO)
+                UserIngredientMapper.toDTO(userIngredientService.updateQuantity(userDetails.getId(), ingredientId, quantityDTO))
         );
     }
 
@@ -54,7 +53,7 @@ public class UserIngredientController {
     public ResponseEntity<List<UserIngredientDTO>> removeQuantities(@AuthenticationPrincipal JwtUserDetails userDetails,
                                                                     @RequestBody List<IngredientQuantityDTO> ingredientQuantities) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                UserIngredientMapper.toDTO(userIngredientService.updateQuantities(userDetails.getId(), ingredientQuantities))
+                toDTO(userIngredientService.updateQuantities(userDetails.getId(), ingredientQuantities))
         );
     }
 

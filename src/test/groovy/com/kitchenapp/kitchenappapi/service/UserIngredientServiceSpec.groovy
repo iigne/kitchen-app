@@ -3,7 +3,6 @@ package com.kitchenapp.kitchenappapi.service
 import com.kitchenapp.kitchenappapi.dto.QuantityDTO
 import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO
 import com.kitchenapp.kitchenappapi.model.MetricUnit
-import com.kitchenapp.kitchenappapi.model.User
 import com.kitchenapp.kitchenappapi.model.UserIngredientId
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.dto.UserIngredientDTOProvider
@@ -11,9 +10,7 @@ import com.kitchenapp.kitchenappapi.providers.model.IngredientProvider
 import com.kitchenapp.kitchenappapi.providers.model.MeasurementProvider
 import com.kitchenapp.kitchenappapi.providers.model.UserIngredientProvider
 import com.kitchenapp.kitchenappapi.providers.model.UserProvider
-import com.kitchenapp.kitchenappapi.repository.IngredientRepository
 import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository
-import com.kitchenapp.kitchenappapi.repository.UserRepository
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -22,15 +19,15 @@ import javax.persistence.EntityNotFoundException
 class UserIngredientServiceSpec extends Specification {
 
     UserIngredientRepository userIngredientRepository = Mock()
-    UserRepository userRepository = Mock()
-    IngredientRepository ingredientRepository = Mock()
+    UserService userService = Mock()
+    IngredientService ingredientService = Mock()
     MeasurementService measurementService = Mock()
 
     UserIngredientService userIngredientService
 
     def setup() {
-        userIngredientService = new UserIngredientService(userIngredientRepository, userRepository,
-                ingredientRepository, measurementService)
+        userIngredientService = new UserIngredientService(userIngredientRepository, userService,
+                ingredientService, measurementService)
     }
 
     def "should create ingredient"() {
@@ -44,8 +41,8 @@ class UserIngredientServiceSpec extends Specification {
 
         then: "validations pass"
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.empty()
-        1 * userRepository.findById(CommonTestData.USER_ID) >> Optional.of(new User(id: CommonTestData.USER_ID))
-        1 * ingredientRepository.findById(CommonTestData.INGREDIENT_ID) >> Optional.of(IngredientProvider.make(measurement: [measurement]))
+        1 * userService.findByIdOrThrow(CommonTestData.USER_ID) >> UserProvider.make()
+        1 * ingredientService.findByIdOrThrow(CommonTestData.INGREDIENT_ID) >> IngredientProvider.make(measurement: [measurement])
         1 * measurementService.findByIdOrThrow(measurement.id) >> measurement
 
         and: "ingredient created in database"
@@ -55,7 +52,6 @@ class UserIngredientServiceSpec extends Specification {
         inputQuantity << 10
     }
 
-    @Unroll
     def "should fail to create ingredient when there's data conflicts"() {
         given: "DTO is valid"
         def quantityDTO = new QuantityDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: 10)
@@ -64,23 +60,15 @@ class UserIngredientServiceSpec extends Specification {
         when: "create is called"
         userIngredientService.create(CommonTestData.USER_ID, dto)
 
-        then: "validation is performed"
-        userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> userIngredientValue
-        userRepository.findById(CommonTestData.USER_ID) >> userValue
-        ingredientRepository.findById(CommonTestData.INGREDIENT_ID) >> ingredientValue
+        then: "exceptions are thrown"
+        1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.empty()
+        userService.findByIdOrThrow(CommonTestData.USER_ID) >> { throw new EntityNotFoundException() }
+        ingredientService.findByIdOrThrow(CommonTestData.INGREDIENT_ID) >> { throw new EntityNotFoundException() }
 
-        and: "exception is thrown"
-        def ex = thrown(exceptionClass)
-        ex.message == message
+        thrown(EntityNotFoundException.class)
 
         and: "no database interactions performed"
         0 * userIngredientRepository.save(_)
-
-        where:
-        userIngredientValue                        | userValue               | ingredientValue  || exceptionClass          | message
-        Optional.of(UserIngredientProvider.make()) | Optional.empty()        | Optional.empty() || IllegalStateException   | "userId $CommonTestData.USER_ID and ingredientId $CommonTestData.INGREDIENT_ID already exists"
-        Optional.empty()                           | Optional.empty()        | Optional.empty() || EntityNotFoundException | "userId $CommonTestData.USER_ID not found"
-        Optional.empty()                           | Optional.of(new User()) | Optional.empty() || EntityNotFoundException | "ingredientId $CommonTestData.INGREDIENT_ID not found"
     }
 
     @Unroll
