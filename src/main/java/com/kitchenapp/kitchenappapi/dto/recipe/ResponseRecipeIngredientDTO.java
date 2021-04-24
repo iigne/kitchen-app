@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.dto.recipe;
 
-import com.kitchenapp.kitchenappapi.dto.MeasurementDTO;
+import com.kitchenapp.kitchenappapi.dto.ingredient.MeasurementDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

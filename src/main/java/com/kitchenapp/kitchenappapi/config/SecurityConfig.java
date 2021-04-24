@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.config;
 
-import com.kitchenapp.kitchenappapi.service.JwtUserDetailsService;
+import com.kitchenapp.kitchenappapi.service.user.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -3,9 +3,9 @@ package com.kitchenapp.kitchenappapi.controller
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.kitchenapp.kitchenappapi.dto.IngredientDTO
-import com.kitchenapp.kitchenappapi.dto.ShoppingListItemDTO
-import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientDTO
+import com.kitchenapp.kitchenappapi.dto.useringredient.ShoppingListItemDTO
+import com.kitchenapp.kitchenappapi.dto.useringredient.ResponseUserIngredientDTO
 import com.kitchenapp.kitchenappapi.dto.recipe.ResponseRecipeDTO
 import com.kitchenapp.kitchenappapi.error.ApiError
 
@@ -23,10 +23,10 @@ class JsonParseHelper {
         return new ObjectMapper().readValue(json, IngredientDTO.class)
     }
 
-    static List<UserIngredientDTO> toUserIngredientDTOList(json) {
+    static List<ResponseUserIngredientDTO> toUserIngredientDTOList(json) {
         ObjectMapper objectMapper = new ObjectMapper()
         objectMapper.registerModule(new JavaTimeModule())
-        return objectMapper.readValue(json, new TypeReference<List<UserIngredientDTO>>() {})
+        return objectMapper.readValue(json, new TypeReference<List<ResponseUserIngredientDTO>>() {})
     }
 
     static ApiError toApiError(json) {
@@ -43,10 +43,10 @@ class JsonParseHelper {
         return objectMapper.readValue(json, new TypeReference<List<ResponseRecipeDTO>>() {})
     }
 
-    static UserIngredientDTO toUserIngredientDTO(json) {
+    static ResponseUserIngredientDTO toUserIngredientDTO(json) {
         ObjectMapper objectMapper = new ObjectMapper()
         objectMapper.registerModule(new JavaTimeModule())
-        return objectMapper.readValue(json, UserIngredientDTO.class)
+        return objectMapper.readValue(json, ResponseUserIngredientDTO.class)
     }
 
 }

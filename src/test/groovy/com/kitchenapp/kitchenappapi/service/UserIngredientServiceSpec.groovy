@@ -1,17 +1,20 @@
 package com.kitchenapp.kitchenappapi.service
 
-import com.kitchenapp.kitchenappapi.dto.QuantityDTO
-import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO
-import com.kitchenapp.kitchenappapi.dto.recipe.RequestUserIngredientDTO
-import com.kitchenapp.kitchenappapi.model.MetricUnit
-import com.kitchenapp.kitchenappapi.model.UserIngredientId
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.useringredient.RequestUserIngredientDTO
+import com.kitchenapp.kitchenappapi.model.ingredient.MetricUnit
+import com.kitchenapp.kitchenappapi.model.useringredient.UserIngredientId
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
-import com.kitchenapp.kitchenappapi.providers.dto.UserIngredientDTOProvider
+
 import com.kitchenapp.kitchenappapi.providers.model.IngredientProvider
 import com.kitchenapp.kitchenappapi.providers.model.MeasurementProvider
 import com.kitchenapp.kitchenappapi.providers.model.UserIngredientProvider
 import com.kitchenapp.kitchenappapi.providers.model.UserProvider
-import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository
+import com.kitchenapp.kitchenappapi.repository.useringredient.UserIngredientRepository
+import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService
+import com.kitchenapp.kitchenappapi.service.ingredient.MeasurementService
+import com.kitchenapp.kitchenappapi.service.user.UserService
+import com.kitchenapp.kitchenappapi.service.useringredient.UserIngredientService
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -72,10 +75,10 @@ class UserIngredientServiceSpec extends Specification {
     @Unroll
     def "should update quantity"() {
         given: "quantity is valid"
-        def quantityDTO = new QuantityDTO(measurementId: inputMeasurementId, quantity: inputQuantity)
+        def quantityDTO = new RequestUserIngredientDTO(ingredientId: CommonTestData.INGREDIENT_ID, measurementId: inputMeasurementId, quantity: inputQuantity)
 
         when: "update is called"
-        userIngredientService.updateQuantity(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID, quantityDTO)
+        userIngredientService.update(CommonTestData.USER_ID, quantityDTO)
 
         then: "validations pass"
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.of(UserIngredientProvider.make())

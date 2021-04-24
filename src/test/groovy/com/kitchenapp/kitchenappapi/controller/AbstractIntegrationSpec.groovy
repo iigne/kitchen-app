@@ -1,13 +1,19 @@
 package com.kitchenapp.kitchenappapi.controller
 
 
-import com.kitchenapp.kitchenappapi.model.*
+import com.kitchenapp.kitchenappapi.model.ingredient.Ingredient
+
+import com.kitchenapp.kitchenappapi.model.recipe.Recipe
+import com.kitchenapp.kitchenappapi.model.recipe.RecipeIngredient
+import com.kitchenapp.kitchenappapi.model.user.User
+import com.kitchenapp.kitchenappapi.model.useringredient.ShoppingUserIngredient
+import com.kitchenapp.kitchenappapi.model.useringredient.UserIngredient
 import com.kitchenapp.kitchenappapi.providers.model.*
-import com.kitchenapp.kitchenappapi.repository.IngredientRepository
-import com.kitchenapp.kitchenappapi.repository.RecipeRepository
-import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository
-import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository
-import com.kitchenapp.kitchenappapi.repository.UserRepository
+import com.kitchenapp.kitchenappapi.repository.ingredient.IngredientRepository
+import com.kitchenapp.kitchenappapi.repository.recipe.RecipeRepository
+import com.kitchenapp.kitchenappapi.repository.useringredient.ShoppingListRepository
+import com.kitchenapp.kitchenappapi.repository.useringredient.UserIngredientRepository
+import com.kitchenapp.kitchenappapi.repository.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest

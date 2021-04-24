@@ -1,9 +1,14 @@
 package com.kitchenapp.kitchenappapi.service
 
-import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.model.*
-import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository
+import com.kitchenapp.kitchenappapi.repository.useringredient.ShoppingListRepository
+import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService
+import com.kitchenapp.kitchenappapi.service.ingredient.MeasurementService
+import com.kitchenapp.kitchenappapi.service.user.UserService
+import com.kitchenapp.kitchenappapi.service.useringredient.ShoppingListService
+import com.kitchenapp.kitchenappapi.service.useringredient.UserIngredientService
 import spock.lang.Specification
 import spock.lang.Unroll
 

@@ -2,8 +2,8 @@ package com.kitchenapp.kitchenappapi.controller;
 
 import com.kitchenapp.kitchenappapi.dto.recipe.RequestRecipeDTO;
 import com.kitchenapp.kitchenappapi.dto.recipe.ResponseRecipeDTO;
-import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import com.kitchenapp.kitchenappapi.service.RecipeService;
+import com.kitchenapp.kitchenappapi.model.user.JwtUserDetails;
+import com.kitchenapp.kitchenappapi.service.recipe.RecipeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

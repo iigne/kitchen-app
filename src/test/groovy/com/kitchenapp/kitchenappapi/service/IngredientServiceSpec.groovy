@@ -1,12 +1,14 @@
 package com.kitchenapp.kitchenappapi.service
 
-import com.kitchenapp.kitchenappapi.dto.IngredientDTO
-import com.kitchenapp.kitchenappapi.dto.MeasurementDTO
-import com.kitchenapp.kitchenappapi.model.MetricUnit
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientDTO
+import com.kitchenapp.kitchenappapi.dto.ingredient.MeasurementDTO
+import com.kitchenapp.kitchenappapi.model.ingredient.MetricUnit
 import com.kitchenapp.kitchenappapi.providers.model.CategoryProvider
 import com.kitchenapp.kitchenappapi.providers.model.MeasurementProvider
-import com.kitchenapp.kitchenappapi.repository.CategoryRepository
-import com.kitchenapp.kitchenappapi.repository.IngredientRepository
+import com.kitchenapp.kitchenappapi.repository.ingredient.CategoryRepository
+import com.kitchenapp.kitchenappapi.repository.ingredient.IngredientRepository
+import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService
+import com.kitchenapp.kitchenappapi.service.ingredient.MeasurementService
 import spock.lang.Specification
 
 class IngredientServiceSpec extends Specification {

@@ -1,8 +1,8 @@
 package com.kitchenapp.kitchenappapi.controller
 
-import com.kitchenapp.kitchenappapi.dto.IngredientDTO
-import com.kitchenapp.kitchenappapi.dto.MeasurementDTO
-import com.kitchenapp.kitchenappapi.model.MetricUnit
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientDTO
+import com.kitchenapp.kitchenappapi.dto.ingredient.MeasurementDTO
+import com.kitchenapp.kitchenappapi.model.ingredient.MetricUnit
 import org.springframework.security.test.context.support.WithMockUser
 
 import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toIngredientDTO

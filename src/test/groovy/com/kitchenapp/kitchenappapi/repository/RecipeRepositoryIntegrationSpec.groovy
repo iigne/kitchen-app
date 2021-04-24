@@ -1,6 +1,11 @@
 package com.kitchenapp.kitchenappapi.repository
 
 import com.kitchenapp.kitchenappapi.providers.model.*
+import com.kitchenapp.kitchenappapi.repository.ingredient.IngredientRepository
+import com.kitchenapp.kitchenappapi.repository.recipe.RecipeIngredientRepository
+import com.kitchenapp.kitchenappapi.repository.recipe.RecipeRepository
+import com.kitchenapp.kitchenappapi.repository.user.UserRepository
+import com.kitchenapp.kitchenappapi.repository.useringredient.UserIngredientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

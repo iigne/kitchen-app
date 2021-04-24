@@ -1,11 +1,11 @@
 package com.kitchenapp.kitchenappapi.controller;
 
-import com.kitchenapp.kitchenappapi.dto.ShoppingListItemDTO;
-import com.kitchenapp.kitchenappapi.dto.recipe.IngredientQuantityDTO;
-import com.kitchenapp.kitchenappapi.mapper.ShoppingListMapper;
-import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import com.kitchenapp.kitchenappapi.model.ShoppingUserIngredient;
-import com.kitchenapp.kitchenappapi.service.ShoppingListService;
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.useringredient.ShoppingListItemDTO;
+import com.kitchenapp.kitchenappapi.mapper.useringredient.ShoppingListMapper;
+import com.kitchenapp.kitchenappapi.model.user.JwtUserDetails;
+import com.kitchenapp.kitchenappapi.model.useringredient.ShoppingUserIngredient;
+import com.kitchenapp.kitchenappapi.service.useringredient.ShoppingListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,7 +41,7 @@ public class ShoppingListController {
 
     @PostMapping("/multiple")
     public ResponseEntity<List<ShoppingListItemDTO>> createMultipleListItems(@RequestBody @Valid List<IngredientQuantityDTO> items,
-                                                                      @AuthenticationPrincipal JwtUserDetails userDetails) {
+                                                                             @AuthenticationPrincipal JwtUserDetails userDetails) {
 
         List<ShoppingUserIngredient> ingredients = shoppingListService.createItemsForUser(items, userDetails.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(ShoppingListMapper.toDTOs(ingredients));

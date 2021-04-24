@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.providers.model
 
-import com.kitchenapp.kitchenappapi.model.ShoppingUserIngredient
+import com.kitchenapp.kitchenappapi.model.useringredient.ShoppingUserIngredient
 
 class ShoppingUserIngredientProvider {
 

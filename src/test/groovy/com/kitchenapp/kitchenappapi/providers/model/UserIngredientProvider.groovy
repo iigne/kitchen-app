@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.providers.model
 
 
-import com.kitchenapp.kitchenappapi.model.UserIngredient
+import com.kitchenapp.kitchenappapi.model.useringredient.UserIngredient
 
 import java.time.LocalDate
 

@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.controller
 
-import com.kitchenapp.kitchenappapi.dto.recipe.RequestUserIngredientDTO
+import com.kitchenapp.kitchenappapi.dto.useringredient.RequestUserIngredientDTO
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 
 import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toJson
