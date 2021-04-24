@@ -1,10 +1,10 @@
 package com.kitchenapp.kitchenappapi.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor

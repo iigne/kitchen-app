@@ -59,6 +59,6 @@ public class UserIngredientController {
     public ResponseEntity<?> delete(@AuthenticationPrincipal JwtUserDetails userDetails,
                                     @RequestParam int ingredientId) {
         userIngredientService.deleteByIngredientAndUserId(ingredientId, userDetails.getId());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

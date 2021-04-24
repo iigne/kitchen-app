@@ -29,15 +29,23 @@ class UserStock extends React.Component {
 
     handleAddIngredient = (ingredient) => {
         axios.post('/user-ingredient', {
-            id: ingredient.id,
+            ingredientId: ingredient.id,
             quantity: ingredient.quantity,
             measurementId: ingredient.measurementId
         }, {
             headers: authHeader()
         }).then(res => {
-            let ingredients = [...this.state.ingredients];
-            ingredients.push(res.data)
-            this.setState({ingredients: ingredients})
+            const ingredientResult = res.data;
+            this.setState(prevState => {
+                const ingredients = prevState.ingredients
+                const index = ingredients.findIndex(ui => ui.id === ingredientResult.id)
+                if(index === -1) {
+                    ingredients.push(ingredientResult)
+                } else {
+                    ingredients.splice(index, 1, ingredientResult)
+                }
+                return {ingredients: ingredients}
+            })
         }).catch(error => {
             this.props.showAlert("Failed adding ingredient", "error");
             console.log(error);
@@ -66,11 +74,11 @@ class UserStock extends React.Component {
         const newQuantity = ingredientData.newQuantity;
         const ingredientId = ingredientData.ingredientId;
         const measurement = ingredientData.measurementId;
-        axios.patch('/user-ingredient/quantity', {
+        axios.patch('/user-ingredient', {
+                ingredientId: ingredientId,
                 measurementId: measurement,
                 quantity: newQuantity
             }, {
-                params: {ingredientId: ingredientId},
                 headers: authHeader()
             }
         ).then(res => {

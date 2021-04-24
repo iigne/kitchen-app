@@ -53,8 +53,8 @@ class UserIngredientControllerIntegrationSpec extends AbstractIntegrationSpec {
                 .param("ingredientId", ingredient.getId() as String)
         ).andReturn()
 
-        then: "status is ok"
-        result.response.status == 200
+        then: "status is no content"
+        result.response.status == 204
 
         and: "user has no ingredients"
         userIngredientRepository.findAllByUserId(user.id).size() == 0
