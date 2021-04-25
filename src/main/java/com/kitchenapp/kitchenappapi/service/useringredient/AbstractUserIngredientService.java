@@ -17,16 +17,33 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * An abstract class providing common functionality for both UserIngredient and ShoppingUserIngredient.
+ *
+ * @param <T> type of entity (UserIngredient/ShoppingUserIngredient)
+ * @param <R> repository (UserIngredientRepository/ShoppingListRepository)
+ * @param <D> type of DTO (IngredientQuantityDTO for ShoppingListIngredient, RequestUserIngredientDTO for UserIngredient)
+ */
 @RequiredArgsConstructor
-public abstract class AbstractUserIngredientService<T extends AbstractUserIngredient, R extends AbstractUserIngredientRepository<T, UserIngredientId>, DTO extends IngredientQuantityDTO> {
+public abstract class AbstractUserIngredientService<T extends AbstractUserIngredient, R extends AbstractUserIngredientRepository<T, UserIngredientId>, D extends IngredientQuantityDTO> {
 
     protected final MeasurementService measurementService;
     protected final UserService userService;
     protected final IngredientService ingredientService;
 
+    /**
+     * Gets the implementation-specific repository
+     *
+     * @return UserIngredientRepository or ShoppingListRepository
+     */
     protected abstract R getRepository();
 
-    protected abstract T mapToEntity(final DTO dto, Ingredient ingredient, User user, Measurement measurement);
+    /**
+     * Maps to the implementation-specific entity
+     *
+     * @return UserIngredient or ShoppingUserIngredient
+     */
+    protected abstract T mapToEntity(final D dto, Ingredient ingredient, User user, Measurement measurement);
 
     public List<T> findAllByUserId(final int userId) {
         return getRepository().findAllByUserId(userId);
@@ -43,7 +60,12 @@ public abstract class AbstractUserIngredientService<T extends AbstractUserIngred
         getRepository().delete(ingredient);
     }
 
-    public T update(final int userId, final DTO dto) {
+    /**
+     * Called from update endpoint, updates existing UserIngredient from DTO
+     *
+     * @return updated entity
+     */
+    public T update(final int userId, final D dto) {
         final int ingredientId = dto.getIngredientId();
         final int measurementId = dto.getMeasurementId();
         final double quantity = dto.getQuantity();
@@ -54,6 +76,11 @@ public abstract class AbstractUserIngredientService<T extends AbstractUserIngred
         return updateGivenItem(userIngredient, measurement, quantity);
     }
 
+    /**
+     * Called from create endpoint, adds quantity from DTO to existing entity
+     *
+     * @return updated entity
+     */
     public T update(final T userIngredient, final double addedQuantity, Measurement addedMeasurement) {
         double addedQuantityInMetric = MeasurementConverter.toMetricIfMetric(addedQuantity, addedMeasurement);
         double totalMetricQuantity = userIngredient.getMetricQuantity() + addedQuantityInMetric;
@@ -70,7 +97,12 @@ public abstract class AbstractUserIngredientService<T extends AbstractUserIngred
         return getRepository().save(userIngredient);
     }
 
-    public T create(final int userId, final DTO dto) {
+    /**
+     * Creates (if entity does not exist) or updates user ingredient from DTO
+     *
+     * @return created/updated entity
+     */
+    public T create(final int userId, final D dto) {
         final int ingredientId = dto.getIngredientId();
         final int measurementId = dto.getMeasurementId();
         final double quantity = dto.getQuantity();

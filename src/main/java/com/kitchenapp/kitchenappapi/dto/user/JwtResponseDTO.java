@@ -8,6 +8,10 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 
 
+/**
+ * Authentication object containing user details and token that FE uses to
+ * communicate with BE.
+ */
 @Getter
 @Setter
 public class JwtResponseDTO {

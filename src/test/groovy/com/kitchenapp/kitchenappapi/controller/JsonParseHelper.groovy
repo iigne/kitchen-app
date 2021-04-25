@@ -43,6 +43,10 @@ class JsonParseHelper {
         return objectMapper.readValue(json, new TypeReference<List<ResponseRecipeDTO>>() {})
     }
 
+    static ResponseRecipeDTO toRecipeDTO(json) {
+        return new ObjectMapper().readValue(json, ResponseRecipeDTO.class)
+    }
+
     static ResponseUserIngredientDTO toUserIngredientDTO(json) {
         ObjectMapper objectMapper = new ObjectMapper()
         objectMapper.registerModule(new JavaTimeModule())

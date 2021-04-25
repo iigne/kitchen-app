@@ -13,6 +13,7 @@ import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService;
 import com.kitchenapp.kitchenappapi.service.ingredient.MeasurementService;
 import com.kitchenapp.kitchenappapi.service.user.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +44,21 @@ public class ShoppingListService extends AbstractUserIngredientService<ShoppingU
         this.userIngredientService = userIngredientService;
     }
 
+    /**
+     * Creates/updates multiple items at once. Used when RecipeIngredients are added to shopping list.
+     *
+     * @return saved ingredients
+     */
     public List<ShoppingUserIngredient> createItemsForUser(List<IngredientQuantityDTO> items, final int userId) {
         List<ShoppingUserIngredient> toSave = items.stream().map(i -> create(userId, i)).collect(Collectors.toList());
         return shoppingListRepository.saveAll(toSave);
     }
 
+    /**
+     * Toggle to tick/untick existing shopping item.
+     *
+     * @return updated value of the tick
+     */
     public boolean addOrRemoveTick(final int ingredientId, final int userId) {
         ShoppingUserIngredient ingredient = getByIngredientIdAndUserIdOrThrow(ingredientId, userId);
         boolean tickedValue = ingredient.isTicked();
@@ -55,7 +66,14 @@ public class ShoppingListService extends AbstractUserIngredientService<ShoppingU
         return shoppingListRepository.save(ingredient).isTicked();
     }
 
-    //TODO maybe we want this as transactional
+    /**
+     * Removes ticked items from user's shopping list and imports to user's ingredients.
+     *
+     * Using <code>@Transactional</code> to ensure this operation is done in one unit,
+     * as we only want the database changes to apply if all the operations succeed.
+     * @param userId
+     */
+    @Transactional
     public void clearAndImport(final int userId) {
 
         List<ShoppingUserIngredient> shoppingIngredients = getTickedByUser(userId);
@@ -67,6 +85,14 @@ public class ShoppingListService extends AbstractUserIngredientService<ShoppingU
         shoppingListRepository.deleteAll(shoppingIngredients);
     }
 
+    /**
+     * For existing user ingredient, adds quantity from shopping list item.
+     * If user ingredient for shopping list item does not exist, it's created.
+     *
+     * @param shoppingUserIngredients
+     * @param userIngredients
+     * @return extracted user ingredients that need to be saved in db
+     */
     public List<UserIngredient> extractUserIngredientsFromShopping(List<ShoppingUserIngredient> shoppingUserIngredients,
                                                                    List<UserIngredient> userIngredients) {
         Map<Integer, ShoppingUserIngredient> shoppingMap = shoppingUserIngredients.stream().collect(
@@ -94,6 +120,11 @@ public class ShoppingListService extends AbstractUserIngredientService<ShoppingU
         return shoppingListRepository.findAllByUserIdAndTickedIsTrue(userId);
     }
 
+    /**
+     * Clears all items in the shopping list for user.
+     *
+     * @param userId
+     */
     public void deleteAllByUser(final int userId) {
         shoppingListRepository.deleteAllByUserId(userId);
     }

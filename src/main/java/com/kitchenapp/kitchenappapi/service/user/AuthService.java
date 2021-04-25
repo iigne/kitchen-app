@@ -41,6 +41,13 @@ public class AuthService {
         return userService.save(username, email, encodedPassword);
     }
 
+    /**
+     * Logs in user given correct username and password.
+     * Generates JWT token that is passed to the frontend.
+     *
+     * @param loginRequest
+     * @return authentication data for the front end
+     */
     public JwtResponseDTO login(final LoginDTO loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));

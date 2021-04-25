@@ -39,7 +39,7 @@ class IngredientServiceSpec extends Specification {
 
         then:
         1 * categoryRepository.findByName(category) >> Optional.of(CategoryProvider.make(name: category))
-        1 * measurementService.getMetricMeasurement(metricUnitEnum) >>
+        1 * measurementService.getMetricMeasurementOrThrow(metricUnitEnum) >>
                 MeasurementProvider.make(metricUnit: metricUnitEnum, name: metricUnitString)
         numMeasurements * measurementService.findByNameQuantityUnit(_,_,metricUnitEnum) >> Optional.empty()
 

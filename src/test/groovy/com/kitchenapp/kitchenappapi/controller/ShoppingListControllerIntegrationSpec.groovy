@@ -1,6 +1,9 @@
 package com.kitchenapp.kitchenappapi.controller
 
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.providers.CommonTestData
 
+import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toJson
 import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toShoppingItemDTOList
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -77,6 +80,40 @@ class ShoppingListControllerIntegrationSpec extends AbstractIntegrationSpec {
         def userIngredients = userIngredientRepository.findAllByUserId(user.id)
         userIngredients.size() == 1
         userIngredients*.metricQuantity == [100]
+    }
+
+    def "should create items"() {
+        given: "logged in user exists in database"
+        def user = getLoggedInUser()
+
+        and: "there exist ingredients in the database"
+        def ingredients = createIngredients()
+
+        when: "request is made to create shopping list items"
+        def dtos = []
+        ingredients.each {
+            dtos.add(new IngredientQuantityDTO(
+                    ingredientId: it.id, measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: 150))
+        }
+
+        def result = mvc.perform(post("/shopping/multiple")
+                .with(csrf())
+                .contentType("application/json")
+                .content(toJson(dtos)))
+        .andReturn()
+
+        then: "status is created"
+        result.response.status == 201
+
+        and: "created shopping ingredients are shown"
+        with(toShoppingItemDTOList(result.response.contentAsString)) { savedItems ->
+            savedItems.size() == 3
+            savedItems*.ingredient.id.sort() == ingredients*.id.sort()
+            savedItems*.quantity.quantity.sort() == [150,150,150]
+        }
+
+        and: "user has ingredients in the database"
+        shoppingListRepository.findAllByUserId(user.id).size() == 3
     }
 
 }

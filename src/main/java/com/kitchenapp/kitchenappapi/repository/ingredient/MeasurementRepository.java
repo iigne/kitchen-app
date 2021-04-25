@@ -13,5 +13,5 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Intege
 
     Optional<Measurement> findByNameAndMetricQuantity(String name, double quantity);
 
-    public List<Measurement> findByIdIn(List<Integer> ids);
+    List<Measurement> findAllByIdIn(List<Integer> ids);
 }

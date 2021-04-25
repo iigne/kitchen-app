@@ -2,6 +2,7 @@ package com.kitchenapp.kitchenappapi.service
 
 import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO
 import com.kitchenapp.kitchenappapi.dto.useringredient.RequestUserIngredientDTO
+import com.kitchenapp.kitchenappapi.model.ingredient.Measurement
 import com.kitchenapp.kitchenappapi.model.ingredient.MetricUnit
 import com.kitchenapp.kitchenappapi.model.useringredient.UserIngredientId
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
@@ -25,7 +26,7 @@ class UserIngredientServiceSpec extends Specification {
     UserIngredientRepository userIngredientRepository = Mock()
     UserService userService = Mock()
     IngredientService ingredientService = Mock()
-    MeasurementService measurementService = Mock()
+    MeasurementService measurementService = Spy()
 
     UserIngredientService userIngredientService
 
@@ -105,6 +106,7 @@ class UserIngredientServiceSpec extends Specification {
 
         def measurement1 = MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID_METRIC)
         def measurement2 = MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID, name: "jar", metricQuantity: 150)
+        Map<Integer, Measurement> measurementsMap = measurement1id == measurement2id ? Map.of(measurement1.id, measurement1) : Map.of(measurement1.id, measurement1, measurement2id, measurement2)
 
         and: "user and user ingredients exist"
         def user = UserProvider.make()
@@ -124,9 +126,8 @@ class UserIngredientServiceSpec extends Specification {
         userIngredientService.updateQuantities(user.id, [quantityDTO1, quantityDTO2])
 
         then: "measurements are found"
-        1 * measurementService.findByIdsIn([measurement1id, measurement2id]) >> {
-            measurement1id == measurement2id ? [measurement1] : [measurement1, measurement2]
-        }
+        1 * measurementService.extractMeasurementsFromDTOs([quantityDTO1, quantityDTO2]) >> measurementsMap
+        2 * measurementService.getFromMapOrThrow(_, measurementsMap)
 
         and: "user ingredients are fetched"
         1 * userIngredientRepository.findAllByUserIdAndIngredientIdIn(user.id, [id1, id2]) >> [userIngredient1, userIngredient2]

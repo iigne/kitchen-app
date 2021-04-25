@@ -2,14 +2,17 @@ package com.kitchenapp.kitchenappapi.controller
 
 
 import com.kitchenapp.kitchenappapi.model.ingredient.Ingredient
-
+import com.kitchenapp.kitchenappapi.model.ingredient.Measurement
+import com.kitchenapp.kitchenappapi.model.ingredient.MetricUnit
 import com.kitchenapp.kitchenappapi.model.recipe.Recipe
 import com.kitchenapp.kitchenappapi.model.recipe.RecipeIngredient
 import com.kitchenapp.kitchenappapi.model.user.User
 import com.kitchenapp.kitchenappapi.model.useringredient.ShoppingUserIngredient
 import com.kitchenapp.kitchenappapi.model.useringredient.UserIngredient
+import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.model.*
 import com.kitchenapp.kitchenappapi.repository.ingredient.IngredientRepository
+import com.kitchenapp.kitchenappapi.repository.ingredient.MeasurementRepository
 import com.kitchenapp.kitchenappapi.repository.recipe.RecipeRepository
 import com.kitchenapp.kitchenappapi.repository.useringredient.ShoppingListRepository
 import com.kitchenapp.kitchenappapi.repository.useringredient.UserIngredientRepository
@@ -60,6 +63,9 @@ abstract class AbstractIntegrationSpec extends Specification {
     @Autowired
     ShoppingListRepository shoppingListRepository
 
+    @Autowired
+    MeasurementRepository measurementRepository
+
     def setup() {
         userRepository.deleteAll()
     }
@@ -109,6 +115,11 @@ abstract class AbstractIntegrationSpec extends Specification {
                 ShoppingUserIngredientProvider.make(user: user, ingredient: ingredients.get(1)),
                 ShoppingUserIngredientProvider.make(user: getAnotherUser(), ingredient: ingredients.get(2)),
         ])
+    }
+
+    protected Measurement createMeasurement() {
+        def measurement = MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID, name: "Jar", metricQuantity: 150, metricUnit: MetricUnit.GRAMS)
+        return measurementRepository.save(measurement)
     }
 
 }
