@@ -1,13 +1,11 @@
 package com.kitchenapp.kitchenappapi.controller;
 
-import com.kitchenapp.kitchenappapi.dto.QuantityDTO;
-import com.kitchenapp.kitchenappapi.dto.UserIngredientDTO;
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
-import com.kitchenapp.kitchenappapi.mapper.UserIngredientMapper;
-import com.kitchenapp.kitchenappapi.model.Ingredient;
-import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import com.kitchenapp.kitchenappapi.model.UserIngredient;
-import com.kitchenapp.kitchenappapi.service.UserIngredientService;
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.useringredient.RequestUserIngredientDTO;
+import com.kitchenapp.kitchenappapi.dto.useringredient.ResponseUserIngredientDTO;
+import com.kitchenapp.kitchenappapi.mapper.useringredient.UserIngredientMapper;
+import com.kitchenapp.kitchenappapi.model.user.JwtUserDetails;
+import com.kitchenapp.kitchenappapi.service.useringredient.UserIngredientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,8 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import static com.kitchenapp.kitchenappapi.mapper.useringredient.UserIngredientMapper.toDTO;
 
 @Slf4j
 @RestController
@@ -27,43 +26,39 @@ public class UserIngredientController {
     private final UserIngredientService userIngredientService;
 
     @GetMapping
-    public ResponseEntity<List<UserIngredientDTO>> getByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
+    public ResponseEntity<List<ResponseUserIngredientDTO>> getByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                userIngredientService.listAllForUser(userDetails.getId()));
+                UserIngredientMapper.toDTO(userIngredientService.findAllByUserId(userDetails.getId())));
     }
 
     @PostMapping
-    public ResponseEntity<UserIngredientDTO> create(@AuthenticationPrincipal JwtUserDetails userDetails,
-                                                    @RequestBody UserIngredientDTO dto) {
-//        if(dto.getQuantities() == null || dto.getQuantities().isEmpty()) {
-//            throw new IllegalArgumentException("No quantity specified");
-//        }
+    public ResponseEntity<ResponseUserIngredientDTO> create(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                                            @RequestBody RequestUserIngredientDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                userIngredientService.create(userDetails.getId(), dto)
+                toDTO(userIngredientService.create(userDetails.getId(), dto))
         );
     }
 
-    @PatchMapping("/quantity")
-    public ResponseEntity<UserIngredientDTO> updateQuantity(@AuthenticationPrincipal JwtUserDetails userDetails,
-                                                            @RequestParam int ingredientId,
-                                                            @RequestBody @NotNull QuantityDTO quantityDTO) {
+    @PatchMapping
+    public ResponseEntity<ResponseUserIngredientDTO> update(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                                            @RequestBody RequestUserIngredientDTO dto) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                userIngredientService.updateQuantity(userDetails.getId(), ingredientId, quantityDTO)
+                UserIngredientMapper.toDTO(userIngredientService.update(userDetails.getId(), dto))
         );
     }
 
     @PatchMapping("/remove-quantities")
-    public ResponseEntity<List<UserIngredientDTO>> removeQuantities(@AuthenticationPrincipal JwtUserDetails userDetails,
-                                                                    @RequestBody List<IngredientQuantityDTO> ingredientQuantities) {
+    public ResponseEntity<List<ResponseUserIngredientDTO>> removeQuantities(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                                                            @RequestBody List<IngredientQuantityDTO> ingredientQuantities) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                UserIngredientMapper.toDTO(userIngredientService.updateQuantities(userDetails.getId(), ingredientQuantities))
+                toDTO(userIngredientService.updateQuantities(userDetails.getId(), ingredientQuantities))
         );
     }
 
     @DeleteMapping
     public ResponseEntity<?> delete(@AuthenticationPrincipal JwtUserDetails userDetails,
                                     @RequestParam int ingredientId) {
-        userIngredientService.delete(userDetails.getId(), ingredientId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        userIngredientService.deleteByIngredientAndUserId(ingredientId, userDetails.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

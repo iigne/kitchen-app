@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.controller
 
-import com.kitchenapp.kitchenappapi.payload.RegisterRequest
+import com.kitchenapp.kitchenappapi.dto.user.RegisterDTO
 
 import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toApiError
 import static com.kitchenapp.kitchenappapi.controller.JsonParseHelper.toJson
@@ -14,7 +14,7 @@ class AuthControllerIntegrationSpec extends AbstractIntegrationSpec {
         def existingUser = getAnotherUser()
 
         and: "register request is valid"
-        def registerRequest = new RegisterRequest(username: existingUser.username,
+        def registerRequest = new RegisterDTO(username: existingUser.username,
                 email: "totallynewemail@email.com", password: "verysecurepassword")
 
         when: "someone attempts to register and uses existing username"

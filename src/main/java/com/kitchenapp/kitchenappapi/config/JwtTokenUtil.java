@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.config;
 
 
-import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
+import com.kitchenapp.kitchenappapi.model.user.JwtUserDetails;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

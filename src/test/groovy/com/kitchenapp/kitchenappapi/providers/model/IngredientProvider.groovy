@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.providers.model
 
-import com.kitchenapp.kitchenappapi.model.Ingredient
-import com.kitchenapp.kitchenappapi.model.MetricUnit
+import com.kitchenapp.kitchenappapi.model.ingredient.Ingredient
+import com.kitchenapp.kitchenappapi.model.ingredient.MetricUnit
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 
 class IngredientProvider {

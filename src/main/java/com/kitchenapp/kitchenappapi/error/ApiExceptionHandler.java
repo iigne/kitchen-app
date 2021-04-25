@@ -11,6 +11,12 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class that automatically handles any exceptions that happen during execution of the app.
+ *
+ * Returns <code>ApiError</code> giving status and user friendly message.
+ *
+ */
 @ControllerAdvice
 public class ApiExceptionHandler {
 

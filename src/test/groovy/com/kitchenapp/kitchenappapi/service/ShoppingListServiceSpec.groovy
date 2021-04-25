@@ -1,9 +1,14 @@
 package com.kitchenapp.kitchenappapi.service
 
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.model.*
-import com.kitchenapp.kitchenappapi.repository.ShoppingListRepository
+import com.kitchenapp.kitchenappapi.repository.useringredient.ShoppingListRepository
+import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService
+import com.kitchenapp.kitchenappapi.service.ingredient.MeasurementService
+import com.kitchenapp.kitchenappapi.service.user.UserService
+import com.kitchenapp.kitchenappapi.service.useringredient.ShoppingListService
+import com.kitchenapp.kitchenappapi.service.useringredient.UserIngredientService
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -75,7 +80,7 @@ class ShoppingListServiceSpec extends Specification {
 
         when: "create is called for new shopping item"
         def shoppingIngredient2DTO = IngredientQuantityDTO.builder().ingredientId(id2).measurementId(measurement2id).quantity(quantity2).build()
-        shoppingListService.createItemForUser(shoppingIngredient2DTO, user.id)
+        shoppingListService.create(user.id, shoppingIngredient2DTO)
 
         then:
         1 * shoppingListRepository.findByUserIdAndIngredientId(user.id, id2) >> {

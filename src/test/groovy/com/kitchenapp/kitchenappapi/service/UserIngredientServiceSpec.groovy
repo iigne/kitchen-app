@@ -1,19 +1,21 @@
 package com.kitchenapp.kitchenappapi.service
 
-import com.kitchenapp.kitchenappapi.dto.QuantityDTO
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO
-import com.kitchenapp.kitchenappapi.model.MetricUnit
-import com.kitchenapp.kitchenappapi.model.User
-import com.kitchenapp.kitchenappapi.model.UserIngredientId
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.useringredient.RequestUserIngredientDTO
+import com.kitchenapp.kitchenappapi.model.ingredient.Measurement
+import com.kitchenapp.kitchenappapi.model.ingredient.MetricUnit
+import com.kitchenapp.kitchenappapi.model.useringredient.UserIngredientId
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
-import com.kitchenapp.kitchenappapi.providers.dto.UserIngredientDTOProvider
+
 import com.kitchenapp.kitchenappapi.providers.model.IngredientProvider
 import com.kitchenapp.kitchenappapi.providers.model.MeasurementProvider
 import com.kitchenapp.kitchenappapi.providers.model.UserIngredientProvider
 import com.kitchenapp.kitchenappapi.providers.model.UserProvider
-import com.kitchenapp.kitchenappapi.repository.IngredientRepository
-import com.kitchenapp.kitchenappapi.repository.UserIngredientRepository
-import com.kitchenapp.kitchenappapi.repository.UserRepository
+import com.kitchenapp.kitchenappapi.repository.useringredient.UserIngredientRepository
+import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService
+import com.kitchenapp.kitchenappapi.service.ingredient.MeasurementService
+import com.kitchenapp.kitchenappapi.service.user.UserService
+import com.kitchenapp.kitchenappapi.service.useringredient.UserIngredientService
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -22,21 +24,20 @@ import javax.persistence.EntityNotFoundException
 class UserIngredientServiceSpec extends Specification {
 
     UserIngredientRepository userIngredientRepository = Mock()
-    UserRepository userRepository = Mock()
-    IngredientRepository ingredientRepository = Mock()
-    MeasurementService measurementService = Mock()
+    UserService userService = Mock()
+    IngredientService ingredientService = Mock()
+    MeasurementService measurementService = Spy()
 
     UserIngredientService userIngredientService
 
     def setup() {
-        userIngredientService = new UserIngredientService(userIngredientRepository, userRepository,
-                ingredientRepository, measurementService)
+        userIngredientService = new UserIngredientService(userIngredientRepository, measurementService,
+                userService, ingredientService)
     }
 
     def "should create ingredient"() {
         given: "DTO is valid"
-        def quantityDTO = new QuantityDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: inputQuantity)
-        def dto = UserIngredientDTOProvider.make(quantities: [quantityDTO])
+        def dto = new RequestUserIngredientDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: inputQuantity, ingredientId: CommonTestData.INGREDIENT_ID)
         def measurement = MeasurementProvider.make()
 
         when: "create is called"
@@ -44,8 +45,8 @@ class UserIngredientServiceSpec extends Specification {
 
         then: "validations pass"
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.empty()
-        1 * userRepository.findById(CommonTestData.USER_ID) >> Optional.of(new User(id: CommonTestData.USER_ID))
-        1 * ingredientRepository.findById(CommonTestData.INGREDIENT_ID) >> Optional.of(IngredientProvider.make(measurement: [measurement]))
+        1 * userService.findByIdOrThrow(CommonTestData.USER_ID) >> UserProvider.make()
+        1 * ingredientService.findByIdOrThrow(CommonTestData.INGREDIENT_ID) >> IngredientProvider.make(measurement: [measurement])
         1 * measurementService.findByIdOrThrow(measurement.id) >> measurement
 
         and: "ingredient created in database"
@@ -55,41 +56,30 @@ class UserIngredientServiceSpec extends Specification {
         inputQuantity << 10
     }
 
-    @Unroll
     def "should fail to create ingredient when there's data conflicts"() {
         given: "DTO is valid"
-        def quantityDTO = new QuantityDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: 10)
-        def dto = UserIngredientDTOProvider.make(quantity: quantityDTO)
+        def dto = new RequestUserIngredientDTO(measurementId: CommonTestData.MEASUREMENT_ID_METRIC, quantity: 150, ingredientId: CommonTestData.INGREDIENT_ID)
 
         when: "create is called"
         userIngredientService.create(CommonTestData.USER_ID, dto)
 
-        then: "validation is performed"
-        userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> userIngredientValue
-        userRepository.findById(CommonTestData.USER_ID) >> userValue
-        ingredientRepository.findById(CommonTestData.INGREDIENT_ID) >> ingredientValue
+        then: "exceptions are thrown"
+        userService.findByIdOrThrow(CommonTestData.USER_ID) >> { throw new EntityNotFoundException() }
+        ingredientService.findByIdOrThrow(CommonTestData.INGREDIENT_ID) >> { throw new EntityNotFoundException() }
 
-        and: "exception is thrown"
-        def ex = thrown(exceptionClass)
-        ex.message == message
+        thrown(EntityNotFoundException.class)
 
         and: "no database interactions performed"
         0 * userIngredientRepository.save(_)
-
-        where:
-        userIngredientValue                        | userValue               | ingredientValue  || exceptionClass          | message
-        Optional.of(UserIngredientProvider.make()) | Optional.empty()        | Optional.empty() || IllegalStateException   | "userId $CommonTestData.USER_ID and ingredientId $CommonTestData.INGREDIENT_ID already exists"
-        Optional.empty()                           | Optional.empty()        | Optional.empty() || EntityNotFoundException | "userId $CommonTestData.USER_ID not found"
-        Optional.empty()                           | Optional.of(new User()) | Optional.empty() || EntityNotFoundException | "ingredientId $CommonTestData.INGREDIENT_ID not found"
     }
 
     @Unroll
     def "should update quantity"() {
         given: "quantity is valid"
-        def quantityDTO = new QuantityDTO(measurementId: inputMeasurementId, quantity: inputQuantity)
+        def quantityDTO = new RequestUserIngredientDTO(ingredientId: CommonTestData.INGREDIENT_ID, measurementId: inputMeasurementId, quantity: inputQuantity)
 
         when: "update is called"
-        userIngredientService.updateQuantity(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID, quantityDTO)
+        userIngredientService.update(CommonTestData.USER_ID, quantityDTO)
 
         then: "validations pass"
         1 * userIngredientRepository.findByUserIdAndIngredientId(CommonTestData.USER_ID, CommonTestData.INGREDIENT_ID) >> Optional.of(UserIngredientProvider.make())
@@ -116,6 +106,7 @@ class UserIngredientServiceSpec extends Specification {
 
         def measurement1 = MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID_METRIC)
         def measurement2 = MeasurementProvider.make(id: CommonTestData.MEASUREMENT_ID, name: "jar", metricQuantity: 150)
+        Map<Integer, Measurement> measurementsMap = measurement1id == measurement2id ? Map.of(measurement1.id, measurement1) : Map.of(measurement1.id, measurement1, measurement2id, measurement2)
 
         and: "user and user ingredients exist"
         def user = UserProvider.make()
@@ -135,9 +126,8 @@ class UserIngredientServiceSpec extends Specification {
         userIngredientService.updateQuantities(user.id, [quantityDTO1, quantityDTO2])
 
         then: "measurements are found"
-        1 * measurementService.findByIdsIn([measurement1id, measurement2id]) >> {
-            measurement1id == measurement2id ? [measurement1] : [measurement1, measurement2]
-        }
+        1 * measurementService.extractMeasurementsFromDTOs([quantityDTO1, quantityDTO2]) >> measurementsMap
+        2 * measurementService.getFromMapOrThrow(_, measurementsMap)
 
         and: "user ingredients are fetched"
         1 * userIngredientRepository.findAllByUserIdAndIngredientIdIn(user.id, [id1, id2]) >> [userIngredient1, userIngredient2]

@@ -1,9 +1,9 @@
 package com.kitchenapp.kitchenappapi.controller;
 
-import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO;
-import com.kitchenapp.kitchenappapi.dto.response.ResponseRecipeDTO;
-import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import com.kitchenapp.kitchenappapi.service.RecipeService;
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestRecipeDTO;
+import com.kitchenapp.kitchenappapi.dto.recipe.ResponseRecipeDTO;
+import com.kitchenapp.kitchenappapi.model.user.JwtUserDetails;
+import com.kitchenapp.kitchenappapi.service.recipe.RecipeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,29 +22,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RecipeController {
 
-    //also TODO is it better practice to have a bunch of endpoints or one and pass in an option that is string and will need to be if elsed?
-
     private final RecipeService recipeService;
 
-    @GetMapping("/list/all")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAll(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.ok(recipeService.getAllWithQuantities(userDetails.getId()));
-    }
-
-    //TODO
-    @GetMapping("/list/suggestion")
-    public ResponseEntity<List<ResponseRecipeDTO>> listSuggestions(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
-    @GetMapping("/list/liked")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAllLikedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.ok(recipeService.getAllLikedByUser(userDetails.getId()));
-    }
-
-    @GetMapping("/list/created")
-    public ResponseEntity<List<ResponseRecipeDTO>> listAllCreatedByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        return ResponseEntity.ok(recipeService.getAllCreatedByUser(userDetails.getId()));
+    @GetMapping("/list")
+    public ResponseEntity<List<ResponseRecipeDTO>> listAll(@RequestParam final String option, @AuthenticationPrincipal JwtUserDetails userDetails) {
+        switch (option) {
+            case "liked":
+                return ResponseEntity.ok(recipeService.getAllLikedByUser(userDetails.getId()));
+            case "created":
+                return ResponseEntity.ok(recipeService.getAllCreatedByUser(userDetails.getId()));
+            default:
+                return ResponseEntity.ok(recipeService.getAllWithQuantities(userDetails.getId()));
+        }
     }
 
     @PostMapping

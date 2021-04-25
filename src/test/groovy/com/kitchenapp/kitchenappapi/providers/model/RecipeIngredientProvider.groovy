@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.providers.model
 
 
-import com.kitchenapp.kitchenappapi.model.RecipeIngredient
+import com.kitchenapp.kitchenappapi.model.recipe.RecipeIngredient
 
 class RecipeIngredientProvider {
     static Map DEFAULTS = [

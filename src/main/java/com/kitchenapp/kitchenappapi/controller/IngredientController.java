@@ -1,10 +1,10 @@
 package com.kitchenapp.kitchenappapi.controller;
 
-import com.kitchenapp.kitchenappapi.dto.IngredientDTO;
-import com.kitchenapp.kitchenappapi.mapper.IngredientMapper;
-import com.kitchenapp.kitchenappapi.model.Ingredient;
-import com.kitchenapp.kitchenappapi.repository.IngredientRepository;
-import com.kitchenapp.kitchenappapi.service.IngredientService;
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientDTO;
+import com.kitchenapp.kitchenappapi.mapper.ingredient.IngredientMapper;
+import com.kitchenapp.kitchenappapi.model.ingredient.Ingredient;
+import com.kitchenapp.kitchenappapi.repository.ingredient.IngredientRepository;
+import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,15 +23,10 @@ public class IngredientController {
     private final IngredientRepository ingredientRepository;
     private final IngredientService ingredientService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Ingredient>> getAll(){
-        return ResponseEntity.ok(ingredientRepository.findAll());
-    }
-
     @PostMapping
     public ResponseEntity<IngredientDTO> createIngredient(@RequestBody @Valid IngredientDTO ingredientDTO) {
-            Ingredient ingredient = ingredientService.create(ingredientDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(IngredientMapper.toDTO(ingredient));
+        Ingredient ingredient = ingredientService.create(ingredientDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(IngredientMapper.toDTO(ingredient));
     }
 
     @GetMapping("/search")

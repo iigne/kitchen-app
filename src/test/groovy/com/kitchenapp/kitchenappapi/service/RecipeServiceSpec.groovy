@@ -1,11 +1,17 @@
 package com.kitchenapp.kitchenappapi.service
 
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO
-import com.kitchenapp.kitchenappapi.dto.request.RequestRecipeDTO
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO
+import com.kitchenapp.kitchenappapi.dto.recipe.RequestRecipeDTO
+import com.kitchenapp.kitchenappapi.model.ingredient.Ingredient
+import com.kitchenapp.kitchenappapi.model.ingredient.Measurement
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 import com.kitchenapp.kitchenappapi.providers.model.*
-import com.kitchenapp.kitchenappapi.repository.RecipeIngredientRepository
-import com.kitchenapp.kitchenappapi.repository.RecipeRepository
+import com.kitchenapp.kitchenappapi.repository.recipe.RecipeIngredientRepository
+import com.kitchenapp.kitchenappapi.repository.recipe.RecipeRepository
+import com.kitchenapp.kitchenappapi.service.ingredient.IngredientService
+import com.kitchenapp.kitchenappapi.service.ingredient.MeasurementService
+import com.kitchenapp.kitchenappapi.service.recipe.RecipeService
+import com.kitchenapp.kitchenappapi.service.user.UserService
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -14,9 +20,9 @@ class RecipeServiceSpec extends Specification {
     RecipeRepository recipeRepository = Mock()
     RecipeIngredientRepository recipeIngredientRepository = Mock()
 
-    IngredientService ingredientService = Mock()
-    MeasurementService measurementService = Mock()
     UserService userService = Mock()
+    MeasurementService measurementService = Spy()
+    IngredientService ingredientService = Mock()
 
     RecipeService recipeService
 
@@ -35,11 +41,15 @@ class RecipeServiceSpec extends Specification {
 
         def createdRecipe = RecipeProvider.make(title: title, method: method, author: user)
 
+        Map<Integer, Measurement> measurementMap = Map.of(CommonTestData.MEASUREMENT_ID_METRIC, MeasurementProvider.make())
+        Map<Integer, Ingredient> ingredientMap = Map.of(id1, ingredient1, id2, ingredient2)
+
         and: "DTO is valid"
-        def dto = new RequestRecipeDTO(title: title, method: method, ingredients: [
+        def ingredients = [
                 new IngredientQuantityDTO(ingredientId: id1, measurementId: measurement1id, quantity: quantity1),
                 new IngredientQuantityDTO(ingredientId: id2, measurementId: measurement2id, quantity: quantity2)
-        ])
+        ]
+        def dto = new RequestRecipeDTO(title: title, method: method, ingredients: ingredients)
 
         when: "create is called"
         recipeService.create(dto, user.id)
@@ -57,10 +67,10 @@ class RecipeServiceSpec extends Specification {
         }) >> createdRecipe
 
         and: "recipe ingredients are fetched"
-        1 * measurementService.findByIdOrThrow(measurement1id) >> measurement1
-        1 * measurementService.findByIdOrThrow(measurement2id) >> measurement2
-        1 * ingredientService.findByIdOrThrow(id1) >> ingredient1
-        1 * ingredientService.findByIdOrThrow(id2) >> ingredient2
+        ingredientService.extractIngredientsFromDTOs(ingredients) >> {ingredientMap}
+        measurementService.extractMeasurementsFromDTOs(ingredients) >> {measurementMap}
+        1 * measurementService.getFromMapOrThrow(measurement1id, measurementMap)
+        1 * measurementService.getFromMapOrThrow(measurement2id, measurementMap)
 
         and: "recipe saved with ingredients"
         1 * recipeRepository.save(recipe -> {
@@ -113,10 +123,13 @@ class RecipeServiceSpec extends Specification {
     @Unroll
     def "should update recipe"() {
 
-        given: "user and ingredients exist"
+        given: "user, measurements and ingredients exist"
         def user = UserProvider.make()
         def ingredient1 = IngredientProvider.make(id: id1, name: "Pasta")
         def ingredient2 = IngredientProvider.make(id: id2, name: "Pesto")
+
+        Map<Integer, Measurement> measurementMap = Map.of(CommonTestData.MEASUREMENT_ID_METRIC, MeasurementProvider.make())
+        Map<Integer, Ingredient> ingredientMap = Map.of(id1, ingredient1, id2, ingredient2)
 
         and: "recipe with ingredients exists"
         def originalRecipe = RecipeProvider.make(author: user)
@@ -136,9 +149,12 @@ class RecipeServiceSpec extends Specification {
         recipeService.update(dto, user.id)
 
         then: "correct repositories and services are called"
+
         1 * recipeRepository.findById(CommonTestData.RECIPE_ID) >> Optional.of(originalRecipe)
-        ingredientService.findByIdOrThrow(id2) >> ingredient2
-        measurementService.findByIdOrThrow(CommonTestData.MEASUREMENT_ID_METRIC) >> MeasurementProvider.make()
+        ingredientService.extractIngredientsFromDTOs(newIngredients) >> {ingredientMap}
+        measurementService.extractMeasurementsFromDTOs(newIngredients) >> {measurementMap}
+
+        _ * measurementService.getFromMapOrThrow(_, measurementMap)
 
         and: "correct title and ingredient amounts are saved"
         1 * recipeRepository.save(updatedRecipe -> {

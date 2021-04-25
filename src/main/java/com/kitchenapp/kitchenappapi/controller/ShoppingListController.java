@@ -1,11 +1,11 @@
 package com.kitchenapp.kitchenappapi.controller;
 
-import com.kitchenapp.kitchenappapi.dto.ShoppingListItemDTO;
-import com.kitchenapp.kitchenappapi.dto.request.IngredientQuantityDTO;
-import com.kitchenapp.kitchenappapi.mapper.ShoppingListMapper;
-import com.kitchenapp.kitchenappapi.model.JwtUserDetails;
-import com.kitchenapp.kitchenappapi.model.ShoppingUserIngredient;
-import com.kitchenapp.kitchenappapi.service.ShoppingListService;
+import com.kitchenapp.kitchenappapi.dto.ingredient.IngredientQuantityDTO;
+import com.kitchenapp.kitchenappapi.dto.useringredient.ShoppingListItemDTO;
+import com.kitchenapp.kitchenappapi.mapper.useringredient.ShoppingListMapper;
+import com.kitchenapp.kitchenappapi.model.user.JwtUserDetails;
+import com.kitchenapp.kitchenappapi.model.useringredient.ShoppingUserIngredient;
+import com.kitchenapp.kitchenappapi.service.useringredient.ShoppingListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,20 +28,20 @@ public class ShoppingListController {
 
     @GetMapping
     public ResponseEntity<List<ShoppingListItemDTO>> getListByUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        List<ShoppingUserIngredient> ingredients = shoppingListService.findAllByUser(userDetails.getId());
+        List<ShoppingUserIngredient> ingredients = shoppingListService.findAllByUserId(userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(ShoppingListMapper.toDTOs(ingredients));
     }
 
     @PostMapping
     public ResponseEntity<ShoppingListItemDTO> createListItem(@RequestBody @Valid IngredientQuantityDTO item,
                                                               @AuthenticationPrincipal JwtUserDetails userDetails) {
-        ShoppingUserIngredient ingredient = shoppingListService.createItemForUser(item, userDetails.getId());
+        ShoppingUserIngredient ingredient = shoppingListService.create(userDetails.getId(), item);
         return ResponseEntity.status(HttpStatus.CREATED).body(ShoppingListMapper.toDTO(ingredient));
     }
 
     @PostMapping("/multiple")
     public ResponseEntity<List<ShoppingListItemDTO>> createMultipleListItems(@RequestBody @Valid List<IngredientQuantityDTO> items,
-                                                                      @AuthenticationPrincipal JwtUserDetails userDetails) {
+                                                                             @AuthenticationPrincipal JwtUserDetails userDetails) {
 
         List<ShoppingUserIngredient> ingredients = shoppingListService.createItemsForUser(items, userDetails.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(ShoppingListMapper.toDTOs(ingredients));
@@ -50,7 +50,7 @@ public class ShoppingListController {
     @PatchMapping
     public ResponseEntity<ShoppingListItemDTO> updateListItem(@RequestBody @Valid IngredientQuantityDTO item,
                                                               @AuthenticationPrincipal JwtUserDetails userDetails) {
-        ShoppingUserIngredient ingredient = shoppingListService.updateFromDTO(item, userDetails.getId());
+        ShoppingUserIngredient ingredient = shoppingListService.update(userDetails.getId(), item);
         return ResponseEntity.status(HttpStatus.OK).body(ShoppingListMapper.toDTO(ingredient));
     }
 

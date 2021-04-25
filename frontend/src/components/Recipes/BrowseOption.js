@@ -44,18 +44,21 @@ class BrowseOption extends React.Component {
     }
 
     handleClick = () => {
-        axios.get('/recipe/list/'+this.state.type,
-            {headers: authHeader()})
+        axios.get('/recipe/list/',
+            {
+                params: {option: this.state.type},
+                headers: authHeader()
+            })
             .then(res => {
                 this.props.handleLoadRecipes(res.data, this.state.text);
             }).catch(err => {
-                this.props.showAlert("Failed to fetch recipes", "error");
-                console.log(err)
+            this.props.showAlert("Failed to fetch recipes", "error");
+            console.log(err)
         })
     }
 
     render() {
-        return(
+        return (
             <Row>
                 <Col xs={2}>
                     <Button variant={this.state.variant} onClick={this.handleClick}>
@@ -68,4 +71,6 @@ class BrowseOption extends React.Component {
             </Row>
         )
     }
-} export default BrowseOption;
+}
+
+export default BrowseOption;

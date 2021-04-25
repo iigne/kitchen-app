@@ -2,7 +2,9 @@ package com.kitchenapp.kitchenappapi.service
 
 import com.kitchenapp.kitchenappapi.config.JwtTokenUtil
 import com.kitchenapp.kitchenappapi.error.UserAlreadyExistsException
-import com.kitchenapp.kitchenappapi.payload.RegisterRequest
+import com.kitchenapp.kitchenappapi.dto.user.RegisterDTO
+import com.kitchenapp.kitchenappapi.service.user.AuthService
+import com.kitchenapp.kitchenappapi.service.user.UserService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.crypto.password.PasswordEncoder
 import spock.lang.Specification
@@ -23,7 +25,7 @@ class AuthServiceSpec extends Specification {
 
     def "should register"() {
         given: "register request with registration details"
-        def registerRequest = new RegisterRequest(username: username, password: password, email: email)
+        def registerRequest = new RegisterDTO(username: username, password: password, email: email)
 
         when: "register request made"
         authService.register(registerRequest)
@@ -41,7 +43,7 @@ class AuthServiceSpec extends Specification {
 
     def "should fail to register"() {
         given: "register request with duplicate registration details"
-        def registerRequest = new RegisterRequest(username: username, email: email, password: "password")
+        def registerRequest = new RegisterDTO(username: username, email: email, password: "password")
 
         when: "register request made"
         authService.register(registerRequest)

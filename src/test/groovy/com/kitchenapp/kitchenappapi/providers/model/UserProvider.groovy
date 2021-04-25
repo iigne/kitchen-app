@@ -1,7 +1,7 @@
 package com.kitchenapp.kitchenappapi.providers.model
 
 
-import com.kitchenapp.kitchenappapi.model.User
+import com.kitchenapp.kitchenappapi.model.user.User
 import com.kitchenapp.kitchenappapi.providers.CommonTestData
 
 class UserProvider {

@@ -1,6 +1,6 @@
 package com.kitchenapp.kitchenappapi.helper;
 
-import com.kitchenapp.kitchenappapi.model.Measurement;
+import com.kitchenapp.kitchenappapi.model.ingredient.Measurement;
 
 import java.text.DecimalFormat;
 

@@ -1,7 +1,6 @@
 package com.kitchenapp.kitchenappapi.config;
 
-import com.kitchenapp.kitchenappapi.service.JwtUserDetailsService;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.kitchenapp.kitchenappapi.service.user.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +27,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
         try {
             String jwt = parseJwt(request);
             if(jwt != null && jwtTokenUtil.validateJwtToken(jwt)) {
