@@ -115,12 +115,12 @@ class RecipeForm extends React.Component {
     }
 
     render() {
-        let isImagePresent = this.state.imageLink !== null && this.state.isUrlValid;
-        let imageButtonIcon = isImagePresent ? faTrash : faPlus;
-        let imageButtonVariant = isImagePresent ? "danger" : "success";
-        let notValidWarning = this.state.isUrlValid === false ? "The URL entered is not valid" : "";
+        const isImagePresent = this.state.imageLink !== null && this.state.isUrlValid;
+        const imageButtonIcon = isImagePresent ? faTrash : faPlus;
+        const imageButtonVariant = isImagePresent ? "danger" : "success";
+        const notValidWarning = this.state.isUrlValid === false ? "The URL entered is not valid" : "";
 
-        let ingredients = this.state.ingredients;
+        const ingredients = this.state.ingredients;
 
         return (
             <Form>

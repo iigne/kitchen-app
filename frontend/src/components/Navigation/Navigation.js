@@ -39,7 +39,7 @@ class Navigation extends React.Component {
     }
 
     handleLogin = (auth) => {
-        localStorage.setItem("user", JSON.stringify(auth))
+        localStorage.setItem("user", JSON.stringify(auth));
         this.setState({
             isAuthenticated: true,
             username: auth.username,
@@ -49,11 +49,11 @@ class Navigation extends React.Component {
 
     handleLogout = () => {
         localStorage.removeItem("user");
-        this.setState({isAuthenticated: false})
+        this.setState({isAuthenticated: false});
     }
 
     render() {
-        let auth = this.state.isAuthenticated
+        let auth = this.state.isAuthenticated;
         return (
             <MemoryRouter>
                 <Navbar bg="light" expand="lg" className="navigation">
@@ -72,10 +72,6 @@ class Navigation extends React.Component {
                             <img src={shopping} width="30" height="30" alt="Shopping cart icon"/>
                             Shopping list
                         </Nav.Link>}
-                        {/*{auth && <Nav.Link as={Link} to="/meal-plan">*/}
-                        {/*    <img src={calendar} width="30" height="30" alt="Calendar icon"/>*/}
-                        {/*    Meal plan</Nav.Link>}*/}
-
                         {!auth && <Nav.Link as={Link} to="/register" className="nav-link ml-auto">Register</Nav.Link>}
                         {!auth && <Nav.Link as={Link} to="/login">Login</Nav.Link>}
                         {auth && <Nav.Link as={Link} to="/logout" className="nav-link ml-auto">Logout</Nav.Link>}
