@@ -43,7 +43,7 @@ class Navigation extends React.Component {
         this.setState({
             isAuthenticated: true,
             username: auth.username,
-            userId: auth.userId
+            userId: auth.id
         })
     }
 

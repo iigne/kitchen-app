@@ -32,7 +32,7 @@ class Search extends React.Component {
             typingTimeout:
                 setTimeout(() => {
                     this.search(searchText);
-                }, 1500)
+                }, 900)
         })
 
     }
@@ -44,12 +44,10 @@ class Search extends React.Component {
                 headers: authHeader()
             }).then(
                 res => {
-                    this.setState({searchResults: res.data})
-                    if (this.state.searchResults.length === 0) {
-                        this.setState({noResults: true})
-                    } else {
-                        this.setState({noResults: false})
-                    }
+                    this.setState({
+                        searchResults: res.data,
+                        noResults: res.data.length === 0
+                    })
                 }
             ).catch(error => {
                 this.props.showAlert("Search has failed", "error")

@@ -22,7 +22,8 @@ class IngredientBase extends React.Component {
             measurement: props.measurementId,
             measurementName: props.measurementName,
             measurements: props.measurements,
-            category: categoryIcon.icon,
+            category: props.category,
+            categoryIcon: categoryIcon.icon,
             categoryColour: categoryIcon.color,
 
             currentlyEditing: currentlyEditing,
@@ -52,7 +53,7 @@ class IngredientBase extends React.Component {
                 id: ingredientId,
                 name: this.state.name,
                 quantity: newQuantity,
-                category: this.props.category,
+                category: this.state.category,
                 measurementId: measurementId,
                 measurementName: newMeasurementName,
                 measurement: this.state.measurements
@@ -70,7 +71,9 @@ class IngredientBase extends React.Component {
 
     render() {
         const currentlyEditing = this.state.currentlyEditing;
-        const icon = this.state.category;
+
+        const icon = this.state.categoryIcon;
+        const iconColour = this.state.categoryColour;
         const currentMeasurement = this.state.measurement;
         const measurements = this.state.measurements;
         const measurementsAvailable = measurements !== undefined;
@@ -79,8 +82,8 @@ class IngredientBase extends React.Component {
             <>
                 {
                     icon && <Col xs={1}>
-                        <i className="ingredientIcon" style={{color: this.state.categoryColour}}><FontAwesomeIcon
-                            icon={this.state.category}/></i>
+                        <i className="ingredientIcon" style={{color: iconColour}}><FontAwesomeIcon
+                            icon={icon}/></i>
                     </Col>
                 }
 

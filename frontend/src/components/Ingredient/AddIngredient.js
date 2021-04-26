@@ -73,19 +73,17 @@ class AddIngredient extends React.Component {
             <Container>
                 <Search handleSearch={this.handleSearch}
                         handleSearchSelection={this.handleSearchSelection}
-                        enterCreateIngredient={this.enterCreateIngredient}
-                />
+                        enterCreateIngredient={this.enterCreateIngredient} />
 
                 {selectedIngredient != null &&
                 <SearchIngredient {...selectedIngredient}
                                   selectedMeasurement={this.state.selectedMeasurement}
-                                  addIngredientHandler={this.handleAddIngredient}/>
+                                  addIngredientHandler={this.handleAddIngredient} />
                 }
 
                 <CreateIngredient show={inCreateIngredient}
                                   handleFinishCreateIngredient={this.handleFinishCreateIngredient}
-                                  cancelCreate={this.cancelCreate}
-                />
+                                  cancelCreate={this.cancelCreate} />
 
             </Container>
 
