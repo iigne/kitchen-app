@@ -1,5 +1,4 @@
 import axios from "axios";
-import authHeader from "./auth-header";
 
 //Auth endpoints
 export const register = (data, successCallback, errorCallback) => {
@@ -103,6 +102,15 @@ export const clearShoppingList = (successCallback, errorCallback) => {
 
 export const importShoppingList = (successCallback, errorCallback) => {
     request("post", '/shopping/clear-and-import', successCallback, errorCallback, authHeader());
+}
+
+const authHeader = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.token) {
+        return { Authorization: 'Bearer ' + user.token };
+    } else {
+        return {}
+    }
 }
 
 const request = (method, url, successCallback, errorCallback, headers, data, params) => {
