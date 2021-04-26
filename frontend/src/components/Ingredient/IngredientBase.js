@@ -13,6 +13,8 @@ class IngredientBase extends React.Component {
         super(props);
         const icon = icons.get(props.category);
         const categoryIcon = icon === undefined ? {icon: null, categoryColour: null} : icon;
+        const currentlyEditing = props.edit !== undefined;
+        const editedQuantity = props.edit !== undefined ? props.quantity : null;
         this.state = {
             id: props.id,
             name: props.name,
@@ -23,8 +25,8 @@ class IngredientBase extends React.Component {
             category: categoryIcon.icon,
             categoryColour: categoryIcon.color,
 
-            currentlyEditing: false,
-            editedQuantity: null
+            currentlyEditing: currentlyEditing,
+            editedQuantity: editedQuantity
         }
     }
 
@@ -47,10 +49,14 @@ class IngredientBase extends React.Component {
         const newMeasurementName = measurements[index].name;
 
         this.props.updateIngredientHandler({
-            newQuantity: newQuantity,
-            ingredientId: ingredientId,
-            measurementId: measurementId
-        });
+                id: ingredientId,
+                name: this.state.name,
+                quantity: newQuantity,
+                category: this.props.category,
+                measurementId: measurementId,
+                measurementName: newMeasurementName,
+                measurement: this.state.measurements
+        })
 
         this.setState({quantity: newQuantity})
         this.setState({currentlyEditing: false})

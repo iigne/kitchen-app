@@ -64,8 +64,8 @@ class ShoppingList extends React.Component {
     }
 
     handleUpdateIngredient = (ingredientData) => {
-        const newQuantity = ingredientData.newQuantity;
-        const ingredientId = ingredientData.ingredientId;
+        const newQuantity = ingredientData.quantity;
+        const ingredientId = ingredientData.id;
         const measurement = ingredientData.measurementId;
 
         axios.patch('/shopping', {
@@ -153,7 +153,7 @@ class ShoppingList extends React.Component {
                     </ListGroup>
                 </Container>
                 <header className="subheader">Add ingredients</header>
-                <AddIngredient addIngredientHandler={this.handleAddIngredient}/>
+                <AddIngredient addIngredientHandler={this.handleAddIngredient} showAlert={this.props.showAlert}/>
                 <Container>
                     <IconButtonLabel label="Finish shopping" icon={faCheck} variant="success"
                                      handleClick={this.handleFinishShopping}

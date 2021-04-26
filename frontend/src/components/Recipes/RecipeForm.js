@@ -89,8 +89,8 @@ class RecipeForm extends React.Component {
     }
 
     handleUpdateIngredient = (ingredientData) => {
-        const newQuantity = ingredientData.newQuantity;
-        const ingredientId = ingredientData.ingredientId;
+        const newQuantity = ingredientData.quantity;
+        const ingredientId = ingredientData.id;
         const newMeasurementId = ingredientData.measurementId;
         this.setState(prevState => {
             const ingredients = prevState.ingredients;

@@ -24,6 +24,7 @@ class AddMeasurement extends React.Component {
                 submitted: props.submitted
             }
         }
+        return null;
     }
 
     handleChange = (e) => {
