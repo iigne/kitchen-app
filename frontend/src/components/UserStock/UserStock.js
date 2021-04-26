@@ -4,8 +4,7 @@ import Ingredient from "../Ingredient/Ingredient";
 import './UserStock.css';
 import AddIngredient from "../Ingredient/AddIngredient";
 import {Container, ListGroup} from "react-bootstrap";
-import authHeader from "../../api/auth-header";
-import axios from "axios";
+import {createUserIngredient, deleteUserIngredient, getUserIngredients, updateUserIngredient} from "../../api/Api";
 
 class UserStock extends React.Component {
 
@@ -17,86 +16,69 @@ class UserStock extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('/user-ingredient', {headers: authHeader()}).then(
-            res => {
-                this.setState({ingredients: res.data})
-            }
-        ).catch(error => {
-            console.log(error);
+        getUserIngredients((res) => {
+            this.setState({ingredients: res.data});
+        }, () => {
             this.props.showAlert("Failed fetching ingredients", "error");
-        })
+        });
     }
 
     handleAddIngredient = (ingredient) => {
-        axios.post('/user-ingredient', {
+        const addedIngredient = {
             ingredientId: ingredient.id,
-            quantity: ingredient.quantity,
-            measurementId: ingredient.measurementId
-        }, {
-            headers: authHeader()
-        }).then(res => {
+            measurementId: ingredient.measurementId,
+            quantity: ingredient.quantity
+        };
+        createUserIngredient(addedIngredient, (res) => {
             const ingredientResult = res.data;
             this.setState(prevState => {
-                const ingredients = prevState.ingredients
-                const index = ingredients.findIndex(ui => ui.id === ingredientResult.id)
-                if(index === -1) {
-                    ingredients.push(ingredientResult)
+                const ingredients = prevState.ingredients;
+                const index = ingredients.findIndex(ui => ui.id === ingredientResult.id);
+                if (index === -1) {
+                    ingredients.push(ingredientResult);
                 } else {
-                    ingredients.splice(index, 1, ingredientResult)
+                    this.props.showAlert("Ingredient already exists in your stock. Specified quantity has been added", "info");
                 }
-                return {ingredients: ingredients}
-            })
-        }).catch(error => {
+                return {ingredients: ingredients};
+            });
+        }, () => {
             this.props.showAlert("Failed adding ingredient", "error");
-            console.log(error);
         });
     }
 
     handleRemoveIngredient = (id) => {
-        axios.delete('/user-ingredient', {
-            params: {ingredientId: id},
-            headers: authHeader()
-        }).then(
-            res => {
+        deleteUserIngredient(id, () => {
                 this.setState(prevState => {
-                    const ingredients = prevState.ingredients.filter(u => u.id !== id)
-                    return {ingredients: ingredients}
+                    const ingredients = prevState.ingredients.filter(u => u.id !== id);
+                    return {ingredients: ingredients};
                 });
-            }
-        ).catch(error => {
-            this.props.showAlert("Failed removing ingredient", "error");
-            console.log(error);
+            }, () => {
+                this.props.showAlert("Failed removing ingredient", "error");
             }
         )
     }
 
     handleUpdateIngredient = (ingredientData) => {
-        const newQuantity = ingredientData.quantity;
-        const ingredientId = ingredientData.id;
-        const measurement = ingredientData.measurementId;
-        axios.patch('/user-ingredient', {
-                ingredientId: ingredientId,
-                measurementId: measurement,
-                quantity: newQuantity
-            }, {
-                headers: authHeader()
-            }
-        ).then(res => {
+        const updatedIngredient = {
+            ingredientId: ingredientData.id,
+            measurementId: ingredientData.measurementId,
+            quantity: ingredientData.quantity
+        }
+        updateUserIngredient(updatedIngredient, (res) => {
             const ingredient = res.data;
             this.setState(prevState => {
-                const ingredients = prevState.ingredients
-                const index = ingredients.findIndex(ui => ui.id === ingredient.id)
-                ingredients.splice(index, 1, ingredient)
-                return {ingredients: ingredients}
+                const ingredients = prevState.ingredients;
+                const index = ingredients.findIndex(ui => ui.id === ingredient.id);
+                ingredients.splice(index, 1, ingredient);
+                return {ingredients: ingredients};
             })
-        }).catch(error => {
+        }, () => {
             this.props.showAlert("Failed updating ingredient", "error");
-            console.log(error);
-        })
+        });
     }
 
     render() {
-        let ingredients = this.state.ingredients
+        let ingredients = this.state.ingredients;
         return (
             <div>
                 <header className="header">My ingredients</header>

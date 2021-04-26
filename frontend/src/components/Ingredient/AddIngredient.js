@@ -19,8 +19,10 @@ class AddIngredient extends React.Component {
     }
 
     handleSearch = () => {
-        this.setState({selectedIngredient: null})
-        this.setState({selectedMeasurement: null})
+        this.setState({
+            selectedIngredient: null,
+            selectedMeasurement: null
+        });
     }
 
     handleSearchSelection = (selectedIngredient) => {
@@ -28,15 +30,15 @@ class AddIngredient extends React.Component {
                 selectedIngredient: selectedIngredient,
                 selectedMeasurement: selectedIngredient.measurements[0]
             }
-        )
+        );
     }
 
     handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState({[e.target.name]: e.target.value});
     }
 
     handleAddIngredient = (ingredientData) => {
-        this.props.addIngredientHandler(ingredientData)
+        this.props.addIngredientHandler(ingredientData);
         this.setState({
             selectedIngredient: null,
             selectedMeasurement: null
@@ -44,49 +46,48 @@ class AddIngredient extends React.Component {
     }
 
     enterCreateIngredient = () => {
-        this.setState({inCreateIngredient: true})
+        this.setState({inCreateIngredient: true});
     }
 
     handleFinishCreateIngredient = (success, name, status) => {
         if (success) {
-            this.setState({inCreateIngredient: false})
-            this.setState({searchTerm: name})
+            this.setState({
+                    inCreateIngredient: false,
+                    searchTerm: name
+                }
+            );
             this.props.showAlert("Ingredient created - you can now search for it", "success");
         } else {
-            console.log(status);
-            if (status === 400) {
-                this.props.showAlert("Creation failed - some fields have invalid values", "error");
-            } else {
-                this.props.showAlert("Failed to create ingredient", "error");
-            }
+            this.props.showAlert(status === 400 ?
+                "Creation failed - some fields have invalid values" : "Failed to create ingredient",
+                "error");
         }
     }
 
     cancelCreate = () => {
-        this.setState({inCreateIngredient: false})
+        this.setState({inCreateIngredient: false});
     }
 
     render() {
-        let inCreateIngredient = this.state.inCreateIngredient
-        const selectedIngredient = this.state.selectedIngredient
+        let inCreateIngredient = this.state.inCreateIngredient;
+        const selectedIngredient = this.state.selectedIngredient;
         return (
             <Container>
                 <Search handleSearch={this.handleSearch}
                         handleSearchSelection={this.handleSearchSelection}
-                        enterCreateIngredient={this.enterCreateIngredient} />
+                        enterCreateIngredient={this.enterCreateIngredient}/>
 
                 {selectedIngredient != null &&
                 <SearchIngredient {...selectedIngredient}
                                   selectedMeasurement={this.state.selectedMeasurement}
-                                  addIngredientHandler={this.handleAddIngredient} />
+                                  addIngredientHandler={this.handleAddIngredient}/>
                 }
 
                 <CreateIngredient show={inCreateIngredient}
                                   handleFinishCreateIngredient={this.handleFinishCreateIngredient}
-                                  cancelCreate={this.cancelCreate} />
+                                  cancelCreate={this.cancelCreate}/>
 
             </Container>
-
         )
     }
 

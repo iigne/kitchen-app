@@ -17,7 +17,7 @@ class Register extends Component {
     }
 
     handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState({[e.target.name]: e.target.value});
     }
 
     handleSubmit = (e) => {
@@ -35,7 +35,6 @@ class Register extends Component {
                 this.props.showAlert(error.response.data.errorMessage, "error");
             });
         }
-
     }
 
     validateForm() {
