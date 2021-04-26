@@ -1,9 +1,8 @@
 import {Button, Col, Form, FormGroup, FormLabel, InputGroup, ListGroup, Row} from "react-bootstrap";
 import React from "react";
-import axios from "axios";
-import authHeader from "../../api/auth-header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faSearch} from "@fortawesome/free-solid-svg-icons";
+import {search} from "../../api/Api";
 
 class Search extends React.Component {
     constructor(props) {
@@ -16,13 +15,12 @@ class Search extends React.Component {
         }
     }
 
-
     handleSearch = (e) => {
-        const searchText = e.target.value
+        const searchText = e.target.value;
 
         this.props.handleSearch();
         this.resetSearch();
-        this.setState({searchTerm: searchText})
+        this.setState({searchTerm: searchText});
         // setting a timeout to wait until user finishes typing
         // so that BE is not constantly bombarded with requests
         if (this.state.typingTimeout) {
@@ -39,29 +37,24 @@ class Search extends React.Component {
 
     search = (searchText) => {
         if (searchText !== "") {
-            axios.get('/ingredient/search', {
-                params: {term: searchText},
-                headers: authHeader()
-            }).then(
-                res => {
+            search(searchText, (res) => {
                     this.setState({
                         searchResults: res.data,
                         noResults: res.data.length === 0
                     })
                 }
-            ).catch(error => {
-                this.props.showAlert("Search has failed", "error")
-                console.log(error)
-            })
+                , () => {
+                    this.props.showAlert("Search has failed", "error");
+                });
         }
     }
 
     handleSearchSelection = (id) => {
         this.setState(prevState => {
-            const searchResults = prevState.searchResults
-            const index = searchResults.findIndex(sr => sr.id === id)
-            const selected = searchResults[index]
-            this.props.handleSearchSelection(selected)
+            const searchResults = prevState.searchResults;
+            const index = searchResults.findIndex(sr => sr.id === id);
+            const selected = searchResults[index];
+            this.props.handleSearchSelection(selected);
             return {
                 searchResults: [],
                 noResults: null,
@@ -76,8 +69,8 @@ class Search extends React.Component {
     }
 
     resetSearch = () => {
-        this.setState({searchResults: []})
-        this.setState({noResults: null})
+        this.setState({searchResults: []});
+        this.setState({noResults: null});
     }
 
     render() {
@@ -108,6 +101,7 @@ class Search extends React.Component {
                             </Col>
                         </Row>
                     )}
+
                     {this.state.noResults &&
                     <Row>
                         <Col>

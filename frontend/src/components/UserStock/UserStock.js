@@ -1,7 +1,7 @@
 import React from "react";
 import Ingredient from "../Ingredient/Ingredient";
 
-import './UserStock.css';
+import '../Ingredient/Ingredient.css';
 import AddIngredient from "../Ingredient/AddIngredient";
 import {Container, ListGroup} from "react-bootstrap";
 import {createUserIngredient, deleteUserIngredient, getUserIngredients, updateUserIngredient} from "../../api/Api";

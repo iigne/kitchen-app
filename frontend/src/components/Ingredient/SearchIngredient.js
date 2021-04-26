@@ -19,10 +19,7 @@ class SearchIngredient extends React.Component {
     }
 
     render() {
-
         const ingredient = this.state;
-        console.log(ingredient)
-
         return (
             <ListGroup>
                 <ListGroup.Item >

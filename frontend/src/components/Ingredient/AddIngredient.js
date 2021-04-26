@@ -1,6 +1,6 @@
 import React from "react";
 
-import '../UserStock/UserStock.css';
+import './Ingredient.css';
 import {Container} from "react-bootstrap";
 import CreateIngredient from "./CreateIngredient";
 import Search from "./Search";

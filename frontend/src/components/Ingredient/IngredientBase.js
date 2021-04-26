@@ -5,13 +5,13 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import DropdownToggle from "react-bootstrap/DropdownToggle";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import DropdownItem from "react-bootstrap/DropdownItem";
-import {icons} from "./icons";
+import {categories} from "../../constants";
 
 class IngredientBase extends React.Component {
 
     constructor(props) {
         super(props);
-        const icon = icons.get(props.category);
+        const icon = categories.get(props.category);
         const categoryIcon = icon === undefined ? {icon: null, categoryColour: null} : icon;
         const currentlyEditing = props.edit !== undefined;
         const editedQuantity = props.edit !== undefined ? props.quantity : null;
@@ -36,33 +36,33 @@ class IngredientBase extends React.Component {
     }
 
     startEditIngredient = () => {
-        this.setState({editedQuantity: this.state.quantity})
-        this.setState({currentlyEditing: true})
+        this.setState({
+            editedQuantity: this.state.quantity,
+            currentlyEditing: true
+        });
     }
 
     updateIngredient = () => {
-        const measurements = [...this.state.measurements];
         const newQuantity = this.state.editedQuantity;
-        const ingredientId = this.state.id;
-        const measurementId = parseInt(this.state.measurement);
-
-        const index = measurements.findIndex( m => m.id === measurementId)
+        const measurements = [...this.state.measurements];
+        const newMeasurementId = parseInt(this.state.measurement);
+        const index = measurements.findIndex(m => m.id === newMeasurementId)
         const newMeasurementName = measurements[index].name;
-
         this.props.updateIngredientHandler({
-                id: ingredientId,
-                name: this.state.name,
-                quantity: newQuantity,
-                category: this.state.category,
-                measurementId: measurementId,
-                measurementName: newMeasurementName,
-                measurement: this.state.measurements
-        })
-
-        this.setState({quantity: newQuantity})
-        this.setState({currentlyEditing: false})
-        this.setState({editedQuantity: null})
-        this.setState({measurementName: newMeasurementName});
+            id: this.state.id,
+            name: this.state.name,
+            quantity: newQuantity,
+            category: this.state.category,
+            measurementId: newMeasurementId,
+            measurementName: newMeasurementName,
+            measurement: this.state.measurements
+        });
+        this.setState({
+            quantity: newQuantity,
+            currentlyEditing: false,
+            editedQuantity: null,
+            measurementName: newMeasurementName
+        });
     }
 
     handleChange = (e) => {
@@ -80,16 +80,17 @@ class IngredientBase extends React.Component {
         const quantity = this.state.quantity;
         return (
             <>
-                {
-                    icon && <Col xs={1}>
-                        <i className="ingredientIcon" style={{color: iconColour}}><FontAwesomeIcon
-                            icon={icon}/></i>
-                    </Col>
+                {icon &&
+                <Col xs={1}>
+                    <i className="ingredientIcon" style={{color: iconColour}}><FontAwesomeIcon
+                        icon={icon}/></i>
+                </Col>
                 }
 
                 <Col>
                     <b>{this.state.name}</b>
                 </Col>
+
                 {currentlyEditing ?
                     <>
                         <Col xs={3}>
@@ -97,7 +98,8 @@ class IngredientBase extends React.Component {
                         </Col>
                         <Col xs={3}>
                             {measurementsAvailable ?
-                                <Form.Control name="measurement" as="select" onChange={this.handleChange} defaultValue={currentMeasurement}>
+                                <Form.Control name="measurement" as="select" onChange={this.handleChange}
+                                              defaultValue={currentMeasurement}>
                                     {measurements.map((item) =>
                                         <option key={item.id} value={item.id}>{item.name}</option>)}
                                 </Form.Control>
@@ -110,7 +112,10 @@ class IngredientBase extends React.Component {
                                 <FontAwesomeIcon icon={faCheck}/>
                             </Button>
                         </Col>
-                    </> :
+                    </>
+
+                    :
+
                     <>
                         <Col>{this.state.quantity} {this.state.measurementName}</Col>
                         <Col xs={1}>

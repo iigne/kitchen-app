@@ -1,5 +1,5 @@
 import React from "react";
-import '../UserStock/UserStock.css';
+import './Ingredient.css';
 import {Row, ListGroup} from "react-bootstrap";
 import IngredientBase from "./IngredientBase";
 

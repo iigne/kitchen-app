@@ -4,7 +4,7 @@ import AddIngredient from "../Ingredient/AddIngredient";
 import IconButtonLabel from "../Recipes/IconButtonLabel";
 import {faCheck, faTrash} from "@fortawesome/free-solid-svg-icons";
 import ShoppingListIngredient from "../Ingredient/ShoppingListIngredient";
-import '../Ingredient/Ingredient.css';
+import '../Ingredient/ShoppingIngredient.css';
 import axios from "axios";
 import authHeader from "../../api/auth-header";
 

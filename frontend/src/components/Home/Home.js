@@ -13,8 +13,7 @@ class Home extends Component {
     }
 
     render() {
-        let homeMessage
-        homeMessage = this.state.isAuthenticated ? "Welcome back, " + this.state.username : "Welcome! Login or register to proceed"
+        const homeMessage = this.state.isAuthenticated ? "Welcome back, " + this.state.username : "Welcome! Login or register to proceed"
         return (
             <div>
                 <header className="header">

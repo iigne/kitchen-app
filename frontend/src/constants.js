@@ -1,6 +1,6 @@
 import {faAppleAlt, faBox, faBreadSlice, faLeaf, faPepperHot, faSnowflake} from "@fortawesome/free-solid-svg-icons";
 
-export const icons = new Map([
+export const categories = new Map([
     ['Vegetable', { icon: faLeaf, color: "#66B447"}],
     ["Fruit", {icon: faAppleAlt, color:"#E9692C"}],
     ["Cupboard",{icon: faBox, color:"#d4bc89"}],
