@@ -6,7 +6,6 @@ class SearchIngredient extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             id: props.id,
             name: props.name,
