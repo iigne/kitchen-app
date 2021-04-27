@@ -27,6 +27,19 @@
     padding: 10px;
 }
 
+.green-text {
+    color: #82996b;
+    padding: 10px;
+}
+
+.justified {
+    text-align: justify;
+}
+
+p {
+    text-align: center;
+}
+
 footer {
     text-align: center;
     width: 100%;
