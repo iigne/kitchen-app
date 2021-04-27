@@ -13,8 +13,8 @@ class IconButtonLabel extends React.Component {
         }
     }
 
-    static getDerivedStateFromProps(props,state) {
-        if(props.label !== state.label) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.label !== state.label) {
             return {
                 label: props.label,
                 icon: props.icon
@@ -24,7 +24,7 @@ class IconButtonLabel extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <Row>
                 <Col xs={2}>
                     <Button variant={this.state.variant} onClick={() => this.props.handleClick()}>
@@ -37,4 +37,6 @@ class IconButtonLabel extends React.Component {
             </Row>
         )
     }
-} export default IconButtonLabel;
+}
+
+export default IconButtonLabel;

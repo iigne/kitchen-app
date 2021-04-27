@@ -1,9 +1,8 @@
 import {Button, Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGlobe, faHeart, faLeaf, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
+import {faGlobe, faHeart, faPencilAlt} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import authHeader from "../../api/auth-header";
-import axios from "axios";
+import {getRecipes} from "../../api/Api";
 
 
 class BrowseOption extends React.Component {
@@ -25,10 +24,6 @@ class BrowseOption extends React.Component {
                 icon = faGlobe;
                 variant = "primary";
                 break;
-            case "suggestion":
-                icon = faLeaf;
-                variant = "success";
-                break;
             case "liked":
                 icon = faHeart;
                 variant = "danger";
@@ -44,17 +39,11 @@ class BrowseOption extends React.Component {
     }
 
     handleClick = () => {
-        axios.get('/recipe/list/',
-            {
-                params: {option: this.state.type},
-                headers: authHeader()
-            })
-            .then(res => {
-                this.props.handleLoadRecipes(res.data, this.state.text);
-            }).catch(err => {
+        getRecipes(this.state.type, (res) => {
+            this.props.handleLoadRecipes(res.data, this.state.text);
+        }, () => {
             this.props.showAlert("Failed to fetch recipes", "error");
-            console.log(err)
-        })
+        });
     }
 
     render() {

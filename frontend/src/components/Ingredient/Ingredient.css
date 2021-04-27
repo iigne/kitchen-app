@@ -1,18 +1,10 @@
-.btn-rounded {
-    color: white;
-    border-radius: 50%;
-    background-color: white;
-    border: 1px solid grey;
+.ingredient {
+    align-items: center;
+    font-size: calc(16px + 0.5vmin);
+    text-align: left;
+    max-width: 90vw;
 }
 
-.btn-rounded-checked {
-    color: black;
-    border-radius: 50%;
-    background-color: grey;
-    border: 1px solid grey;
+.ingredientIcon {
+    font-size: calc(10px + 2vmin);
 }
-
-.btn-rounded:hover {
-    color: white;
-}
-

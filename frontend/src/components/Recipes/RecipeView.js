@@ -5,15 +5,15 @@ import {
     faHeart,
     faHeartBroken,
     faInfoCircle,
-    faPencilAlt, faShoppingBasket,
+    faPencilAlt,
+    faShoppingBasket,
     faTrash,
     faUtensils
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import IconButtonLabel from "./IconButtonLabel";
-import authHeader from "../../api/auth-header";
-import axios from "axios";
 import RecipeForm from "./RecipeForm";
+import {createShoppingItems, deleteRecipe, likeRecipe, removeUserIngredients, updateRecipe} from "../../api/Api";
 
 class RecipeView extends React.Component {
     constructor(props) {
@@ -36,36 +36,22 @@ class RecipeView extends React.Component {
     }
 
     handleToggleLikeRecipe = () => {
-        const id = this.state.id;
-        axios.post('/recipe/like', {}, {
-            params: {recipeId: id},
-            headers: authHeader()
-        }).then(res => {
+        likeRecipe(this.state.id, res => {
             this.setState(res.data);
-        }).catch(err => {
+        }, () => {
             this.props.showAlert("Failed to like/unlike recipe", "error");
-            console.log(err);
-        })
+        });
     }
 
     handleDeleteRecipe = () => {
-        const id = this.state.id;
-        if (this.state.recipeAuthorId === this.state.userId) {
-            axios.delete('/recipe', {
-                params: {recipeId: id},
-                headers: authHeader()
-            }).then(res => {
-                    this.props.handleViewRecipe(null);
-                    this.props.handleRemoveRecipe(id);
-                    this.props.showAlert("Recipe has been deleted", "info");
-                }
-            ).catch(
-                error => {
-                    this.props.showAlert("Failed to delete recipe", "error");
-                    console.log(error)
-                }
-            )
-        }
+        deleteRecipe(this.state.id, () => {
+                this.props.handleViewRecipe(null);
+                this.props.handleRemoveRecipe(this.state.id);
+                this.props.showAlert("Recipe has been deleted", "info");
+            }, (error) => {
+                this.props.showAlert("Failed to delete recipe", "error");
+            }
+        )
     }
 
     toggleEditRecipeMode = (status) => {
@@ -73,15 +59,7 @@ class RecipeView extends React.Component {
     }
 
     handleSubmitEditedRecipe = (recipe) => {
-        axios.patch("/recipe", {
-            id: recipe.id,
-            title: recipe.title,
-            imageLink: recipe.imageLink,
-            method: recipe.method,
-            ingredients: recipe.ingredients
-        }, {
-            headers: authHeader()
-        }).then(res => {
+        updateRecipe(recipe, (res) => {
             const editedRecipe = res.data;
             this.toggleEditRecipeMode(false);
             this.setState({
@@ -92,10 +70,9 @@ class RecipeView extends React.Component {
             })
             this.props.handleUpdateResults(editedRecipe);
             this.props.showAlert("Recipe has been updated", "success");
-        }).catch(err => {
+        }, () => {
             this.props.showAlert("Failed to update recipe", "error");
-            console.log(err);
-        })
+        });
     }
 
     handleMakeRecipe = () => {
@@ -105,15 +82,11 @@ class RecipeView extends React.Component {
             measurementId: i.measurementId,
             quantity: i.recipeQuantity
         }));
-        axios.patch('/user-ingredient/remove-quantities', usedIngredients,
-            {headers: authHeader()})
-            .then(res => {
-                this.props.showAlert("Recipe made - used ingredients have been removed from your stock", "info");
-            })
-            .catch(err => {
-                this.props.showAlert("Failed to make recipe", "error");
-                console.log(err);
-            })
+        removeUserIngredients(usedIngredients, () => {
+            this.props.showAlert("Recipe made - used ingredients have been removed from your stock", "info");
+        }, () => {
+            this.props.showAlert("Failed to make recipe", "error");
+        });
     }
 
     handleAddIngredientsToShopping = () => {
@@ -123,14 +96,11 @@ class RecipeView extends React.Component {
             measurementId: i.measurementId,
             quantity: i.recipeQuantity
         }))
-        axios.post('/shopping/multiple', formattedIngredients, {
-            headers: authHeader()
-        }).then(res => {
+        createShoppingItems(formattedIngredients, () => {
             this.props.showAlert("Ingredients have been added to shopping list", "info");
-        }).catch(err => {
+        }, () => {
             this.props.showAlert("Failed to add ingredients to shopping list", "error");
-            console.log(err);
-        })
+        });
     }
 
     render() {
@@ -155,66 +125,68 @@ class RecipeView extends React.Component {
                 {!inEditRecipe ?
 
                     <Modal size="lg" show={this.props.show} onHide={() => this.props.handleViewRecipe(recipeId)}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>
-                                    {this.state.title}
-                                </Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <Image src={this.state.image} fluid/>
+                        <Modal.Header closeButton>
+                            <Modal.Title>
+                                {this.state.title}
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Image src={this.state.image} fluid/>
 
-                                <h2>Ingredients</h2>
-                                <ListGroup>
-                                    {ingredients.map((item) =>
-                                        <RecipeCardIngredient key={item.ingredientId}
-                                                              name={item.ingredientName} measurement={item.measurement}
-                                                              recipeQuantity={item.recipeQuantity}
-                                                              ownedQuantity={item.ownedQuantity}/>
-                                    )}
-                                </ListGroup>
-
-                                <h2>Method</h2>
-                                {methodSteps.map((item, index) =>
-                                    <Row key={index}>
-                                        <hr/>
-                                        <Col>
-                                            {item}
-                                        </Col>
-                                    </Row>
+                            <h2>Ingredients</h2>
+                            <ListGroup>
+                                {ingredients.map((item) =>
+                                    <RecipeCardIngredient key={item.ingredientId}
+                                                          name={item.ingredientName} measurement={item.measurement}
+                                                          recipeQuantity={item.recipeQuantity}
+                                                          ownedQuantity={item.ownedQuantity}/>
                                 )}
+                            </ListGroup>
 
-
-                                <h2>Options</h2>
-                                <IconButtonLabel label="Add ingredients to shopping list" icon={faShoppingBasket} variant="outline-secondary"
-                                                 handleClick={this.handleAddIngredientsToShopping}/>
-                                <IconButtonLabel label={likedLabel} variant="outline-danger" icon={likedIcon}
-                                                 handleClick={this.handleToggleLikeRecipe}/>
-                                <IconButtonLabel label="Make this recipe" icon={faUtensils}
-                                                 handleClick={this.handleMakeRecipe}/>
-                                <Row>
+                            <h2>Method</h2>
+                            {methodSteps.map((item, index) =>
+                                <Row key={index}>
+                                    <hr/>
                                     <Col>
-                                        <small>
-                                            <FontAwesomeIcon icon={faInfoCircle}/> this removes quantities of ingredients
-                                            used
-                                            for this recipe from your inventory
-                                        </small>
-
+                                        {item}
                                     </Col>
                                 </Row>
+                            )}
 
-                                {isCreatedByUser &&
-                                <>
-                                    <hr/>
-                                    <IconButtonLabel label="Edit this recipe" icon={faPencilAlt} variant="warning"
-                                                     handleClick={() => this.toggleEditRecipeMode(true)}/>
-                                    <IconButtonLabel label="Delete this recipe" icon={faTrash} variant="danger"
-                                                     handleClick={this.handleDeleteRecipe}/>
-                                 </>
-                                }
-                            </Modal.Body>
+
+                            <h2>Options</h2>
+                            <IconButtonLabel label="Add ingredients to shopping list" icon={faShoppingBasket}
+                                             variant="outline-secondary"
+                                             handleClick={this.handleAddIngredientsToShopping}/>
+                            <IconButtonLabel label={likedLabel} variant="outline-danger" icon={likedIcon}
+                                             handleClick={this.handleToggleLikeRecipe}/>
+                            <IconButtonLabel label="Make this recipe" icon={faUtensils}
+                                             handleClick={this.handleMakeRecipe}/>
+                            <Row>
+                                <Col>
+                                    <small>
+                                        <FontAwesomeIcon icon={faInfoCircle}/> this removes quantities of ingredients
+                                        used
+                                        for this recipe from your inventory
+                                    </small>
+
+                                </Col>
+                            </Row>
+
+                            {isCreatedByUser &&
+                            <>
+                                <hr/>
+                                <IconButtonLabel label="Edit this recipe" icon={faPencilAlt} variant="warning"
+                                                 handleClick={() => this.toggleEditRecipeMode(true)}/>
+                                <IconButtonLabel label="Delete this recipe" icon={faTrash} variant="danger"
+                                                 handleClick={this.handleDeleteRecipe}/>
+                            </>
+                            }
+                        </Modal.Body>
                     </Modal>
                     :
-                    <RecipeForm id={recipeId} title={this.state.title} imageLink={this.state.image} method={this.state.method}
+                    <RecipeForm id={recipeId} title={this.state.title} imageLink={this.state.image}
+                                method={this.state.method}
                                 ingredients={ingredientsFormatted}
                                 show={this.state.inEditRecipe}
                                 handleCancel={this.toggleEditRecipeMode}
@@ -222,7 +194,7 @@ class RecipeView extends React.Component {
 
                     />
 
-                    }
+                }
             </>
         )
     }

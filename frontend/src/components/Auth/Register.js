@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Alert, Button, Container, Form, FormText} from "react-bootstrap";
-import axios from "axios";
 import {Redirect} from "react-router-dom";
+import {register} from "../../api/Api";
 
 
 class Register extends Component {
@@ -17,29 +17,23 @@ class Register extends Component {
     }
 
     handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState({[e.target.name]: e.target.value});
     }
 
     handleSubmit = (e) => {
         e.preventDefault()
         if (this.validateForm()) {
-            let toSave = {
+            const registerRequest = {
                 username: this.state.username,
                 email: this.state.email,
                 password: this.state.password
             }
-            axios.post('auth/register', toSave, {
-                "Content-Type": "application/json"
-            })
-                .then(res => {
-                        this.setState({success: true})
-                        this.props.showAlert("Successfully registered! You can now log in.", "success");
-                    }
-                )
-                .catch(error => {
-                    console.log(error)
-                    this.props.showAlert(error.response.data.errorMessage, "error");
-                });
+            register(registerRequest, () => {
+                this.setState({success: true})
+                this.props.showAlert("Successfully registered! You can now log in.", "success");
+            }, (error) => {
+                this.props.showAlert(error.response.data.errorMessage, "error");
+            });
         }
     }
 

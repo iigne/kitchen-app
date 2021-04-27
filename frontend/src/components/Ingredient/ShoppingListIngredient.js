@@ -1,12 +1,12 @@
 import React from "react";
 import IngredientBase from "./IngredientBase";
-import  {Col,Button, ListGroup, Row} from "react-bootstrap";
+import {Button, Col, ListGroup, Row} from "react-bootstrap";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import '../Ingredient/Ingredient.css';
+import './ShoppingIngredient.css';
 
 
-class ShoppingListIngredient extends React.Component{
+class ShoppingListIngredient extends React.Component {
 
     constructor(props) {
         super(props);
@@ -33,27 +33,30 @@ class ShoppingListIngredient extends React.Component{
         const ticked = ingredient.ticked;
         const textStyle = ticked ? {textDecoration: "line-through"} : {textDecoration: "none"};
         const listItemVariant = ticked ? "secondary" : "";
-        return(
+        return (
             <ListGroup.Item variant={listItemVariant}>
 
-            <div style={textStyle} className="ingredient">
-                <Row>
-                    <Col xs={1}>
-                        <Button size="sm" variant={ticked ? "rounded-checked" : "rounded"}  onClick={this.handleCheckboxClick}>
-                            <FontAwesomeIcon icon={faCheck}/>
-                        </Button>
-                    </Col>
+                <div style={textStyle} className="ingredient">
+                    <Row>
+                        <Col xs={1}>
+                            <Button size="sm" variant={ticked ? "rounded-checked" : "rounded"}
+                                    onClick={this.handleCheckboxClick}>
+                                <FontAwesomeIcon icon={faCheck}/>
+                            </Button>
+                        </Col>
 
 
-                    <IngredientBase {...ingredient}
-                                    removeIngredientHandler={this.props.removeIngredientHandler}
-                                    updateIngredientHandler={this.props.updateIngredientHandler}
-                    />
-                </Row>
+                        <IngredientBase {...ingredient}
+                                        removeIngredientHandler={this.props.removeIngredientHandler}
+                                        updateIngredientHandler={this.props.updateIngredientHandler}
+                        />
+                    </Row>
 
-            </div>
+                </div>
             </ListGroup.Item>
         )
     }
 
-} export default ShoppingListIngredient;
+}
+
+export default ShoppingListIngredient;

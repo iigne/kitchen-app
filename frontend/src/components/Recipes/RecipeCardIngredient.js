@@ -24,7 +24,6 @@ class RecipeCardIngredient extends React.Component {
                 <Row>
                     <Col xs={3}>{this.state.name}</Col>
                     <Col xs={3}>{recipeQuantity} {this.state.measurement}</Col>
-                    {/*TODO implement*/}
                     <Col> (you have {this.state.ownedQuantity} {this.state.measurement})</Col>
                 </Row>
 

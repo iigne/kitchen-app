@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Button, Container, Form} from "react-bootstrap";
-import axios from "axios";
+import {login} from "../../api/Api";
 
 class Login extends Component {
 
@@ -13,25 +13,20 @@ class Login extends Component {
     }
 
     handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState({[e.target.name]: e.target.value});
     }
 
     handleSubmit = (e) => {
         e.preventDefault()
-        let credentials = {
+        const credentials = {
             username: this.state.username,
             password: this.state.password
         }
-        axios.post('/auth/login', credentials, {
-            "Content-Type": "application/json"
-        })
-            .then(res => {
-                    if (res.data.token) {
-                        this.props.handleLogin(res.data);
-                    }
+        login(credentials, res => {
+                if (res.data.token) {
+                    this.props.handleLogin(res.data);
                 }
-            ).catch(error => {
-                console.log(error)
+            }, () => {
                 this.props.showAlert("Login failed, please check your credentials", "error");
             }
         );
