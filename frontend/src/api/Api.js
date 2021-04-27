@@ -29,7 +29,7 @@ export const updateUserIngredient = (data, successCallback, errorCallback) => {
 }
 
 export const removeUserIngredients = (data, successCallback, errorCallback) => {
-    request("post", '/user-ingredient/remove-quantities', successCallback, errorCallback, authHeader(), data);
+    request("patch", '/user-ingredient/remove-quantities', successCallback, errorCallback, authHeader(), data);
 }
 
 
